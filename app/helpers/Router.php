@@ -110,6 +110,12 @@ class Router
 
     private function runMiddleware($middlewares, $request)
     {
+        $middlewares = array_reverse($middlewares);
+
+        $next = function($request) {
+            return $request;
+        };
+
         foreach ($middlewares as $middleware) {
             if (strpos($middleware, ':') !== false) {
                 list($name, $params) = explode(':', $middleware, 2);
@@ -124,13 +130,18 @@ class Router
             }
 
             $middlewareClass = $this->middlewares[$name];
-            $instance = new $middlewareClass();
+            
+            $currentNext = $next;
+            $next = function($request) use ($middlewareClass, $currentNext, $params) {
+                $instance = new $middlewareClass();
+                return $instance->handle($request, $currentNext, ...$params);
+            };
+        }
 
-            $result = $instance->handle($request, ...$params);
+        $result = $next($request);
 
-            if ($result instanceof Response) {
-                return $result;
-            }
+        if ($result instanceof Response) {
+            return $result;
         }
 
         return true;

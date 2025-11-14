@@ -16,6 +16,27 @@ require_once APP_PATH . '/helpers/Database.php';
 require_once APP_PATH . '/helpers/functions.php';
 require_once APP_PATH . '/models/Model.php';
 
+require_once APP_PATH . '/middlewares/AuthMiddleware.php';
+require_once APP_PATH . '/middlewares/GuestMiddleware.php';
+require_once APP_PATH . '/middlewares/RoleMiddleware.php';
+require_once APP_PATH . '/middlewares/CsrfMiddleware.php';
+
+spl_autoload_register(function ($class) {
+    $paths = [
+        APP_PATH . '/controllers/' . $class . '.php',
+        APP_PATH . '/models/' . $class . '.php',
+        APP_PATH . '/middlewares/' . $class . '.php',
+        APP_PATH . '/helpers/' . $class . '.php',
+    ];
+    
+    foreach ($paths as $path) {
+        if (file_exists($path)) {
+            require_once $path;
+            return;
+        }
+    }
+});
+
 $envPath = BASE_PATH . '/.env';
 if (file_exists($envPath)) {
     Env::load($envPath);
