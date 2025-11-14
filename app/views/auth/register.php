@@ -40,6 +40,20 @@
                             <?php unset($_SESSION['flash']); ?>
                         <?php endif; ?>
 
+                        <?php if (isset($_SESSION['_errors']) && !empty($_SESSION['_errors'])): ?>
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                <strong>Validation Errors:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <?php foreach ($_SESSION['_errors'] as $field => $fieldErrors): ?>
+                                        <?php foreach ($fieldErrors as $error): ?>
+                                            <li><?= htmlspecialchars($error) ?></li>
+                                        <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <?php endif; ?>
+
                         <form method="POST" action="/register">
                             <input type="hidden" name="_token" value="<?= csrf() ?>">
                             
