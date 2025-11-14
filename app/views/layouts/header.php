@@ -72,6 +72,60 @@
             background-color: #fff;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
         }
+        
+        /* Dark Mode Styles */
+        [data-bs-theme="dark"] {
+            --primary-color: #5a8dee;
+            --secondary-color: #a8b1bd;
+        }
+        [data-bs-theme="dark"] body {
+            background-color: #1a1d20 !important;
+            color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .card {
+            background-color: #2d3238;
+            color: #e9ecef;
+        }
+        [data-bs-theme="dark"] .topbar,
+        [data-bs-theme="dark"] .navbar {
+            background-color: #2d3238 !important;
+            border-bottom-color: #3a3f47 !important;
+        }
+        [data-bs-theme="dark"] .table {
+            color: #e9ecef;
+        }
+        [data-bs-theme="dark"] .table thead th {
+            color: #5a8dee;
+            border-bottom-color: #3a3f47;
+        }
+        [data-bs-theme="dark"] .form-control,
+        [data-bs-theme="dark"] .form-select {
+            background-color: #3a3f47;
+            border-color: #4a5058;
+            color: #e9ecef;
+        }
+        [data-bs-theme="dark"] .form-control:focus,
+        [data-bs-theme="dark"] .form-select:focus {
+            background-color: #3a3f47;
+            color: #e9ecef;
+            border-color: #5a8dee;
+        }
+        [data-bs-theme="dark"] .dropdown-menu {
+            background-color: #2d3238;
+            border-color: #3a3f47;
+        }
+        [data-bs-theme="dark"] .dropdown-item {
+            color: #e9ecef;
+        }
+        [data-bs-theme="dark"] .dropdown-item:hover {
+            background-color: #3a3f47;
+        }
+        [data-bs-theme="dark"] .nav-link {
+            color: #a8b1bd;
+        }
+        [data-bs-theme="dark"] .nav-link:hover {
+            color: #e9ecef;
+        }
     </style>
 </head>
 <body>
