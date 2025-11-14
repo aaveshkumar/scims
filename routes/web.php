@@ -22,6 +22,11 @@ $router->group(['middleware' => 'auth'], function($router) {
     $router->get('/logout', 'AuthController@logout');
     $router->get('/dashboard', 'DashboardController@index');
 
+    // All Features Page
+    $router->get('/features', function() {
+        return view('features/index', ['title' => 'All Features']);
+    });
+
     // Profile Routes
     $router->get('/profile', 'ProfileController@index');
     $router->get('/profile/edit', 'ProfileController@edit');

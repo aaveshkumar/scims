@@ -8,6 +8,10 @@
         <a class="nav-link text-white fw-bold" href="/dashboard">
             <i class="bi bi-speedometer2 me-2"></i> Dashboard
         </a>
+        
+        <a class="nav-link text-white fw-bold" href="/features">
+            <i class="bi bi-grid-3x3-gap me-2"></i> All Features
+        </a>
 
         <?php if (hasRole('admin')): ?>
         <hr class="my-2" style="border-color: rgba(255,255,255,0.2);">
