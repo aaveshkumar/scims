@@ -80,7 +80,7 @@
             <?php include __DIR__ . '/sidebar.php'; ?>
         <?php endif; ?>
         
-        <div class="flex-grow-1">
+        <div class="flex-grow-1" style="<?= isAuth() ? 'margin-left: 260px;' : '' ?>">
             <?php if (isAuth()): ?>
                 <?php include __DIR__ . '/navbar.php'; ?>
             <?php endif; ?>
