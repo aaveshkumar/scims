@@ -1,0 +1,172 @@
+<?php
+
+class MarkController
+{
+    private $markModel;
+    private $examModel;
+    private $studentModel;
+    private $subjectModel;
+
+    public function __construct()
+    {
+        $this->markModel = new Mark();
+        $this->examModel = new Exam();
+        $this->studentModel = new Student();
+        $this->subjectModel = new Subject();
+    }
+
+    public function index($request)
+    {
+        $examId = $request->get('exam_id');
+        
+        if (!$examId) {
+            $exams = $this->examModel->orderBy('start_date', 'DESC')->limit(20)->get();
+            return view('marks.select-exam', ['exams' => $exams]);
+        }
+
+        $exam = $this->examModel->find($examId);
+        if (!$exam) {
+            flash('error', 'Exam not found');
+            return redirect('/marks');
+        }
+
+        $marks = db()->fetchAll(
+            "SELECT m.*, s.admission_number, u.first_name, u.last_name,
+                    sub.name as subject_name
+             FROM marks m
+             INNER JOIN students s ON m.student_id = s.id
+             INNER JOIN users u ON s.user_id = u.id
+             INNER JOIN subjects sub ON m.subject_id = sub.id
+             WHERE m.exam_id = ?
+             ORDER BY u.last_name, u.first_name",
+            [$examId]
+        );
+
+        return view('marks.index', ['exam' => $exam, 'marks' => $marks]);
+    }
+
+    public function enter($request)
+    {
+        $examId = $request->get('exam_id');
+        $studentId = $request->get('student_id');
+
+        if (!$examId || !$studentId) {
+            flash('error', 'Exam and student are required');
+            return redirect('/marks');
+        }
+
+        $exam = $this->examModel->find($examId);
+        $student = db()->fetchOne(
+            "SELECT s.*, u.first_name, u.last_name FROM students s
+             INNER JOIN users u ON s.user_id = u.id WHERE s.id = ?",
+            [$studentId]
+        );
+
+        $subjects = $this->subjectModel->where('class_id', $student['class_id'])->get();
+
+        $existingMarks = db()->fetchAll(
+            "SELECT * FROM marks WHERE exam_id = ? AND student_id = ?",
+            [$examId, $studentId]
+        );
+
+        $marksMap = [];
+        foreach ($existingMarks as $mark) {
+            $marksMap[$mark['subject_id']] = $mark;
+        }
+
+        return view('marks.enter', [
+            'exam' => $exam,
+            'student' => $student,
+            'subjects' => $subjects,
+            'marksMap' => $marksMap
+        ]);
+    }
+
+    public function store($request)
+    {
+        $examId = $request->post('exam_id');
+        $studentId = $request->post('student_id');
+        $marks = $request->post('marks', []);
+
+        if (!$examId || !$studentId) {
+            return responseJSON(['success' => false, 'message' => 'Missing required fields'], 400);
+        }
+
+        try {
+            foreach ($marks as $subjectId => $data) {
+                if (empty($data['marks_obtained'])) {
+                    continue;
+                }
+
+                $existing = db()->fetchOne(
+                    "SELECT id FROM marks WHERE exam_id = ? AND student_id = ? AND subject_id = ?",
+                    [$examId, $studentId, $subjectId]
+                );
+
+                $marksObtained = $data['marks_obtained'];
+                $totalMarks = $data['total_marks'];
+                $grade = Exam::calculateGrade($marksObtained, $totalMarks);
+
+                $markData = [
+                    'marks_obtained' => $marksObtained,
+                    'total_marks' => $totalMarks,
+                    'grade' => $grade,
+                    'remarks' => $data['remarks'] ?? null,
+                    'entered_by' => auth()['id']
+                ];
+
+                if ($existing) {
+                    $this->markModel->update($existing['id'], $markData);
+                } else {
+                    $markData['exam_id'] = $examId;
+                    $markData['student_id'] = $studentId;
+                    $markData['subject_id'] = $subjectId;
+                    $this->markModel->create($markData);
+                }
+            }
+
+            return responseJSON(['success' => true, 'message' => 'Marks entered successfully']);
+        } catch (Exception $e) {
+            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function reportCard($request, $studentId, $examId)
+    {
+        $student = db()->fetchOne(
+            "SELECT s.*, u.first_name, u.last_name, c.name as class_name
+             FROM students s
+             INNER JOIN users u ON s.user_id = u.id
+             LEFT JOIN classes c ON s.class_id = c.id
+             WHERE s.id = ?",
+            [$studentId]
+        );
+
+        $exam = $this->examModel->find($examId);
+
+        if (!$student || !$exam) {
+            flash('error', 'Student or exam not found');
+            return redirect('/marks');
+        }
+
+        $marks = $this->markModel->getStudentReportCard($studentId, $examId);
+
+        $total = 0;
+        $obtained = 0;
+        foreach ($marks as $mark) {
+            $total += $mark['total_marks'];
+            $obtained += $mark['marks_obtained'];
+        }
+
+        $percentage = $total > 0 ? round(($obtained / $total) * 100, 2) : 0;
+
+        return view('marks.report-card', [
+            'student' => $student,
+            'exam' => $exam,
+            'marks' => $marks,
+            'total' => $total,
+            'obtained' => $obtained,
+            'percentage' => $percentage
+        ]);
+    }
+}

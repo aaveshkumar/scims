@@ -1,0 +1,137 @@
+<?php
+
+class TimetableController
+{
+    private $timetableModel;
+    private $classModel;
+    private $subjectModel;
+
+    public function __construct()
+    {
+        $this->timetableModel = new Timetable();
+        $this->classModel = new ClassModel();
+        $this->subjectModel = new Subject();
+    }
+
+    public function index($request)
+    {
+        $classes = $this->classModel->where('status', 'active')->get();
+        return view('timetable.index', ['classes' => $classes]);
+    }
+
+    public function view($request)
+    {
+        $classId = $request->get('class_id');
+        $academicYear = $request->get('academic_year', date('Y'));
+
+        if (!$classId) {
+            flash('error', 'Please select a class');
+            return redirect('/timetable');
+        }
+
+        $class = $this->classModel->find($classId);
+        if (!$class) {
+            flash('error', 'Class not found');
+            return redirect('/timetable');
+        }
+
+        $timetable = $this->timetableModel->getClassTimetable($classId, $academicYear);
+
+        $schedule = [];
+        foreach ($timetable as $entry) {
+            $schedule[$entry['day_of_week']][] = $entry;
+        }
+
+        return view('timetable.view', [
+            'class' => $class,
+            'schedule' => $schedule,
+            'academicYear' => $academicYear
+        ]);
+    }
+
+    public function create($request)
+    {
+        $classes = $this->classModel->where('status', 'active')->get();
+        $subjects = $this->subjectModel->where('status', 'active')->get();
+        
+        $teachers = db()->fetchAll(
+            "SELECT u.id, u.first_name, u.last_name 
+             FROM users u
+             INNER JOIN user_roles ur ON u.id = ur.user_id
+             INNER JOIN roles r ON ur.role_id = r.id
+             WHERE r.name = 'teacher' AND u.status = 'active'"
+        );
+
+        return view('timetable.create', [
+            'classes' => $classes,
+            'subjects' => $subjects,
+            'teachers' => $teachers
+        ]);
+    }
+
+    public function store($request)
+    {
+        $rules = [
+            'class_id' => 'required|numeric',
+            'subject_id' => 'required|numeric',
+            'day_of_week' => 'required',
+            'start_time' => 'required',
+            'end_time' => 'required',
+            'academic_year' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fix the validation errors');
+            return back();
+        }
+
+        try {
+            $this->timetableModel->create([
+                'class_id' => $request->post('class_id'),
+                'subject_id' => $request->post('subject_id'),
+                'teacher_id' => $request->post('teacher_id'),
+                'day_of_week' => $request->post('day_of_week'),
+                'start_time' => $request->post('start_time'),
+                'end_time' => $request->post('end_time'),
+                'room_number' => $request->post('room_number'),
+                'academic_year' => $request->post('academic_year'),
+                'semester' => $request->post('semester'),
+                'status' => 'active'
+            ]);
+
+            flash('success', 'Timetable entry created successfully');
+            return redirect('/timetable');
+        } catch (Exception $e) {
+            flash('error', 'Failed to create timetable entry: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    public function destroy($request, $id)
+    {
+        try {
+            $this->timetableModel->delete($id);
+            return responseJSON(['success' => true, 'message' => 'Timetable entry deleted successfully']);
+        } catch (Exception $e) {
+            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function teacherTimetable($request)
+    {
+        $teacherId = $request->get('teacher_id', auth()['id']);
+        $academicYear = $request->get('academic_year', date('Y'));
+
+        $timetable = $this->timetableModel->getTeacherTimetable($teacherId, $academicYear);
+
+        $schedule = [];
+        foreach ($timetable as $entry) {
+            $schedule[$entry['day_of_week']][] = $entry;
+        }
+
+        return view('timetable.teacher', [
+            'schedule' => $schedule,
+            'academicYear' => $academicYear
+        ]);
+    }
+}
