@@ -9,6 +9,10 @@ define('DATABASE_PATH', BASE_PATH . '/database');
 
 require_once APP_PATH . '/helpers/Env.php';
 require_once APP_PATH . '/helpers/Config.php';
+require_once APP_PATH . '/helpers/Request.php';
+require_once APP_PATH . '/helpers/Response.php';
+require_once APP_PATH . '/helpers/Router.php';
+require_once APP_PATH . '/helpers/functions.php';
 
 $envPath = BASE_PATH . '/.env';
 if (file_exists($envPath)) {
