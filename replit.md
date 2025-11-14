@@ -4,7 +4,7 @@
 A complete School/College/Institution Management System built with Core PHP 8+ using a custom MVC architecture. This is a production-level ERP system with comprehensive modules for managing educational institutions.
 
 ## Current State
-**Status**: Step 5 completed - All 18 SQL migration files created with proper structure and relationships
+**Status**: Step 6 completed - All 17 Model classes created with relationships and business logic
 
 ## Tech Stack
 - **Backend**: Core PHP 8.4 (OOP)
@@ -85,6 +85,16 @@ A complete School/College/Institution Management System built with Core PHP 8+ u
   - Implemented cascading deletes and updates
   - Created default role seeding for RBAC
   - Added documentation for migration execution
+  - Created 17 Model classes extending base Model
+  - Implemented relationships (users, roles, students, staff, etc.)
+  - Added business logic methods for each model
+  - Implemented authentication helpers (hasRole, assignRole)
+  - Created admission approval workflow with student conversion
+  - Added attendance percentage calculation
+  - Implemented grade calculation logic
+  - Created invoice payment tracking
+  - Added notification management system
+  - Implemented OTP generation and verification
 
 ## Development Progress
 - [x] Step 1: Folder structure + empty files
@@ -92,7 +102,7 @@ A complete School/College/Institution Management System built with Core PHP 8+ u
 - [x] Step 3: Router + request/response classes
 - [x] Step 4: Base Model + DB connection
 - [x] Step 5: Database migrations (18 tables)
-- [ ] Step 6: Models for each module
+- [x] Step 6: Models for each module (17 models)
 - [ ] Step 7: Controllers with CRUD
 - [ ] Step 8: Views with Bootstrap
 - [ ] Step 9: Routes configuration
