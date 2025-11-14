@@ -75,9 +75,17 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 set_exception_handler(function ($exception) {
     $debug = Config::get('app.debug', false);
     
-    http_response_code(500);
+    if (php_sapi_name() !== 'cli') {
+        http_response_code(500);
+    }
     
-    if ($debug) {
+    if (php_sapi_name() === 'cli') {
+        echo "\n❌ Error: " . $exception->getMessage() . "\n";
+        echo "   File: " . $exception->getFile() . " (Line: " . $exception->getLine() . ")\n";
+        if ($debug) {
+            echo "\nStack trace:\n" . $exception->getTraceAsString() . "\n";
+        }
+    } elseif ($debug) {
         echo "<h1>Error</h1>";
         echo "<p><strong>Message:</strong> " . htmlspecialchars($exception->getMessage()) . "</p>";
         echo "<p><strong>File:</strong> " . htmlspecialchars($exception->getFile()) . " (Line: " . $exception->getLine() . ")</p>";
@@ -93,10 +101,16 @@ set_exception_handler(function ($exception) {
 register_shutdown_function(function () {
     $error = error_get_last();
     if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
-        http_response_code(500);
+        if (php_sapi_name() !== 'cli') {
+            http_response_code(500);
+        }
+        
         $debug = Config::get('app.debug', false);
         
-        if ($debug) {
+        if (php_sapi_name() === 'cli') {
+            echo "\n❌ Fatal Error: " . $error['message'] . "\n";
+            echo "   File: " . $error['file'] . " (Line: " . $error['line'] . ")\n";
+        } elseif ($debug) {
             echo "<h1>Fatal Error</h1>";
             echo "<p><strong>Message:</strong> " . htmlspecialchars($error['message']) . "</p>";
             echo "<p><strong>File:</strong> " . htmlspecialchars($error['file']) . " (Line: " . $error['line'] . ")</p>";

@@ -46,12 +46,16 @@ class Env
 
     public static function get($key, $default = null)
     {
-        if (isset(self::$variables[$key])) {
-            return self::$variables[$key];
+        $value = getenv($key);
+        if ($value !== false) {
+            return trim($value);
         }
 
-        $value = getenv($key);
-        return $value !== false ? $value : $default;
+        if (isset(self::$variables[$key])) {
+            return trim(self::$variables[$key]);
+        }
+
+        return $default;
     }
 
     public static function has($key)
