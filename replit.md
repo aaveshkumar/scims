@@ -4,7 +4,7 @@
 A complete School/College/Institution Management System built with Core PHP 8+ using a custom MVC architecture. This is a production-level ERP system with comprehensive modules for managing educational institutions.
 
 ## Current State
-**Status**: Step 3 completed - Custom routing system with middleware support fully functional
+**Status**: Step 4 completed - Base Model with query builder and PDO database connection implemented
 
 ## Tech Stack
 - **Backend**: Core PHP 8.4 (OOP)
@@ -72,12 +72,19 @@ A complete School/College/Institution Management System built with Core PHP 8+ u
   - Implemented custom Router with dynamic routes and middleware support
   - Created 30+ helper functions (validate, csrf, upload, auth, etc.)
   - Fixed PHP 8+ compatibility issues with named arguments
+  - Built Database class with PDO singleton pattern
+  - Created base Model class with comprehensive query builder
+  - Implemented fluent query interface (where, join, orderBy, limit)
+  - Added CRUD operations (create, find, update, delete)
+  - Added transaction support (beginTransaction, commit, rollback)
+  - Implemented fillable/guarded mass assignment protection
+  - Added automatic timestamp handling
 
 ## Development Progress
 - [x] Step 1: Folder structure + empty files
 - [x] Step 2: Config loader + env handling
 - [x] Step 3: Router + request/response classes
-- [ ] Step 4: Base Model + DB connection
+- [x] Step 4: Base Model + DB connection
 - [ ] Step 5: Database migrations
 - [ ] Step 6: Models for each module
 - [ ] Step 7: Controllers with CRUD

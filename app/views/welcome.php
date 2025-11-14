@@ -48,7 +48,7 @@
         .progress-bar {
             background: linear-gradient(90deg, #667eea, #764ba2);
             height: 100%;
-            width: 30%;
+            width: 40%;
             transition: width 0.3s;
         }
         .feature-grid {
@@ -113,34 +113,35 @@
             <p><span class="step">✓ Step 1:</span> Folder structure + empty files</p>
             <p><span class="step">✓ Step 2:</span> Config loader + env handling</p>
             <p><span class="step">✓ Step 3:</span> Router + request/response classes</p>
+            <p><span class="step">✓ Step 4:</span> Base Model + DB connection</p>
         </div>
 
         <div class="progress">
             <div class="progress-bar"></div>
         </div>
 
-        <h2 style="margin: 20px 0 10px; color: #4b5563; font-size: 18px;">Router Features Implemented</h2>
+        <h2 style="margin: 20px 0 10px; color: #4b5563; font-size: 18px;">MVC Framework Features</h2>
         
         <div class="feature-grid">
             <div class="feature">
-                <h3>✓ Request Class</h3>
-                <p>Handle GET, POST, files, headers, JSON input</p>
+                <h3>✓ PDO Database</h3>
+                <p>Secure MySQL connection with prepared statements</p>
             </div>
             <div class="feature">
-                <h3>✓ Response Class</h3>
-                <p>HTML, JSON, redirects, downloads, views</p>
+                <h3>✓ Query Builder</h3>
+                <p>Fluent interface: where(), join(), orderBy()</p>
+            </div>
+            <div class="feature">
+                <h3>✓ Base Model</h3>
+                <p>CRUD operations, transactions, timestamps</p>
             </div>
             <div class="feature">
                 <h3>✓ Router Class</h3>
                 <p>GET/POST/PUT/DELETE routes with middleware</p>
             </div>
             <div class="feature">
-                <h3>✓ Dynamic Routes</h3>
-                <p>URL parameters: /user/{id}</p>
-            </div>
-            <div class="feature">
-                <h3>✓ Helper Functions</h3>
-                <p>request(), response(), view(), redirect()</p>
+                <h3>✓ Request/Response</h3>
+                <p>HTML, JSON, redirects, downloads, views</p>
             </div>
             <div class="feature">
                 <h3>✓ Validation</h3>
@@ -155,12 +156,12 @@
                 <p>Secure file upload handling</p>
             </div>
             <div class="feature">
-                <h3>✓ Session Flash</h3>
-                <p>Flash messages and old input</p>
+                <h3>✓ Session Management</h3>
+                <p>Flash messages, old input, auth helpers</p>
             </div>
             <div class="feature">
-                <h3>✓ Auth Helpers</h3>
-                <p>auth(), isAuth(), hasRole()</p>
+                <h3>✓ Helper Functions</h3>
+                <p>30+ utilities: db(), validate(), csrf()</p>
             </div>
         </div>
 
@@ -168,12 +169,13 @@
             <h3>Test Routes</h3>
             <a href="/test" target="_blank">JSON Response Test</a>
             <a href="/user/123" target="_blank">Dynamic Route Test</a>
+            <a href="/db-test" target="_blank">Database Connection Test</a>
             <a href="/notfound" target="_blank">404 Error Test</a>
         </div>
 
         <footer>
             Core PHP 8+ Custom MVC Framework<br>
-            Next: Base Model + Database Connection
+            Next: Database Migrations (SQL)
         </footer>
     </div>
 </body>

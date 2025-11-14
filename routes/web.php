@@ -19,3 +19,26 @@ $router->get('/user/{id}', function($request, $id) {
         'message' => 'Dynamic routing works!'
     ]);
 });
+
+$router->get('/db-test', function($request) {
+    try {
+        $database = db();
+        $pdo = $database->getPdo();
+        
+        $version = $pdo->query('SELECT VERSION() as version')->fetch();
+        
+        return responseJSON([
+            'status' => 'success',
+            'message' => 'Database connection successful!',
+            'mysql_version' => $version['version'] ?? 'Unknown',
+            'database' => Config::get('database.database'),
+            'host' => Config::get('database.host')
+        ]);
+    } catch (Exception $e) {
+        return responseJSON([
+            'status' => 'error',
+            'message' => 'Database connection failed',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});

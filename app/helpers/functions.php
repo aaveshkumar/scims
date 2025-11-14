@@ -1,5 +1,10 @@
 <?php
 
+function db()
+{
+    return Database::getInstance();
+}
+
 function request()
 {
     static $request = null;
