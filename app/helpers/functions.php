@@ -240,7 +240,14 @@ function hasRole($role)
     }
     
     $user = auth();
-    return isset($user['role']) && $user['role'] === $role;
+    
+    // Check if user has roles array
+    if (!isset($user['roles']) || !is_array($user['roles'])) {
+        return false;
+    }
+    
+    // Check if the requested role exists in user's roles
+    return in_array($role, $user['roles']);
 }
 
 function uploadFile($file, $directory = 'uploads')

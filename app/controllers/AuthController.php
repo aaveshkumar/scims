@@ -47,6 +47,17 @@ class AuthController
             return back();
         }
 
+        // Fetch user's roles and add to session
+        $roles = $this->userModel->db->fetchAll(
+            "SELECT r.name FROM roles r 
+             INNER JOIN user_roles ur ON r.id = ur.role_id 
+             WHERE ur.user_id = ?",
+            [$user['id']]
+        );
+        
+        // Add roles array to user data
+        $user['roles'] = array_column($roles, 'name');
+
         $_SESSION['user'] = $user;
 
         flash('success', 'Welcome back, ' . $user['first_name'] . '!');
