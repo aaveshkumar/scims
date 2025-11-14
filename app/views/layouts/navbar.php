@@ -91,12 +91,15 @@
                     <li><h6 class="dropdown-header">My Account</h6></li>
                     <li><a class="dropdown-item" href="/dashboard"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
                     <li><a class="dropdown-item" href="/profile"><i class="bi bi-person me-2"></i> My Profile</a></li>
+                    <li><a class="dropdown-item" href="/profile/documents"><i class="bi bi-file-earmark me-2"></i> My Documents</a></li>
+                    <li><a class="dropdown-item" href="/profile/change-password"><i class="bi bi-key me-2"></i> Change Password</a></li>
                     <li><a class="dropdown-item" href="/notifications"><i class="bi bi-bell me-2"></i> Notifications</a></li>
                     <?php if (hasRole('admin')): ?>
                     <li><hr class="dropdown-divider"></li>
                     <li><h6 class="dropdown-header">Administration</h6></li>
-                    <li><a class="dropdown-item" href="/settings"><i class="bi bi-gear me-2"></i> Settings</a></li>
-                    <li><a class="dropdown-item" href="/logs"><i class="bi bi-clock-history me-2"></i> Activity Logs</a></li>
+                    <li><a class="dropdown-item" href="/settings"><i class="bi bi-gear me-2"></i> System Settings</a></li>
+                    <li><a class="dropdown-item" href="/logs"><i class="bi bi-clock-history me-2"></i> Audit Logs</a></li>
+                    <li><a class="dropdown-item" href="/integrations"><i class="bi bi-plug me-2"></i> Integrations</a></li>
                     <?php endif; ?>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
