@@ -13,6 +13,8 @@
     </div>
     <div class="card-body">
         <form method="POST" action="/exams">
+            <input type="hidden" name="_token" value="<?= csrf() ?>">
+            
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Exam Name *</label>

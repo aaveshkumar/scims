@@ -42,6 +42,8 @@
                         <?php endif; ?>
 
                         <form method="POST" action="/login">
+                            <input type="hidden" name="_token" value="<?= csrf() ?>">
+                            
                             <div class="mb-3">
                                 <label class="form-label">Email Address</label>
                                 <div class="input-group">

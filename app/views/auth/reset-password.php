@@ -37,6 +37,7 @@
                         <?php endif; ?>
 
                         <form method="POST" action="/reset-password">
+                            <input type="hidden" name="_token" value="<?= csrf() ?>">
                             <input type="hidden" name="email" value="<?= htmlspecialchars($email ?? '') ?>">
                             
                             <div class="mb-3">

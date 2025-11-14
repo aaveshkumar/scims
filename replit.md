@@ -57,7 +57,7 @@ A complete School/College/Institution Management System built with Core PHP 8+ u
 - otp_resets
 
 ## Recent Changes
-- **2025-11-14 (Latest)**: Database connection and production hardening
+- **2025-11-14 (Latest Session)**: Authentication bug fixes and CSRF implementation
   - Fixed Env class to prioritize Replit Secrets over .env file
   - Connected to remote MySQL database (srv1642.hstgr.io)
   - Fixed migrate.php to use PDO::exec() for reliable SQL parsing
@@ -69,6 +69,15 @@ A complete School/College/Institution Management System built with Core PHP 8+ u
   - Applied CSRF protection to all POST/PUT/DELETE routes
   - Added autoloader for controllers, models, and middlewares
   - System fully operational with login page and all modules ready
+  
+- **2025-11-14 (Authentication Fixes)**: Resolved critical login blocking issues
+  - Created CsrfMiddleware.php (was missing, causing CSRF validation failures)
+  - Added CSRF tokens to all auth forms (login, register, forgot password, reset password)
+  - Added csrf() helper function as alias for csrf_token()
+  - Fixed AuthController bug: removed incorrect $userModel->roles() call on line 50
+  - Added CSRF tokens to students/create.php, students/edit.php, courses/create.php, exams/create.php
+  - Login page now loads successfully with proper CSRF protection
+  - Admin credentials: admin@school.com / 108d37f1de19b3bb (documented in ADMIN_CREDENTIALS.txt)
 
 - **2025-11-14**: Initial project setup and core MVC framework
   - Created complete folder structure

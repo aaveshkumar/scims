@@ -80,6 +80,11 @@ function csrf_token()
     return $_SESSION['_token'];
 }
 
+function csrf()
+{
+    return csrf_token();
+}
+
 function csrf_field()
 {
     $token = csrf_token();

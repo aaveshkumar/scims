@@ -15,6 +15,10 @@ class Response
 
     public function send()
     {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+        
         http_response_code($this->statusCode);
 
         foreach ($this->headers as $name => $value) {

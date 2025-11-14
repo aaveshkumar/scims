@@ -37,6 +37,8 @@
                         <?php endif; ?>
 
                         <form method="POST" action="/send-otp">
+                            <input type="hidden" name="_token" value="<?= csrf() ?>">
+                            
                             <div class="mb-3">
                                 <label class="form-label">Email Address</label>
                                 <input type="email" name="email" class="form-control" placeholder="Enter your email" required>

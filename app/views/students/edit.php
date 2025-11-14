@@ -13,6 +13,7 @@
     </div>
     <div class="card-body">
         <form method="POST" action="/students/<?= $student['id'] ?>">
+            <input type="hidden" name="_token" value="<?= csrf() ?>">
             <input type="hidden" name="_method" value="PUT">
             
             <div class="row">

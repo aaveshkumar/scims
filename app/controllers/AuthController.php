@@ -47,9 +47,6 @@ class AuthController
             return back();
         }
 
-        $roles = $this->userModel->roles();
-        $user['roles'] = $roles;
-
         $_SESSION['user'] = $user;
 
         flash('success', 'Welcome back, ' . $user['first_name'] . '!');
