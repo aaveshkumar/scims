@@ -49,14 +49,24 @@ date_default_timezone_set(Config::get('app.timezone', 'UTC'));
 $sessionConfig = Config::get('app.session');
 if ($sessionConfig) {
     ini_set('session.gc_maxlifetime', $sessionConfig['lifetime']);
-    session_set_cookie_params([
+    
+    $isReplit = isset($_SERVER['REPL_SLUG']) || isset($_SERVER['REPLIT_DEV_DOMAIN']);
+    $sessionParams = [
         'lifetime' => $sessionConfig['lifetime'],
         'path' => $sessionConfig['path'],
         'domain' => $sessionConfig['domain'],
-        'secure' => $sessionConfig['secure'],
         'httponly' => $sessionConfig['httponly'],
-        'samesite' => $sessionConfig['samesite'],
-    ]);
+    ];
+    
+    if ($isReplit) {
+        $sessionParams['secure'] = true;
+        $sessionParams['samesite'] = 'None';
+    } else {
+        $sessionParams['secure'] = $sessionConfig['secure'];
+        $sessionParams['samesite'] = $sessionConfig['samesite'];
+    }
+    
+    session_set_cookie_params($sessionParams);
 }
 
 if (session_status() === PHP_SESSION_NONE) {
