@@ -1,0 +1,193 @@
+I want you to build a complete School/College/Institution Management System (SCIMS) using ONLY Core PHP. 
+No frameworks. No Laravel. No Symfony. No external libraries unless absolutely necessary.
+
+Use:
+- Core PHP 8+ (OOP)
+- Custom MVC structure
+- Custom routing
+- Remote MySQL (I will provide credentials)
+- PDO for all queries
+- Sessions for authentication
+- Secure coding practices
+
+-------------------------------------------------
+PROJECT GOAL
+-------------------------------------------------
+Create a full production-level ERP with modules for:
+Auth, Admissions, Users, Courses, Classes, Subjects, Attendance, Timetable, Exams, Marks, Fees, LMS (basic), Notifications.
+
+-------------------------------------------------
+FOLDER STRUCTURE (STRICT)
+-------------------------------------------------
+/app
+    /controllers
+    /models
+    /views
+    /middleware
+    /helpers
+/config
+/database
+/public
+    index.php
+/routes
+    web.php
+/assets
+.env.example
+
+-------------------------------------------------
+CORE REQUIREMENTS
+-------------------------------------------------
+
+### 1. Authentication & Security
+- Login (email/phone + password)
+- Password hashing (password_hash)
+- Session-based authentication
+- Logout
+- Forgot password (email OTP system)
+- Roles & permissions (RBAC)
+- Middleware: AuthMiddleware + RoleMiddleware
+
+### 2. User Management
+- Students CRUD
+- Staff CRUD (admin, teacher, accountant, hr)
+- Parents CRUD
+- Profile editing
+- Document upload (ID, marksheet, etc.)
+
+### 3. Admissions
+- Public admission form
+- Upload documents
+- Admin review
+- Approve/Reject
+- Auto-create student record after approval
+
+### 4. Academics
+- Courses CRUD
+- Classes CRUD
+- Subjects CRUD
+- Map teachers to subjects
+- Assign students to class
+
+### 5. Timetable
+- Manual timetable builder
+- Teacher timetable
+- Class timetable
+- Room mapping (optional)
+
+### 6. Attendance
+- Daily attendance
+- Period-wise attendance
+- Bulk import support
+- Attendance summary & reports
+
+### 7. Exams & Marks
+- Create exam
+- Add subjects
+- Enter marks
+- Calculate grade
+- Generate downloadable report card (PDF or HTML template)
+
+### 8. Fees & Finance
+- Fee structure builder
+- Generate invoices
+- Payment status
+- Fee reports
+- Defaulters list
+
+### 9. LMS (Basic)
+- Upload study materials (PDF/Docs)
+- Assign to class/subject
+- Student download page
+
+### 10. Notifications
+- Internal notification system
+- Table for storing notifications
+- Show notifications on dashboard
+
+-------------------------------------------------
+DATABASE REQUIREMENTS
+-------------------------------------------------
+Create SQL migration files for the following tables:
+
+users  
+roles  
+user_roles  
+admissions  
+students  
+staff  
+subjects  
+classes  
+courses  
+timetables  
+attendance  
+exams  
+marks  
+fees_structures  
+invoices  
+materials  
+notifications  
+otp_resets  
+
+Each table must include:
+- Primary key
+- Foreign keys where required
+- Indexes on critical fields
+- Timestamps
+
+-------------------------------------------------
+TECHNICAL RULES (IMPORTANT)
+-------------------------------------------------
+
+1. **NO hardcoded database credentials.**  
+   Use .env loader in /config.
+
+2. **Use PDO prepared statements for every query.**  
+   Absolutely no mysqli.
+
+3. **Follow MVC strictly.**
+   - Controllers: handle logic
+   - Models: DB operations
+   - Views: plain PHP + HTML (use bootstrap)
+   - No SQL inside controllers
+
+4. **Routing system must support:**
+   - GET routes
+   - POST routes
+   - Middleware per route
+   Example:
+   $router->get('/students', 'StudentController@index', ['auth', 'role:admin']);
+
+5. **Implement helper utilities:**
+   - request()  
+   - responseJSON()  
+   - view()  
+   - redirect()  
+   - validate()  
+
+6. **Global error handling.**
+   Use a custom error handler and exception handler.
+
+7. **CSRF protection for all forms.**
+   Implement a token stored in session.
+
+8. **File uploads must go into /public/uploads.**
+
+-------------------------------------------------
+OUTPUT FORMAT YOU MUST FOLLOW
+-------------------------------------------------
+
+Generate the project in these steps:
+
+STEP 1 — Generate folder structure + empty files  
+STEP 2 — Create config loader + env handling  
+STEP 3 — Build router + request/response classes  
+STEP 4 — Build base Model + DB connection  
+STEP 5 — Create migrations (SQL) for all required tables  
+STEP 6 — Build Models for each module  
+STEP 7 — Build Controllers with CRUD methods  
+STEP 8 — Build Views using Bootstrap  
+STEP 9 — Build all routes in /routes/web.php  
+STEP 10 — Setup middlewares (auth + role based)  
+
+WAIT for my confirmation after each step before continuing.
+
