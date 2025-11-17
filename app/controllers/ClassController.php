@@ -33,7 +33,6 @@ class ClassController
     {
         $rules = [
             'name' => 'required',
-            'code' => 'required',
             'academic_year' => 'required'
         ];
 
@@ -43,13 +42,15 @@ class ClassController
         }
 
         try {
+            $code = strtoupper(substr($request->post('name'), 0, 3)) . '-' . date('y');
+            
             $this->classModel->create([
                 'name' => $request->post('name'),
-                'code' => $request->post('code'),
-                'course_id' => $request->post('course_id'),
+                'code' => $code,
+                'course_id' => $request->post('course_id') ?: null,
                 'section' => $request->post('section'),
                 'academic_year' => $request->post('academic_year'),
-                'capacity' => $request->post('capacity'),
+                'capacity' => $request->post('capacity') ?: null,
                 'room_number' => $request->post('room_number'),
                 'status' => 'active'
             ]);
