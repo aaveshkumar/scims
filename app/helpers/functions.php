@@ -63,12 +63,12 @@ function session($key = null, $value = null)
 function flash($key, $value = null)
 {
     if ($value === null) {
-        $data = $_SESSION['_flash'][$key] ?? null;
-        unset($_SESSION['_flash'][$key]);
+        $data = $_SESSION['flash'][$key] ?? null;
+        unset($_SESSION['flash'][$key]);
         return $data;
     }
     
-    $_SESSION['_flash'][$key] = $value;
+    $_SESSION['flash'][$key] = $value;
 }
 
 function csrf_token()
