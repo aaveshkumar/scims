@@ -73,34 +73,82 @@
         // Global Form Handler with Loading States
         (function() {
             document.addEventListener('DOMContentLoaded', function() {
+                // Track which submit button was clicked (for browsers without event.submitter)
+                let lastClickedSubmit = null;
+                
+                // Listen for clicks on ALL submit controls to track which was clicked
+                document.addEventListener('click', function(e) {
+                    const target = e.target;
+                    if (target.matches('button[type="submit"], input[type="submit"], button:not([type])')) {
+                        lastClickedSubmit = target;
+                    }
+                }, true); // Use capture phase to ensure we catch it first
+                
                 // Handle all form submissions
                 const forms = document.querySelectorAll('form:not([data-no-loader])');
                 
                 forms.forEach(form => {
                     form.addEventListener('submit', function(e) {
-                        const submitBtn = form.querySelector('button[type="submit"]');
+                        // Get the actual button/input that was clicked to submit the form
+                        // event.submitter gives us the exact element (works in modern browsers)
+                        let submitBtn = e.submitter;
+                        
+                        // Fallback for older browsers or if submitter is null
+                        if (!submitBtn) {
+                            // Use the last clicked submit button if available
+                            if (lastClickedSubmit && form.contains(lastClickedSubmit)) {
+                                submitBtn = lastClickedSubmit;
+                            } else {
+                                // Last resort: try document.activeElement or first submit button
+                                submitBtn = document.activeElement;
+                                if (!submitBtn || !submitBtn.matches('button[type="submit"], input[type="submit"], button:not([type])')) {
+                                    submitBtn = form.querySelector('button[type="submit"]') || 
+                                               form.querySelector('input[type="submit"]') ||
+                                               form.querySelector('button:not([type])');
+                                }
+                            }
+                        }
+                        
+                        // Clear the tracked button after use
+                        lastClickedSubmit = null;
                         
                         if (submitBtn) {
                             // Prevent double submission
-                            if (submitBtn.disabled) {
+                            if (submitBtn.disabled || submitBtn.hasAttribute('data-submitting')) {
                                 e.preventDefault();
                                 return false;
                             }
                             
-                            // Save original button text
-                            const originalText = submitBtn.innerHTML;
+                            // Mark as submitting
+                            submitBtn.setAttribute('data-submitting', 'true');
                             
-                            // Disable button and show loader
+                            // Save original button content
+                            const originalContent = submitBtn.innerHTML || submitBtn.value;
+                            const isInputElement = submitBtn.tagName === 'INPUT';
+                            
+                            // Disable the control
                             submitBtn.disabled = true;
-                            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
                             
-                            // Re-enable on error or after timeout (safety net)
+                            // Show loader (different handling for input vs button)
+                            if (isInputElement) {
+                                submitBtn.value = 'Processing...';
+                            } else {
+                                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+                            }
+                            
+                            // Safety timeout: Re-enable after 30 seconds if still disabled
                             setTimeout(() => {
                                 if (submitBtn.disabled) {
                                     submitBtn.disabled = false;
-                                    submitBtn.innerHTML = originalText;
+                                    submitBtn.removeAttribute('data-submitting');
+                                    
+                                    if (isInputElement) {
+                                        submitBtn.value = originalContent;
+                                    } else {
+                                        submitBtn.innerHTML = originalContent;
+                                    }
                                 }
-                            }, 30000); // 30 seconds timeout
+                            }, 30000);
                         }
                     });
                 });
@@ -109,8 +157,9 @@
                 const loadingButtons = document.querySelectorAll('[data-loading]');
                 loadingButtons.forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (this.disabled) return;
+                        if (this.disabled || this.hasAttribute('data-submitting')) return;
                         
+                        this.setAttribute('data-submitting', 'true');
                         const originalText = this.innerHTML;
                         const loadingText = this.getAttribute('data-loading') || 'Processing...';
                         
@@ -120,6 +169,7 @@
                         setTimeout(() => {
                             if (this.disabled) {
                                 this.disabled = false;
+                                this.removeAttribute('data-submitting');
                                 this.innerHTML = originalText;
                             }
                         }, 30000);
