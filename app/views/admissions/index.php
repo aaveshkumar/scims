@@ -1,28 +1,74 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">Admission Applications</h1>
-    <a href="/admissions/create" class="btn btn-primary">
-        <i class="bi bi-plus-circle me-2"></i>New Application
-    </a>
+    <h2>Admission Applications</h2>
+    <div>
+        <a href="/admissions/statistics" class="btn btn-info me-2">
+            <i class="bi bi-graph-up me-2"></i>Statistics
+        </a>
+        <a href="/admissions/create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>New Application
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h3><?= $statistics['total'] ?></h3>
+                <p class="mb-0">Total Applications</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h3><?= $statistics['pending'] ?></h3>
+                <p class="mb-0">Pending</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h3><?= $statistics['approved'] ?></h3>
+                <p class="mb-0">Approved</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <h3><?= $statistics['rejected'] ?></h3>
+                <p class="mb-0">Rejected</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="card mb-4">
     <div class="card-body">
-        <div class="btn-group" role="group">
-            <a href="/admissions?status=all" class="btn btn-<?= $status === 'all' ? 'primary' : 'outline-primary' ?>">
-                All
-            </a>
-            <a href="/admissions?status=pending" class="btn btn-<?= $status === 'pending' ? 'warning' : 'outline-warning' ?>">
-                Pending
-            </a>
-            <a href="/admissions?status=approved" class="btn btn-<?= $status === 'approved' ? 'success' : 'outline-success' ?>">
-                Approved
-            </a>
-            <a href="/admissions?status=rejected" class="btn btn-<?= $status === 'rejected' ? 'danger' : 'outline-danger' ?>">
-                Rejected
-            </a>
-        </div>
+        <form method="GET" action="/admissions" class="row g-3">
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="all" <?= $status === 'all' ? 'selected' : '' ?>>All Status</option>
+                    <option value="pending" <?= $status === 'pending' ? 'selected' : '' ?>>Pending</option>
+                    <option value="approved" <?= $status === 'approved' ? 'selected' : '' ?>>Approved</option>
+                    <option value="rejected" <?= $status === 'rejected' ? 'selected' : '' ?>>Rejected</option>
+                    <option value="waitlisted" <?= $status === 'waitlisted' ? 'selected' : '' ?>>Waitlisted</option>
+                    <option value="completed" <?= $status === 'completed' ? 'selected' : '' ?>>Completed</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <input type="text" name="search" class="form-control" placeholder="Search by name, email, application#" value="<?= htmlspecialchars($search) ?>">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search me-2"></i>Filter
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -39,6 +85,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Course</th>
+                        <th>Class</th>
                         <th>Applied On</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -47,7 +94,7 @@
                 <tbody>
                     <?php if (empty($admissions)): ?>
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">No applications found</td>
+                            <td colspan="8" class="text-center py-4 text-muted">No applications found</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($admissions as $admission): ?>
@@ -56,29 +103,25 @@
                                 <td><?= htmlspecialchars($admission['first_name'] . ' ' . $admission['last_name']) ?></td>
                                 <td><?= htmlspecialchars($admission['email']) ?></td>
                                 <td><?= htmlspecialchars($admission['course_name'] ?? 'N/A') ?></td>
+                                <td><?= htmlspecialchars($admission['class_name'] ?? 'N/A') ?></td>
                                 <td><?= date('M d, Y', strtotime($admission['created_at'])) ?></td>
                                 <td>
-                                    <span class="badge bg-<?= match($admission['status']) {
+                                    <?php
+                                    $statusColors = [
                                         'pending' => 'warning',
                                         'approved' => 'success',
                                         'rejected' => 'danger',
-                                        default => 'secondary'
-                                    } ?>">
-                                        <?= ucfirst($admission['status']) ?>
-                                    </span>
+                                        'waitlisted' => 'info',
+                                        'completed' => 'primary'
+                                    ];
+                                    $color = $statusColors[$admission['status']] ?? 'secondary';
+                                    ?>
+                                    <span class="badge bg-<?= $color ?>"><?= ucfirst($admission['status']) ?></span>
                                 </td>
                                 <td>
                                     <a href="/admissions/<?= $admission['id'] ?>" class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i>
+                                        <i class="bi bi-eye"></i> View
                                     </a>
-                                    <?php if ($admission['status'] === 'pending' && hasRole('admin')): ?>
-                                        <button onclick="approveAdmission(<?= $admission['id'] ?>)" class="btn btn-sm btn-success">
-                                            <i class="bi bi-check-circle"></i>
-                                        </button>
-                                        <button onclick="rejectAdmission(<?= $admission['id'] ?>)" class="btn btn-sm btn-danger">
-                                            <i class="bi bi-x-circle"></i>
-                                        </button>
-                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -88,57 +131,5 @@
         </div>
     </div>
 </div>
-
-<script>
-function approveAdmission(id) {
-    if (confirm('Approve this admission? This will create a student account.')) {
-        fetch(`/admissions/${id}/approve`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            alert('An error occurred');
-            console.error(error);
-        });
-    }
-}
-
-function rejectAdmission(id) {
-    const remarks = prompt('Reason for rejection:');
-    if (remarks) {
-        fetch(`/admissions/${id}/reject`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({ remarks: remarks })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            alert('An error occurred');
-            console.error(error);
-        });
-    }
-}
-</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

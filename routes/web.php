@@ -41,6 +41,9 @@ $router->group(['middleware' => 'auth'], function($router) {
     $router->post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead', ['csrf']);
     $router->post('/notifications/mark-all-read', 'NotificationController@markAllAsRead', ['csrf']);
 
+    // Public Admission Tracking (accessible without login after auth middleware check)
+    $router->get('/admission/track', 'AdmissionController@track');
+
     $router->get('/materials', 'MaterialController@index');
     $router->get('/materials/{id}', 'MaterialController@show');
     $router->get('/materials/{id}/download', 'MaterialController@download');
@@ -106,12 +109,16 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/subjects/{id}', 'SubjectController@update', ['csrf']);
         $router->delete('/subjects/{id}', 'SubjectController@destroy', ['csrf']);
 
+        // Admissions Management
         $router->get('/admissions', 'AdmissionController@index');
+        $router->get('/admissions/statistics', 'AdmissionController@statistics');
         $router->get('/admissions/create', 'AdmissionController@create');
         $router->post('/admissions', 'AdmissionController@store', ['csrf']);
         $router->get('/admissions/{id}', 'AdmissionController@show');
         $router->post('/admissions/{id}/approve', 'AdmissionController@approve', ['csrf']);
         $router->post('/admissions/{id}/reject', 'AdmissionController@reject', ['csrf']);
+        $router->post('/admissions/{id}/waitlist', 'AdmissionController@waitlist', ['csrf']);
+        $router->post('/admissions/{id}/convert', 'AdmissionController@convertToStudent', ['csrf']);
 
         $router->get('/exams', 'ExamController@index');
         $router->get('/exams/create', 'ExamController@create');
