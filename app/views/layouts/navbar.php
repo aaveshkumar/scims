@@ -1,4 +1,4 @@
-<nav class="topbar navbar navbar-expand navbar-light bg-white border-bottom mb-4 shadow-sm" style="margin-left: 260px;">
+<nav class="topbar navbar navbar-expand navbar-light bg-white border-bottom mb-4 shadow-sm">
     <div class="container-fluid">
         <button class="btn btn-link d-md-none" id="sidebarToggle">
             <i class="bi bi-list fs-4"></i>

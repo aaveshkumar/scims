@@ -67,22 +67,39 @@
             padding: 0.35em 0.65em;
             font-weight: 600;
         }
-        .topbar {
+        /* Light Mode Navbar */
+        [data-bs-theme="light"] .navbar.topbar,
+        .navbar.topbar {
             height: 4.375rem;
-            background-color: var(--primary-color);
+            background-color: #4e73df !important;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
         }
-        .topbar .navbar {
-            background-color: var(--primary-color) !important;
-        }
-        .topbar .nav-link,
-        .topbar .navbar-text {
+        [data-bs-theme="light"] .navbar.topbar .nav-link,
+        .navbar.topbar .nav-link {
             color: rgba(255, 255, 255, 0.9) !important;
         }
-        .topbar .nav-link:hover {
+        [data-bs-theme="light"] .navbar.topbar .nav-link:hover,
+        .navbar.topbar .nav-link:hover {
             color: #fff !important;
         }
-        .topbar .dropdown-toggle::after {
+        [data-bs-theme="light"] .navbar.topbar .navbar-text,
+        .navbar.topbar .navbar-text {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+        [data-bs-theme="light"] .navbar.topbar .navbar-text strong,
+        .navbar.topbar .navbar-text strong {
+            color: #fff !important;
+        }
+        [data-bs-theme="light"] .navbar.topbar .text-muted,
+        .navbar.topbar .text-muted {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        [data-bs-theme="light"] .navbar.topbar .badge,
+        .navbar.topbar .badge {
+            color: #fff !important;
+        }
+        [data-bs-theme="light"] .navbar.topbar .dropdown-toggle::after,
+        .navbar.topbar .dropdown-toggle::after {
             color: rgba(255, 255, 255, 0.9);
         }
         
@@ -108,10 +125,28 @@
             border-bottom-color: #4a5058;
             color: #e9ecef !important;
         }
-        [data-bs-theme="dark"] .topbar,
-        [data-bs-theme="dark"] .navbar {
+        /* Dark Mode Navbar */
+        [data-bs-theme="dark"] .navbar.topbar {
             background-color: #2d3238 !important;
             border-bottom-color: #3a3f47 !important;
+        }
+        [data-bs-theme="dark"] .navbar.topbar .nav-link {
+            color: #a8b1bd !important;
+        }
+        [data-bs-theme="dark"] .navbar.topbar .nav-link:hover {
+            color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .navbar.topbar .navbar-text {
+            color: #a8b1bd !important;
+        }
+        [data-bs-theme="dark"] .navbar.topbar .navbar-text strong {
+            color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .navbar.topbar .text-muted {
+            color: rgba(168, 177, 189, 0.7) !important;
+        }
+        [data-bs-theme="dark"] .navbar.topbar .badge {
+            color: #fff !important;
         }
         [data-bs-theme="dark"] .table {
             color: #e9ecef !important;
