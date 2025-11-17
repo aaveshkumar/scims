@@ -39,7 +39,7 @@ class TransportController
         flash('success', 'Record deleted successfully');
         return redirect('/transport');
     }
-}
+
     public function routes($request)
     {
         return view('transport/routes', ['title' => 'Transport Routes']);

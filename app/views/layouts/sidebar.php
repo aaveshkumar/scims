@@ -425,7 +425,7 @@ body:not(.dark-mode) .sidebar-logout-btn:hover {
 
 /* Dark Mode Sidebar */
 body.dark-mode .sidebar-container {
-    background-color: #1a1d20 !important;
+    background-color: #2d3238 !important;
 }
 
 body.dark-mode .sidebar-header {
@@ -485,12 +485,13 @@ body.dark-mode .sidebar-logout-btn {
 
 body.dark-mode .sidebar-logout-btn:hover {
     background-color: #e9ecef !important;
-    color: #1a1d20 !important;
+    color: #2d3238 !important;
 }
 
-/* Custom scrollbar for sidebar */
+/* Custom scrollbar for sidebar - HIDDEN */
 .sidebar-container::-webkit-scrollbar {
-    width: 6px;
+    width: 0px;
+    display: none;
 }
 
 body:not(.dark-mode) .sidebar-container::-webkit-scrollbar-track {

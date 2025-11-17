@@ -39,7 +39,7 @@ class HostelController
         flash('success', 'Record deleted successfully');
         return redirect('/hostel');
     }
-}
+
     public function residents($request)
     {
         return view('hostel/residents', ['title' => 'Hostel Residents']);
