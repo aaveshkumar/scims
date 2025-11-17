@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<div class="sidebar-container d-flex flex-column" style="width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto; overflow-x: hidden; z-index: 1000; scrollbar-width: none; -ms-overflow-style: none;">
+<div class="sidebar-container d-flex flex-column" style="width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto; overflow-x: hidden; z-index: 1000; scrollbar-width: none; -ms-overflow-style: none; background-color: var(--sidebar-bg);">
     <!-- Logo/Brand -->
     <div class="p-3 sidebar-header">
         <h4 class="mb-0 sidebar-title"><i class="bi bi-mortarboard-fill me-2"></i>SCIMS</h4>
@@ -358,6 +358,15 @@
     max-width: 180px;
 }
 
+/* CSS Variables for Sidebar */
+:root {
+    --sidebar-bg: #4e73df;
+}
+
+body.dark-mode {
+    --sidebar-bg: #212529;
+}
+
 /* Light Mode Sidebar */
 body:not(.dark-mode) .sidebar-container {
     background-color: #4e73df !important;
@@ -425,7 +434,7 @@ body:not(.dark-mode) .sidebar-logout-btn:hover {
 
 /* Dark Mode Sidebar */
 body.dark-mode .sidebar-container {
-    background-color: #1a1d23 !important;
+    background-color: #212529 !important;
 }
 
 body.dark-mode .sidebar-header {
