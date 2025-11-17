@@ -191,6 +191,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/library/books/create', 'LibraryController@create');
         $router->post('/library/books', 'LibraryController@store', ['csrf']);
         $router->get('/library/issue', 'LibraryController@issue');
+        $router->post('/library/issue', 'LibraryController@processIssue', ['csrf']);
+        $router->post('/library/return', 'LibraryController@processReturn', ['csrf']);
         $router->get('/library/members', 'LibraryController@members');
         
         // Transport Management

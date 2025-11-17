@@ -39,7 +39,7 @@ class LibraryController
         flash('success', 'Record deleted successfully');
         return redirect('/library');
     }
-}
+
     public function issue($request)
     {
         return view('library/issue', ['title' => 'Issue/Return Books']);
@@ -48,5 +48,17 @@ class LibraryController
     public function members($request)
     {
         return view('library/members', ['title' => 'Library Members']);
+    }
+    
+    public function processIssue($request)
+    {
+        flash('success', 'Book issued successfully');
+        return redirect('/library/issue');
+    }
+    
+    public function processReturn($request)
+    {
+        flash('success', 'Book returned successfully');
+        return redirect('/library/issue');
     }
 }
