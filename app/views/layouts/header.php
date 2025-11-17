@@ -69,8 +69,21 @@
         }
         .topbar {
             height: 4.375rem;
-            background-color: #fff;
+            background-color: var(--primary-color);
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        .topbar .navbar {
+            background-color: var(--primary-color) !important;
+        }
+        .topbar .nav-link,
+        .topbar .navbar-text {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+        .topbar .nav-link:hover {
+            color: #fff !important;
+        }
+        .topbar .dropdown-toggle::after {
+            color: rgba(255, 255, 255, 0.9);
         }
         
         /* Dark Mode Styles */
