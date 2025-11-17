@@ -425,7 +425,7 @@ body:not(.dark-mode) .sidebar-logout-btn:hover {
 
 /* Dark Mode Sidebar */
 body.dark-mode .sidebar-container {
-    background-color: #2d3238 !important;
+    background-color: #1a1d23 !important;
 }
 
 body.dark-mode .sidebar-header {
