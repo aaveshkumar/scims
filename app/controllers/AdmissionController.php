@@ -137,10 +137,8 @@ class AdmissionController
                 'guardian_phone' => $request->post('guardian_phone'),
                 'guardian_email' => $request->post('guardian_email'),
                 'previous_school' => $request->post('previous_school'),
-                'previous_grade' => $request->post('previous_grade'),
                 'documents' => !empty($documents) ? json_encode($documents) : null,
-                'status' => 'pending',
-                'applied_at' => date('Y-m-d H:i:s')
+                'status' => 'pending'
             ]);
 
             flash('success', "Application submitted successfully! Your Application Number is: <strong>{$applicationNumber}</strong>. Please save it for tracking.");

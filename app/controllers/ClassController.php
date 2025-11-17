@@ -91,9 +91,8 @@ class ClassController
         }
 
         $classObj = new ClassModel();
-        foreach ($class as $key => $value) {
-            $classObj->$key = $value;
-        }
+        $classObj->id = $class['id'];
+        $classObj->course_id = $class['course_id'] ?? null;
 
         $studentCount = $classObj->getStudentCount();
 

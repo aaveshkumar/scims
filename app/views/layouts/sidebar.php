@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<div class="sidebar-container d-flex flex-column" style="width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto; overflow-x: hidden; z-index: 1000;">
+<div class="sidebar-container d-flex flex-column" style="width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto; overflow-x: hidden; z-index: 1000; scrollbar-width: none; -ms-overflow-style: none;">
     <!-- Logo/Brand -->
     <div class="p-3 sidebar-header">
         <h4 class="mb-0 sidebar-title"><i class="bi bi-mortarboard-fill me-2"></i>SCIMS</h4>
@@ -7,7 +7,7 @@
     </div>
 
     <!-- Scrollable Menu Container -->
-    <nav class="flex-grow-1" style="max-height: calc(100vh - 120px); overflow-y: auto;">
+    <nav class="flex-grow-1" style="max-height: calc(100vh - 120px); overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;">
         <div class="list-group list-group-flush">
             <!-- Dashboard -->
             <a href="/dashboard" class="sidebar-link list-group-item list-group-item-action border-0">

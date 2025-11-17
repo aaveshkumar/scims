@@ -7,6 +7,20 @@ class ClassModel extends Model
         'name', 'code', 'course_id', 'section', 'academic_year',
         'capacity', 'room_number', 'status'
     ];
+    
+    // Dynamic properties for PHP 8.4 compatibility
+    public $id;
+    public $name;
+    public $code;
+    public $course_id;
+    public $section;
+    public $academic_year;
+    public $capacity;
+    public $room_number;
+    public $status;
+    public $course_name;
+    public $created_at;
+    public $updated_at;
 
     public function course()
     {

@@ -66,16 +66,16 @@ class LibraryController
 
         try {
             // Check if book is available
-            $book = db()->fetchOne("SELECT available_quantity FROM books WHERE id = ?", [$request->post('book_id')]);
+            $book = db()->fetchOne("SELECT available_copies FROM books WHERE id = ?", [$request->post('book_id')]);
             
-            if (!$book || $book['available_quantity'] < 1) {
+            if (!$book || $book['available_copies'] < 1) {
                 flash('error', 'Book is not available for issue');
                 return back();
             }
 
-            // Create issue record (assuming a library_issues table exists)
+            // Create issue record
             db()->execute(
-                "INSERT INTO library_issues (student_id, book_id, issue_date, due_date, notes, status, created_at) VALUES (?, ?, ?, ?, ?, 'issued', NOW())",
+                "INSERT INTO book_issues (user_id, book_id, issue_date, due_date, remarks, status, created_at) VALUES (?, ?, ?, ?, ?, 'issued', NOW())",
                 [
                     $request->post('student_id'),
                     $request->post('book_id'),
@@ -87,7 +87,7 @@ class LibraryController
 
             // Update book available quantity
             db()->execute(
-                "UPDATE books SET available_quantity = available_quantity - 1 WHERE id = ?",
+                "UPDATE books SET available_copies = available_copies - 1 WHERE id = ?",
                 [$request->post('book_id')]
             );
 
@@ -114,7 +114,7 @@ class LibraryController
 
         try {
             // Get issue record
-            $issue = db()->fetchOne("SELECT * FROM library_issues WHERE id = ? AND status = 'issued'", [$request->post('issue_id')]);
+            $issue = db()->fetchOne("SELECT * FROM book_issues WHERE id = ? AND status = 'issued'", [$request->post('issue_id')]);
             
             if (!$issue) {
                 flash('error', 'Invalid issue record or book already returned');
@@ -123,10 +123,9 @@ class LibraryController
 
             // Update issue record
             db()->execute(
-                "UPDATE library_issues SET status = 'returned', return_date = ?, book_condition = ?, fine_amount = ?, notes = ? WHERE id = ?",
+                "UPDATE book_issues SET status = 'returned', return_date = ?, fine_amount = ?, remarks = ? WHERE id = ?",
                 [
                     $request->post('return_date'),
-                    $request->post('condition'),
                     $request->post('fine_amount') ?: 0,
                     $request->post('notes'),
                     $request->post('issue_id')
@@ -135,7 +134,7 @@ class LibraryController
 
             // Update book available quantity
             db()->execute(
-                "UPDATE books SET available_quantity = available_quantity + 1 WHERE id = ?",
+                "UPDATE books SET available_copies = available_copies + 1 WHERE id = ?",
                 [$issue['book_id']]
             );
 
