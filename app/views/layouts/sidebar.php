@@ -532,9 +532,10 @@ function updateSidebarColor() {
     const sidebar = document.querySelector('.sidebar-container');
     if (sidebar) {
         if (document.body.classList.contains('dark-mode')) {
-            sidebar.style.backgroundColor = '#212529';
+            // Use setProperty with 'important' to override CSS !important
+            sidebar.style.setProperty('background-color', '#212529', 'important');
         } else {
-            sidebar.style.backgroundColor = '#4e73df';
+            sidebar.style.setProperty('background-color', '#4e73df', 'important');
         }
     }
 }
