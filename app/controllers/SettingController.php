@@ -28,18 +28,12 @@ class SettingController
         return view('settings/edit', ['title' => 'Edit - System Settings', 'id' => $id]);
     }
 
-    public function update($request, $id)
-    {
-        flash('success', 'Record updated successfully');
-        return redirect('/settings');
-    }
-
     public function destroy($request, $id)
     {
         flash('success', 'Record deleted successfully');
         return redirect('/settings');
     }
-}
+
     public function backup($request)
     {
         return view('settings/backup', ['title' => 'Backup & Restore']);

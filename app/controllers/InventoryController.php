@@ -39,7 +39,7 @@ class InventoryController
         flash('success', 'Record deleted successfully');
         return redirect('/inventory');
     }
-}
+
     public function stock($request)
     {
         return view('inventory/stock', ['title' => 'Inventory Stock']);

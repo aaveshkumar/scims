@@ -46,6 +46,15 @@ $router->group(['middleware' => 'auth'], function($router) {
     $router->post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead', ['csrf']);
     $router->post('/notifications/mark-all-read', 'NotificationController@markAllAsRead', ['csrf']);
 
+    // Messages & Announcements
+    $router->get('/messages', 'MessageController@index');
+    $router->get('/messages/create', 'MessageController@create');
+    $router->post('/messages', 'MessageController@store', ['csrf']);
+
+    $router->get('/announcements', 'AnnouncementController@index');
+    $router->get('/announcements/create', 'AnnouncementController@create');
+    $router->post('/announcements', 'AnnouncementController@store', ['csrf']);
+
     $router->get('/materials', 'MaterialController@index');
     $router->get('/materials/{id}', 'MaterialController@show');
     $router->get('/materials/{id}/download', 'MaterialController@download');
@@ -187,6 +196,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/budget', 'BudgetController@store', ['csrf']);
         
         // Library Management
+        $router->get('/library', function() { return redirect('/library/books'); });
+        $router->get('/library/create', function() { return redirect('/library/books/create'); });
         $router->get('/library/books', 'LibraryController@index');
         $router->get('/library/books/create', 'LibraryController@create');
         $router->post('/library/books', 'LibraryController@store', ['csrf']);
@@ -196,6 +207,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/library/members', 'LibraryController@members');
         
         // Transport Management
+        $router->get('/transport', function() { return redirect('/transport/vehicles'); });
+        $router->get('/transport/create', function() { return redirect('/transport/vehicles/create'); });
         $router->get('/transport/vehicles', 'TransportController@index');
         $router->get('/transport/vehicles/create', 'TransportController@create');
         $router->post('/transport/vehicles', 'TransportController@store', ['csrf']);
@@ -203,6 +216,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/transport/assignments', 'TransportController@assignments');
         
         // Hostel Management
+        $router->get('/hostel', function() { return redirect('/hostel/rooms'); });
+        $router->get('/hostel/create', function() { return redirect('/hostel/rooms/create'); });
         $router->get('/hostel/rooms', 'HostelController@index');
         $router->get('/hostel/rooms/create', 'HostelController@create');
         $router->post('/hostel/rooms', 'HostelController@store', ['csrf']);
@@ -211,6 +226,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/hostel/complaints', 'HostelController@complaints');
         
         // Inventory Management
+        $router->get('/inventory', function() { return redirect('/inventory/assets'); });
+        $router->get('/inventory/create', function() { return redirect('/inventory/assets/create'); });
         $router->get('/inventory/assets', 'InventoryController@index');
         $router->get('/inventory/assets/create', 'InventoryController@create');
         $router->post('/inventory/assets', 'InventoryController@store', ['csrf']);
@@ -235,29 +252,6 @@ $router->group(['middleware' => 'auth'], function($router) {
             return view('placeholder', ['title' => 'Waitlist', 'module' => 'Admissions Waitlist']);
         });
         
-        $router->get('/syllabus', function() {
-            return view('placeholder', ['title' => 'Syllabus & Lesson Plans', 'module' => 'Syllabus Management']);
-        });
-        
-        $router->get('/question-bank', function() {
-            return view('placeholder', ['title' => 'Question Bank', 'module' => 'Question Bank']);
-        });
-        
-        $router->get('/users', function() {
-            return view('placeholder', ['title' => 'User Accounts', 'module' => 'User Management']);
-        });
-        
-        $router->get('/roles', function() {
-            return view('placeholder', ['title' => 'Roles & Permissions', 'module' => 'RBAC Management']);
-        });
-        
-        $router->get('/departments', function() {
-            return view('placeholder', ['title' => 'Departments', 'module' => 'Department Management']);
-        });
-        
-        $router->get('/leaves', function() {
-            return view('placeholder', ['title' => 'Leave Management', 'module' => 'Leave Management']);
-        });
         
         $router->get('/report-cards', function() {
             return view('placeholder', ['title' => 'Report Cards', 'module' => 'Report Cards']);
@@ -275,48 +269,9 @@ $router->group(['middleware' => 'auth'], function($router) {
             return view('placeholder', ['title' => 'Fee Collections', 'module' => 'Collections']);
         });
         
-        $router->get('/payroll', function() {
-            return view('placeholder', ['title' => 'Payroll Management', 'module' => 'Staff Payroll']);
-        });
-        
-        $router->get('/expenses', function() {
-            return view('placeholder', ['title' => 'Expense Management', 'module' => 'Expenses']);
-        });
-        
-        $router->get('/assignments', function() {
-            return view('placeholder', ['title' => 'Assignments', 'module' => 'Assignment Management']);
-        });
-        
-        $router->get('/quizzes', function() {
-            return view('placeholder', ['title' => 'Quizzes', 'module' => 'Quiz Management']);
-        });
         
         $router->get('/online-classes', function() {
             return view('placeholder', ['title' => 'Online Classes', 'module' => 'Virtual Classroom']);
-        });
-        
-        $router->get('/library', function() {
-            return view('placeholder', ['title' => 'Library Management', 'module' => 'Library']);
-        });
-        
-        $router->get('/transport', function() {
-            return view('placeholder', ['title' => 'Transport Management', 'module' => 'Transport']);
-        });
-        
-        $router->get('/hostel', function() {
-            return view('placeholder', ['title' => 'Hostel Management', 'module' => 'Hostel']);
-        });
-        
-        $router->get('/inventory', function() {
-            return view('placeholder', ['title' => 'Inventory & Assets', 'module' => 'Inventory']);
-        });
-        
-        $router->get('/messages', function() {
-            return view('placeholder', ['title' => 'Messages', 'module' => 'Messaging']);
-        });
-        
-        $router->get('/announcements', function() {
-            return view('placeholder', ['title' => 'Announcements', 'module' => 'Announcements']);
         });
         
         $router->get('/sms', function() {
@@ -329,22 +284,6 @@ $router->group(['middleware' => 'auth'], function($router) {
         
         $router->get('/whatsapp', function() {
             return view('placeholder', ['title' => 'WhatsApp Integration', 'module' => 'WhatsApp Communication']);
-        });
-        
-        $router->get('/reports/attendance', function() {
-            return view('placeholder', ['title' => 'Attendance Reports', 'module' => 'Attendance Analytics']);
-        });
-        
-        $router->get('/reports/finance', function() {
-            return view('placeholder', ['title' => 'Finance Reports', 'module' => 'Financial Analytics']);
-        });
-        
-        $router->get('/reports/academic', function() {
-            return view('placeholder', ['title' => 'Academic Reports', 'module' => 'Academic Analytics']);
-        });
-        
-        $router->get('/settings', function() {
-            return view('placeholder', ['title' => 'System Settings', 'module' => 'System Configuration']);
         });
         
         $router->get('/branches', function() {

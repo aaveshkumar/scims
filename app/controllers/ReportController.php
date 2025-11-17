@@ -39,7 +39,7 @@ class ReportController
         flash('success', 'Record deleted successfully');
         return redirect('/reports');
     }
-}
+
     public function attendance($request)
     {
         return view('reports/attendance', ['title' => 'Attendance Reports']);
