@@ -13,36 +13,68 @@ class AdmissionController
         $this->classModel = new ClassModel();
     }
 
+    /**
+     * Admin: List all applications with filters
+     */
     public function index($request)
     {
         $status = $request->get('status', 'all');
+        $search = $request->get('search', '');
         
         $query = "SELECT a.*, c.name as course_name, cl.name as class_name
                   FROM admissions a
                   LEFT JOIN courses c ON a.course_id = c.id
-                  LEFT JOIN classes cl ON a.class_id = cl.id";
+                  LEFT JOIN classes cl ON a.class_id = cl.id WHERE 1=1";
         
         $params = [];
+        
         if ($status !== 'all') {
-            $query .= " WHERE a.status = ?";
+            $query .= " AND a.status = ?";
             $params[] = $status;
+        }
+        
+        if ($search) {
+            $query .= " AND (a.first_name LIKE ? OR a.last_name LIKE ? OR a.email LIKE ? OR a.application_number LIKE ?)";
+            $searchTerm = "%{$search}%";
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
         }
         
         $query .= " ORDER BY a.created_at DESC";
         
-        $admissions = db()->fetchAll($query, $params);
+        $db = Database::getInstance();
+        $admissions = $db->fetchAll($query, $params);
+        $statistics = Admission::getStatistics();
 
-        return view('admissions.index', ['admissions' => $admissions, 'status' => $status]);
+        return view('admissions/index', [
+            'title' => 'Admissions Management',
+            'admissions' => $admissions,
+            'statistics' => $statistics,
+            'status' => $status,
+            'search' => $search
+        ]);
     }
 
+    /**
+     * Public/Admin: Show application form
+     */
     public function create($request)
     {
         $courses = $this->courseModel->where('status', 'active')->get();
         $classes = $this->classModel->where('status', 'active')->get();
 
-        return view('admissions.create', ['courses' => $courses, 'classes' => $classes]);
+        return view('admissions/create', [
+            'title' => 'New Admission Application',
+            'courses' => $courses,
+            'classes' => $classes
+        ]);
     }
 
+    /**
+     * Public/Admin: Submit application
+     */
     public function store($request)
     {
         $rules = [
@@ -51,8 +83,10 @@ class AdmissionController
             'email' => 'required|email',
             'phone' => 'required',
             'date_of_birth' => 'required',
-            'gender' => 'required|in:male,female,other',
+            'gender' => 'required',
             'address' => 'required',
+            'course_id' => 'required',
+            'class_id' => 'required',
             'guardian_name' => 'required',
             'guardian_phone' => 'required'
         ];
@@ -63,8 +97,33 @@ class AdmissionController
         }
 
         try {
+            $applicationNumber = Admission::generateApplicationNumber();
+            
+            // Handle document uploads if any
+            $documents = [];
+            if ($request->hasFile('photo')) {
+                $photoPath = uploadFile($request->file('photo'), 'uploads/admissions');
+                if ($photoPath) {
+                    $documents['photo'] = $photoPath;
+                }
+            }
+            
+            if ($request->hasFile('id_proof')) {
+                $idProofPath = uploadFile($request->file('id_proof'), 'uploads/admissions');
+                if ($idProofPath) {
+                    $documents['id_proof'] = $idProofPath;
+                }
+            }
+            
+            if ($request->hasFile('birth_certificate')) {
+                $birthCertPath = uploadFile($request->file('birth_certificate'), 'uploads/admissions');
+                if ($birthCertPath) {
+                    $documents['birth_certificate'] = $birthCertPath;
+                }
+            }
+
             $this->admissionModel->create([
-                'application_number' => Admission::generateApplicationNumber(),
+                'application_number' => $applicationNumber,
                 'first_name' => $request->post('first_name'),
                 'last_name' => $request->post('last_name'),
                 'email' => $request->post('email'),
@@ -78,20 +137,34 @@ class AdmissionController
                 'guardian_phone' => $request->post('guardian_phone'),
                 'guardian_email' => $request->post('guardian_email'),
                 'previous_school' => $request->post('previous_school'),
-                'status' => 'pending'
+                'previous_grade' => $request->post('previous_grade'),
+                'documents' => !empty($documents) ? json_encode($documents) : null,
+                'status' => 'pending',
+                'applied_at' => date('Y-m-d H:i:s')
             ]);
 
-            flash('success', 'Admission application submitted successfully');
-            return redirect('/admissions');
+            flash('success', "Application submitted successfully! Your Application Number is: <strong>{$applicationNumber}</strong>. Please save it for tracking.");
+            
+            // Redirect based on user role
+            if (isAuth() && hasRole('admin')) {
+                return redirect('/admissions');
+            } else {
+                return redirect('/admission/track?number=' . $applicationNumber);
+            }
+            
         } catch (Exception $e) {
             flash('error', 'Failed to submit application: ' . $e->getMessage());
             return back();
         }
     }
 
+    /**
+     * Admin/Applicant: View application details
+     */
     public function show($request, $id)
     {
-        $admission = db()->fetchOne(
+        $db = Database::getInstance();
+        $admission = $db->fetchOne(
             "SELECT a.*, c.name as course_name, cl.name as class_name,
                     u.first_name as reviewer_first_name, u.last_name as reviewer_last_name
              FROM admissions a
@@ -103,61 +176,181 @@ class AdmissionController
         );
 
         if (!$admission) {
-            flash('error', 'Admission not found');
+            flash('error', 'Application not found');
             return redirect('/admissions');
         }
 
-        return view('admissions.show', ['admission' => $admission]);
+        $timeline = Admission::getTimeline($id);
+
+        return view('admissions/show', [
+            'title' => 'Application Details',
+            'admission' => $admission,
+            'timeline' => $timeline
+        ]);
     }
 
+    /**
+     * Admin: Approve application
+     */
     public function approve($request, $id)
     {
-        $admission = $this->admissionModel->find($id);
-        if (!$admission) {
-            return responseJSON(['success' => false, 'message' => 'Admission not found'], 404);
+        if (!hasRole('admin')) {
+            flash('error', 'Unauthorized action');
+            return redirect('/admissions');
         }
 
         try {
-            $admissionObj = new Admission();
-            foreach ($admission as $key => $value) {
-                $admissionObj->$key = $value;
-            }
-
-            $admissionObj->approve(auth()['id']);
-            $studentId = $admissionObj->convertToStudent();
-
-            Notification::send(
-                $studentId,
-                'Admission Approved',
-                'Congratulations! Your admission has been approved.',
-                'success'
-            );
-
-            return responseJSON(['success' => true, 'message' => 'Admission approved and student created']);
+            $userId = auth()['id'];
+            $remarks = $request->post('remarks', 'Application approved');
+            
+            // Approve the application
+            Admission::approveApplication($id, $userId, $remarks);
+            
+            flash('success', 'Application approved successfully!');
+            return redirect('/admissions/' . $id);
+            
         } catch (Exception $e) {
-            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+            flash('error', 'Failed to approve application: ' . $e->getMessage());
+            return back();
         }
     }
 
+    /**
+     * Admin: Reject application
+     */
     public function reject($request, $id)
     {
-        $admission = $this->admissionModel->find($id);
-        if (!$admission) {
-            return responseJSON(['success' => false, 'message' => 'Admission not found'], 404);
+        if (!hasRole('admin')) {
+            flash('error', 'Unauthorized action');
+            return redirect('/admissions');
         }
 
         try {
-            $admissionObj = new Admission();
-            foreach ($admission as $key => $value) {
-                $admissionObj->$key = $value;
-            }
-
+            $userId = auth()['id'];
             $remarks = $request->post('remarks', 'Application rejected');
-            $admissionObj->reject(auth()['id'], $remarks);
-
-            return responseJSON(['success' => true, 'message' => 'Admission rejected']);
+            
+            if (empty($remarks)) {
+                flash('error', 'Please provide a reason for rejection');
+                return back();
+            }
+            
+            Admission::rejectApplication($id, $userId, $remarks);
+            
+            flash('success', 'Application rejected');
+            return redirect('/admissions/' . $id);
+            
         } catch (Exception $e) {
-            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+            flash('error', 'Failed to reject application: ' . $e->getMessage());
+            return back();
         }
+    }
+
+    /**
+     * Admin: Move to waitlist
+     */
+    public function waitlist($request, $id)
+    {
+        if (!hasRole('admin')) {
+            flash('error', 'Unauthorized action');
+            return redirect('/admissions');
+        }
+
+        try {
+            $userId = auth()['id'];
+            $remarks = $request->post('remarks', 'Application waitlisted');
+            
+            Admission::waitlistApplication($id, $userId, $remarks);
+            
+            flash('success', 'Application moved to waitlist');
+            return redirect('/admissions/' . $id);
+            
+        } catch (Exception $e) {
+            flash('error', 'Failed to waitlist application: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    /**
+     * Admin: Convert approved application to student
+     */
+    public function convertToStudent($request, $id)
+    {
+        if (!hasRole('admin')) {
+            flash('error', 'Unauthorized action');
+            return redirect('/admissions');
+        }
+
+        try {
+            $result = Admission::convertToStudent($id);
+            
+            if ($result['success']) {
+                flash('success', $result['message'] . '. Default password: ' . $result['default_password']);
+                return redirect('/students/' . $result['student_id']);
+            } else {
+                flash('error', $result['message']);
+                return back();
+            }
+            
+        } catch (Exception $e) {
+            flash('error', 'Failed to convert to student: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    /**
+     * Public: Track application by application number
+     */
+    public function track($request)
+    {
+        $applicationNumber = $request->get('number', '');
+        $admission = null;
+        $timeline = [];
+        
+        if ($applicationNumber) {
+            $admission = Admission::trackApplication($applicationNumber);
+            if ($admission) {
+                $timeline = Admission::getTimeline($admission['id']);
+            }
+        }
+
+        return view('admissions/track', [
+            'title' => 'Track Application',
+            'applicationNumber' => $applicationNumber,
+            'admission' => $admission,
+            'timeline' => $timeline
+        ]);
+    }
+
+    /**
+     * Admin: Application statistics and reports
+     */
+    public function statistics($request)
+    {
+        if (!hasRole('admin')) {
+            flash('error', 'Unauthorized action');
+            return redirect('/dashboard');
+        }
+
+        $statistics = Admission::getStatistics();
+        
+        // Get monthly applications data
+        $db = Database::getInstance();
+        $monthlyData = $db->fetchAll(
+            "SELECT DATE_FORMAT(created_at, '%Y-%m') as month, 
+                    COUNT(*) as total,
+                    SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved,
+                    SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected,
+                    SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending
+             FROM admissions
+             WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+             GROUP BY month
+             ORDER BY month DESC"
+        );
+
+        return view('admissions/statistics', [
+            'title' => 'Admission Statistics',
+            'statistics' => $statistics,
+            'monthlyData' => $monthlyData
+        ]);
     }
 }

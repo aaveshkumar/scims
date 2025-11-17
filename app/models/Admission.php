@@ -12,103 +12,261 @@ class Admission extends Model
     ];
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    public function course()
+    /**
+     * Approve an admission application
+     * @param int $admissionId
+     * @param int $userId - Reviewer user ID
+     * @param string|null $remarks
+     * @return bool
+     */
+    public static function approveApplication($admissionId, $userId, $remarks = null)
     {
-        return $this->db->fetchOne(
-            "SELECT * FROM courses WHERE id = ?",
-            [$this->getAttribute('course_id')]
+        $db = Database::getInstance();
+        
+        return $db->execute(
+            "UPDATE admissions SET 
+                status = 'approved',
+                reviewed_by = ?,
+                reviewed_at = NOW(),
+                remarks = ?
+             WHERE id = ?",
+            [$userId, $remarks, $admissionId]
         );
     }
 
-    public function class()
+    /**
+     * Reject an admission application
+     */
+    public static function rejectApplication($admissionId, $userId, $remarks = null)
     {
-        return $this->db->fetchOne(
-            "SELECT * FROM classes WHERE id = ?",
-            [$this->getAttribute('class_id')]
+        $db = Database::getInstance();
+        
+        return $db->execute(
+            "UPDATE admissions SET 
+                status = 'rejected',
+                reviewed_by = ?,
+                reviewed_at = NOW(),
+                remarks = ?
+             WHERE id = ?",
+            [$userId, $remarks, $admissionId]
         );
     }
 
-    public function reviewer()
+    /**
+     * Move application to waitlist
+     */
+    public static function waitlistApplication($admissionId, $userId, $remarks = null)
     {
-        $reviewerId = $this->getAttribute('reviewed_by');
-        if (!$reviewerId) {
-            return null;
+        $db = Database::getInstance();
+        
+        return $db->execute(
+            "UPDATE admissions SET 
+                status = 'waitlisted',
+                reviewed_by = ?,
+                reviewed_at = NOW(),
+                remarks = ?
+             WHERE id = ?",
+            [$userId, $remarks, $admissionId]
+        );
+    }
+
+    /**
+     * Convert approved admission to student with full user account
+     * @param int $admissionId
+     * @return array - ['success' => bool, 'student_id' => int, 'user_id' => int, 'message' => string]
+     */
+    public static function convertToStudent($admissionId)
+    {
+        $db = Database::getInstance();
+        
+        // Get admission details
+        $admission = $db->fetchOne("SELECT * FROM admissions WHERE id = ?", [$admissionId]);
+        
+        if (!$admission) {
+            return ['success' => false, 'message' => 'Admission not found'];
         }
         
-        return $this->db->fetchOne(
-            "SELECT * FROM users WHERE id = ?",
-            [$reviewerId]
-        );
-    }
-
-    public function approve($userId, $remarks = null)
-    {
-        $data = [
-            'status' => 'approved',
-            'reviewed_by' => $userId,
-            'reviewed_at' => date('Y-m-d H:i:s'),
-            'remarks' => $remarks
-        ];
-        
-        return $this->update($this->getAttribute('id'), $data);
-    }
-
-    public function reject($userId, $remarks = null)
-    {
-        $data = [
-            'status' => 'rejected',
-            'reviewed_by' => $userId,
-            'reviewed_at' => date('Y-m-d H:i:s'),
-            'remarks' => $remarks
-        ];
-        
-        return $this->update($this->getAttribute('id'), $data);
-    }
-
-    public function waitlist($userId, $remarks = null)
-    {
-        $data = [
-            'status' => 'waitlisted',
-            'reviewed_by' => $userId,
-            'reviewed_at' => date('Y-m-d H:i:s'),
-            'remarks' => $remarks
-        ];
-        
-        return $this->update($this->getAttribute('id'), $data);
-    }
-
-    public function convertToStudent()
-    {
-        if ($this->getAttribute('status') !== 'approved') {
-            return false;
+        if ($admission['status'] !== 'approved') {
+            return ['success' => false, 'message' => 'Only approved applications can be converted'];
         }
 
-        $studentData = [
-            'first_name' => $this->getAttribute('first_name'),
-            'last_name' => $this->getAttribute('last_name'),
-            'email' => $this->getAttribute('email'),
-            'phone' => $this->getAttribute('phone'),
-            'date_of_birth' => $this->getAttribute('date_of_birth'),
-            'gender' => $this->getAttribute('gender'),
-            'address' => $this->getAttribute('address'),
-            'guardian_name' => $this->getAttribute('guardian_name'),
-            'guardian_phone' => $this->getAttribute('guardian_phone'),
-            'course_id' => $this->getAttribute('course_id'),
-            'class_id' => $this->getAttribute('class_id'),
-            'admission_date' => date('Y-m-d'),
-            'status' => 'active'
-        ];
+        // Check if already converted
+        $existingStudent = $db->fetchOne(
+            "SELECT id FROM students WHERE admission_number = ?",
+            [$admission['application_number']]
+        );
+        
+        if ($existingStudent) {
+            return ['success' => false, 'message' => 'Application already converted to student'];
+        }
 
-        $studentModel = new Student();
-        return $studentModel->create($studentData);
+        // Start transaction
+        $db->beginTransaction();
+        
+        try {
+            // 1. Create user account
+            $password = password_hash('student@' . date('Y'), PASSWORD_DEFAULT);
+            
+            $db->execute(
+                "INSERT INTO users (first_name, last_name, email, phone, password, 
+                 gender, date_of_birth, address, status, created_at, updated_at) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW(), NOW())",
+                [
+                    $admission['first_name'],
+                    $admission['last_name'],
+                    $admission['email'],
+                    $admission['phone'],
+                    $password,
+                    $admission['gender'],
+                    $admission['date_of_birth'],
+                    $admission['address']
+                ]
+            );
+            
+            $userId = $db->lastInsertId();
+
+            // 2. Assign student role
+            $studentRole = $db->fetchOne("SELECT id FROM roles WHERE name = 'student' LIMIT 1");
+            if ($studentRole) {
+                $db->execute(
+                    "INSERT INTO user_roles (user_id, role_id, created_at) VALUES (?, ?, NOW())",
+                    [$userId, $studentRole['id']]
+                );
+            }
+
+            // 3. Create student record
+            $admissionNumber = $admission['application_number'];
+            
+            $db->execute(
+                "INSERT INTO students (user_id, admission_number, class_id, admission_date,
+                 guardian_name, guardian_phone, guardian_email, previous_school,
+                 documents, status, created_at, updated_at)
+                 VALUES (?, ?, ?, CURDATE(), ?, ?, ?, ?, ?, 'active', NOW(), NOW())",
+                [
+                    $userId,
+                    $admissionNumber,
+                    $admission['class_id'],
+                    $admission['guardian_name'],
+                    $admission['guardian_phone'],
+                    $admission['guardian_email'] ?? null,
+                    $admission['previous_school'] ?? null,
+                    $admission['documents'] ?? null
+                ]
+            );
+            
+            $studentId = $db->lastInsertId();
+
+            // 4. Mark admission as completed
+            $db->execute(
+                "UPDATE admissions SET status = 'completed' WHERE id = ?",
+                [$admissionId]
+            );
+
+            // Commit transaction
+            $db->commit();
+
+            return [
+                'success' => true,
+                'student_id' => $studentId,
+                'user_id' => $userId,
+                'message' => 'Student account created successfully',
+                'default_password' => 'student@' . date('Y')
+            ];
+            
+        } catch (Exception $e) {
+            $db->rollback();
+            return ['success' => false, 'message' => 'Failed to convert: ' . $e->getMessage()];
+        }
     }
 
+    /**
+     * Get application timeline/history
+     */
+    public static function getTimeline($admissionId)
+    {
+        $db = Database::getInstance();
+        
+        $admission = $db->fetchOne(
+            "SELECT a.*, u.first_name as reviewer_first_name, u.last_name as reviewer_last_name
+             FROM admissions a
+             LEFT JOIN users u ON a.reviewed_by = u.id
+             WHERE a.id = ?",
+            [$admissionId]
+        );
+
+        if (!$admission) {
+            return [];
+        }
+
+        $timeline = [];
+        
+        // Application submitted
+        $timeline[] = [
+            'action' => 'Application Submitted',
+            'date' => $admission['created_at'],
+            'user' => $admission['first_name'] . ' ' . $admission['last_name'],
+            'icon' => 'file-earmark-text',
+            'color' => 'primary'
+        ];
+
+        // Application reviewed
+        if ($admission['reviewed_at']) {
+            $reviewerName = $admission['reviewer_first_name'] 
+                ? $admission['reviewer_first_name'] . ' ' . $admission['reviewer_last_name']
+                : 'Admin';
+            
+            $statusIcons = [
+                'approved' => 'check-circle',
+                'rejected' => 'x-circle',
+                'waitlisted' => 'hourglass',
+                'completed' => 'person-check'
+            ];
+            
+            $statusColors = [
+                'approved' => 'success',
+                'rejected' => 'danger',
+                'waitlisted' => 'warning',
+                'completed' => 'info'
+            ];
+            
+            $timeline[] = [
+                'action' => ucfirst($admission['status']),
+                'date' => $admission['reviewed_at'],
+                'user' => $reviewerName,
+                'icon' => $statusIcons[$admission['status']] ?? 'info-circle',
+                'color' => $statusColors[$admission['status']] ?? 'secondary'
+            ];
+        }
+
+        return $timeline;
+    }
+
+    /**
+     * Get admission statistics
+     */
+    public static function getStatistics()
+    {
+        $db = Database::getInstance();
+        
+        return [
+            'total' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions")['count'],
+            'pending' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions WHERE status = 'pending'")['count'],
+            'approved' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions WHERE status = 'approved'")['count'],
+            'rejected' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions WHERE status = 'rejected'")['count'],
+            'waitlisted' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions WHERE status = 'waitlisted'")['count'],
+            'completed' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions WHERE status = 'completed'")['count'],
+        ];
+    }
+
+    /**
+     * Generate unique application number
+     */
     public static function generateApplicationNumber()
     {
+        $db = Database::getInstance();
         $year = date('Y');
         $prefix = 'ADM' . $year;
         
-        $db = Database::getInstance();
         $lastApplication = $db->fetchOne(
             "SELECT application_number FROM admissions 
              WHERE application_number LIKE ? 
@@ -126,56 +284,20 @@ class Admission extends Model
         return $prefix . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
     }
 
-    public function getTimeline()
-    {
-        $timeline = [];
-        
-        $timeline[] = [
-            'action' => 'Application Submitted',
-            'date' => $this->getAttribute('applied_at') ?? $this->getAttribute('created_at'),
-            'user' => $this->getAttribute('first_name') . ' ' . $this->getAttribute('last_name'),
-            'icon' => 'file-earmark-text',
-            'color' => 'primary'
-        ];
-
-        if ($this->getAttribute('reviewed_at')) {
-            $reviewer = $this->reviewer();
-            $reviewerName = $reviewer ? $reviewer['first_name'] . ' ' . $reviewer['last_name'] : 'Admin';
-            
-            $statusColors = [
-                'approved' => 'success',
-                'rejected' => 'danger',
-                'waitlisted' => 'warning'
-            ];
-            
-            $timeline[] = [
-                'action' => ucfirst($this->getAttribute('status')),
-                'date' => $this->getAttribute('reviewed_at'),
-                'user' => $reviewerName,
-                'icon' => $this->getAttribute('status') === 'approved' ? 'check-circle' : 
-                         ($this->getAttribute('status') === 'rejected' ? 'x-circle' : 'hourglass'),
-                'color' => $statusColors[$this->getAttribute('status')] ?? 'secondary'
-            ];
-        }
-
-        return $timeline;
-    }
-
-    public static function getStatistics()
+    /**
+     * Track application by application number (for public/applicants)
+     */
+    public static function trackApplication($applicationNumber)
     {
         $db = Database::getInstance();
         
-        return [
-            'total' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions")['count'],
-            'pending' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions WHERE status = 'pending'")['count'],
-            'approved' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions WHERE status = 'approved'")['count'],
-            'rejected' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions WHERE status = 'rejected'")['count'],
-            'waitlisted' => $db->fetchOne("SELECT COUNT(*) as count FROM admissions WHERE status = 'waitlisted'")['count'],
-        ];
-    }
-
-    private function getAttribute($key)
-    {
-        return $this->attributes[$key] ?? null;
+        return $db->fetchOne(
+            "SELECT a.*, c.name as course_name, cl.name as class_name
+             FROM admissions a
+             LEFT JOIN courses c ON a.course_id = c.id
+             LEFT JOIN classes cl ON a.class_id = cl.id
+             WHERE a.application_number = ?",
+            [$applicationNumber]
+        );
     }
 }
