@@ -18,6 +18,11 @@ $router->group(['middleware' => 'guest'], function($router) {
     $router->post('/reset-password', 'AuthController@resetPassword');
 });
 
+// Public Routes (no authentication required)
+$router->get('/admission/track', 'AdmissionController@track');
+$router->get('/admissions/create', 'AdmissionController@create');
+$router->post('/admissions', 'AdmissionController@store', ['csrf']);
+
 $router->group(['middleware' => 'auth'], function($router) {
     $router->get('/logout', 'AuthController@logout');
     $router->get('/dashboard', 'DashboardController@index');
@@ -40,9 +45,6 @@ $router->group(['middleware' => 'auth'], function($router) {
     $router->get('/notifications/unread', 'NotificationController@unread');
     $router->post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead', ['csrf']);
     $router->post('/notifications/mark-all-read', 'NotificationController@markAllAsRead', ['csrf']);
-
-    // Public Admission Tracking (accessible without login after auth middleware check)
-    $router->get('/admission/track', 'AdmissionController@track');
 
     $router->get('/materials', 'MaterialController@index');
     $router->get('/materials/{id}', 'MaterialController@show');
@@ -109,11 +111,9 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/subjects/{id}', 'SubjectController@update', ['csrf']);
         $router->delete('/subjects/{id}', 'SubjectController@destroy', ['csrf']);
 
-        // Admissions Management
+        // Admissions Management (Admin Only)
         $router->get('/admissions', 'AdmissionController@index');
         $router->get('/admissions/statistics', 'AdmissionController@statistics');
-        $router->get('/admissions/create', 'AdmissionController@create');
-        $router->post('/admissions', 'AdmissionController@store', ['csrf']);
         $router->get('/admissions/{id}', 'AdmissionController@show');
         $router->post('/admissions/{id}/approve', 'AdmissionController@approve', ['csrf']);
         $router->post('/admissions/{id}/reject', 'AdmissionController@reject', ['csrf']);

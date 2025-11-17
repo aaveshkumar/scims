@@ -156,9 +156,9 @@ class Admission extends Model
             
             $studentId = $db->lastInsertId();
 
-            // 4. Mark admission as completed
+            // 4. Mark admission as completed with review timestamp
             $db->execute(
-                "UPDATE admissions SET status = 'completed' WHERE id = ?",
+                "UPDATE admissions SET status = 'completed', reviewed_at = NOW() WHERE id = ?",
                 [$admissionId]
             );
 
