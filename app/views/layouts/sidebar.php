@@ -313,28 +313,73 @@
 <style>
 /* Theme-Aware Sidebar Styling */
 
+/* Sidebar Layout Fixes */
+.sidebar-container {
+    box-sizing: border-box;
+}
+
+.sidebar-header {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.sidebar-header .sidebar-title {
+    font-size: 1.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.sidebar-header .sidebar-subtitle {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.sidebar-footer {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.sidebar-footer .d-flex {
+    max-width: 100%;
+}
+
+.sidebar-footer .sidebar-user-name,
+.sidebar-footer .sidebar-user-role {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
 /* Light Mode Sidebar */
 body:not(.dark-mode) .sidebar-container {
     background-color: #4e73df !important;
 }
 
 body:not(.dark-mode) .sidebar-header {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 body:not(.dark-mode) .sidebar-title,
 body:not(.dark-mode) .sidebar-subtitle {
-    color: #000000 !important;
+    color: #ffffff !important;
 }
 
 body:not(.dark-mode) .sidebar-link {
     background-color: transparent !important;
-    color: #000000 !important;
+    color: #ffffff !important;
 }
 
 body:not(.dark-mode) .sidebar-link:hover {
-    background-color: rgba(0, 0, 0, 0.1) !important;
-    color: #000000 !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
 }
 
 body:not(.dark-mode) .sidebar-accordion-item {
@@ -343,16 +388,16 @@ body:not(.dark-mode) .sidebar-accordion-item {
 
 body:not(.dark-mode) .sidebar-accordion-btn {
     background-color: transparent !important;
-    color: #000000 !important;
+    color: #ffffff !important;
 }
 
 body:not(.dark-mode) .sidebar-accordion-btn:hover {
-    background-color: rgba(0, 0, 0, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 body:not(.dark-mode) .sidebar-accordion-btn:not(.collapsed) {
-    background-color: rgba(0, 0, 0, 0.15) !important;
-    color: #000000 !important;
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
 }
 
 body:not(.dark-mode) .sidebar-container .accordion-body {
@@ -360,46 +405,46 @@ body:not(.dark-mode) .sidebar-container .accordion-body {
 }
 
 body:not(.dark-mode) .sidebar-footer {
-    border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 body:not(.dark-mode) .sidebar-user-name,
 body:not(.dark-mode) .sidebar-user-role {
-    color: #000000 !important;
+    color: #ffffff !important;
 }
 
 body:not(.dark-mode) .sidebar-logout-btn {
-    border-color: #000000 !important;
-    color: #000000 !important;
+    border-color: #ffffff !important;
+    color: #ffffff !important;
 }
 
 body:not(.dark-mode) .sidebar-logout-btn:hover {
-    background-color: #000000 !important;
+    background-color: #ffffff !important;
     color: #4e73df !important;
 }
 
 /* Dark Mode Sidebar */
 body.dark-mode .sidebar-container {
-    background-color: #2d3238 !important;
+    background-color: #1a1d20 !important;
 }
 
 body.dark-mode .sidebar-header {
-    border-bottom: 1px solid #495057 !important;
+    border-bottom: 1px solid rgba(233, 236, 239, 0.1) !important;
 }
 
 body.dark-mode .sidebar-title,
 body.dark-mode .sidebar-subtitle {
-    color: #ffffff !important;
+    color: #e9ecef !important;
 }
 
 body.dark-mode .sidebar-link {
     background-color: transparent !important;
-    color: #ffffff !important;
+    color: #e9ecef !important;
 }
 
 body.dark-mode .sidebar-link:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
+    background-color: rgba(233, 236, 239, 0.1) !important;
+    color: #e9ecef !important;
 }
 
 body.dark-mode .sidebar-accordion-item {
@@ -408,16 +453,16 @@ body.dark-mode .sidebar-accordion-item {
 
 body.dark-mode .sidebar-accordion-btn {
     background-color: transparent !important;
-    color: #ffffff !important;
+    color: #e9ecef !important;
 }
 
 body.dark-mode .sidebar-accordion-btn:hover {
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: rgba(233, 236, 239, 0.05) !important;
 }
 
 body.dark-mode .sidebar-accordion-btn:not(.collapsed) {
-    background-color: #212529 !important;
-    color: #ffffff !important;
+    background-color: rgba(233, 236, 239, 0.15) !important;
+    color: #e9ecef !important;
 }
 
 body.dark-mode .sidebar-container .accordion-body {
@@ -425,22 +470,22 @@ body.dark-mode .sidebar-container .accordion-body {
 }
 
 body.dark-mode .sidebar-footer {
-    border-top: 1px solid #495057 !important;
+    border-top: 1px solid rgba(233, 236, 239, 0.1) !important;
 }
 
 body.dark-mode .sidebar-user-name,
 body.dark-mode .sidebar-user-role {
-    color: #ffffff !important;
+    color: #e9ecef !important;
 }
 
 body.dark-mode .sidebar-logout-btn {
-    border-color: #ffffff !important;
-    color: #ffffff !important;
+    border-color: #e9ecef !important;
+    color: #e9ecef !important;
 }
 
 body.dark-mode .sidebar-logout-btn:hover {
-    background-color: #ffffff !important;
-    color: #2d3238 !important;
+    background-color: #e9ecef !important;
+    color: #1a1d20 !important;
 }
 
 /* Custom scrollbar for sidebar */
@@ -449,29 +494,29 @@ body.dark-mode .sidebar-logout-btn:hover {
 }
 
 body:not(.dark-mode) .sidebar-container::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 body:not(.dark-mode) .sidebar-container::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 3px;
 }
 
 body:not(.dark-mode) .sidebar-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.5);
 }
 
 body.dark-mode .sidebar-container::-webkit-scrollbar-track {
-    background: #1a1d20;
+    background: rgba(0, 0, 0, 0.2);
 }
 
 body.dark-mode .sidebar-container::-webkit-scrollbar-thumb {
-    background: #495057;
+    background: rgba(233, 236, 239, 0.2);
     border-radius: 3px;
 }
 
 body.dark-mode .sidebar-container::-webkit-scrollbar-thumb:hover {
-    background: #6c757d;
+    background: rgba(233, 236, 239, 0.3);
 }
 
 /* Sidebar-specific accordion styling */
