@@ -42,7 +42,19 @@ class ClassController
         }
 
         try {
-            $code = strtoupper(substr($request->post('name'), 0, 3)) . '-' . date('y');
+            // Generate unique code
+            $baseCode = strtoupper(substr($request->post('name'), 0, 3)) . '-' . date('y');
+            $code = $baseCode;
+            $counter = 1;
+            
+            // Check for existing code and append counter if needed
+            while (db()->fetchOne("SELECT id FROM classes WHERE code = ?", [$code])) {
+                $code = $baseCode . '-' . $counter;
+                $counter++;
+                if ($counter > 100) {
+                    throw new Exception('Unable to generate unique class code');
+                }
+            }
             
             $this->classModel->create([
                 'name' => $request->post('name'),
