@@ -69,6 +69,64 @@
                 });
             }
         }
+        
+        // Global Form Handler with Loading States
+        (function() {
+            document.addEventListener('DOMContentLoaded', function() {
+                // Handle all form submissions
+                const forms = document.querySelectorAll('form:not([data-no-loader])');
+                
+                forms.forEach(form => {
+                    form.addEventListener('submit', function(e) {
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        
+                        if (submitBtn) {
+                            // Prevent double submission
+                            if (submitBtn.disabled) {
+                                e.preventDefault();
+                                return false;
+                            }
+                            
+                            // Save original button text
+                            const originalText = submitBtn.innerHTML;
+                            
+                            // Disable button and show loader
+                            submitBtn.disabled = true;
+                            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+                            
+                            // Re-enable on error or after timeout (safety net)
+                            setTimeout(() => {
+                                if (submitBtn.disabled) {
+                                    submitBtn.disabled = false;
+                                    submitBtn.innerHTML = originalText;
+                                }
+                            }, 30000); // 30 seconds timeout
+                        }
+                    });
+                });
+                
+                // Handle all buttons with data-loading attribute
+                const loadingButtons = document.querySelectorAll('[data-loading]');
+                loadingButtons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (this.disabled) return;
+                        
+                        const originalText = this.innerHTML;
+                        const loadingText = this.getAttribute('data-loading') || 'Processing...';
+                        
+                        this.disabled = true;
+                        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>' + loadingText;
+                        
+                        setTimeout(() => {
+                            if (this.disabled) {
+                                this.disabled = false;
+                                this.innerHTML = originalText;
+                            }
+                        }, 30000);
+                    });
+                });
+            });
+        })();
     </script>
 </body>
 </html>
