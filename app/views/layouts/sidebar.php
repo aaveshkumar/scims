@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<div class="sidebar-container d-flex flex-column" style="width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto; overflow-x: hidden; z-index: 1000; scrollbar-width: none; -ms-overflow-style: none; background-color: var(--sidebar-bg);">
+<div class="sidebar-container d-flex flex-column" style="width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto; overflow-x: hidden; z-index: 1000; scrollbar-width: none; -ms-overflow-style: none;">
     <!-- Logo/Brand -->
     <div class="p-3 sidebar-header">
         <h4 class="mb-0 sidebar-title"><i class="bi bi-mortarboard-fill me-2"></i>SCIMS</h4>
@@ -358,15 +358,6 @@
     max-width: 180px;
 }
 
-/* CSS Variables for Sidebar */
-:root {
-    --sidebar-bg: #4e73df;
-}
-
-body.dark-mode {
-    --sidebar-bg: #212529;
-}
-
 /* Light Mode Sidebar */
 body:not(.dark-mode) .sidebar-container {
     background-color: #4e73df !important;
@@ -534,3 +525,35 @@ body.dark-mode .sidebar-container::-webkit-scrollbar-thumb:hover {
     box-shadow: none;
 }
 </style>
+
+<script>
+// Force sidebar color update on load and dark mode toggle
+function updateSidebarColor() {
+    const sidebar = document.querySelector('.sidebar-container');
+    if (sidebar) {
+        if (document.body.classList.contains('dark-mode')) {
+            sidebar.style.backgroundColor = '#212529';
+        } else {
+            sidebar.style.backgroundColor = '#4e73df';
+        }
+    }
+}
+
+// Run on page load
+document.addEventListener('DOMContentLoaded', updateSidebarColor);
+
+// Watch for dark mode changes
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.attributeName === 'class') {
+            updateSidebarColor();
+        }
+    });
+});
+
+// Start observing body class changes
+observer.observe(document.body, { attributes: true });
+
+// Initial call
+updateSidebarColor();
+</script>
