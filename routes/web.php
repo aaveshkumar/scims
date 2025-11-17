@@ -141,6 +141,93 @@ $router->group(['middleware' => 'auth'], function($router) {
 
         $router->post('/notifications/send', 'NotificationController@send', ['csrf']);
 
+        // === COMPREHENSIVE FEATURE ROUTES ===
+        // Roles & Permissions
+        $router->get('/roles', 'RoleController@index');
+        $router->get('/roles/create', 'RoleController@create');
+        $router->post('/roles', 'RoleController@store', ['csrf']);
+        
+        // Departments
+        $router->get('/departments', 'DepartmentController@index');
+        $router->get('/departments/create', 'DepartmentController@create');
+        $router->post('/departments', 'DepartmentController@store', ['csrf']);
+        
+        // Academic Extensions
+        $router->get('/syllabus', 'SyllabusController@index');
+        $router->get('/syllabus/create', 'SyllabusController@create');
+        $router->post('/syllabus', 'SyllabusController@store', ['csrf']);
+        
+        $router->get('/lesson-plans', 'LessonPlanController@index');
+        $router->get('/lesson-plans/create', 'LessonPlanController@create');
+        $router->post('/lesson-plans', 'LessonPlanController@store', ['csrf']);
+        
+        $router->get('/question-bank', 'QuestionBankController@index');
+        $router->get('/question-bank/create', 'QuestionBankController@create');
+        $router->post('/question-bank', 'QuestionBankController@store', ['csrf']);
+        
+        $router->get('/academic-calendar', 'AcademicCalendarController@index');
+        $router->get('/academic-calendar/create', 'AcademicCalendarController@create');
+        $router->post('/academic-calendar', 'AcademicCalendarController@store', ['csrf']);
+        
+        // Finance Extensions
+        $router->get('/fee-structure', 'FeeStructureController@index');
+        $router->get('/fee-structure/create', 'FeeStructureController@create');
+        $router->post('/fee-structure', 'FeeStructureController@store', ['csrf']);
+        
+        $router->get('/expenses', 'ExpenseController@index');
+        $router->get('/expenses/create', 'ExpenseController@create');
+        $router->post('/expenses', 'ExpenseController@store', ['csrf']);
+        
+        $router->get('/payroll', 'PayrollController@index');
+        $router->get('/payroll/create', 'PayrollController@create');
+        $router->post('/payroll', 'PayrollController@store', ['csrf']);
+        
+        $router->get('/budget', 'BudgetController@index');
+        $router->get('/budget/create', 'BudgetController@create');
+        $router->post('/budget', 'BudgetController@store', ['csrf']);
+        
+        // Library Management
+        $router->get('/library/books', 'LibraryController@index');
+        $router->get('/library/books/create', 'LibraryController@create');
+        $router->post('/library/books', 'LibraryController@store', ['csrf']);
+        $router->get('/library/issue', 'LibraryController@issue');
+        $router->get('/library/members', 'LibraryController@members');
+        
+        // Transport Management
+        $router->get('/transport/vehicles', 'TransportController@index');
+        $router->get('/transport/vehicles/create', 'TransportController@create');
+        $router->post('/transport/vehicles', 'TransportController@store', ['csrf']);
+        $router->get('/transport/routes', 'TransportController@routes');
+        $router->get('/transport/assignments', 'TransportController@assignments');
+        
+        // Hostel Management
+        $router->get('/hostel/rooms', 'HostelController@index');
+        $router->get('/hostel/rooms/create', 'HostelController@create');
+        $router->post('/hostel/rooms', 'HostelController@store', ['csrf']);
+        $router->get('/hostel/residents', 'HostelController@residents');
+        $router->get('/hostel/visitors', 'HostelController@visitors');
+        $router->get('/hostel/complaints', 'HostelController@complaints');
+        
+        // Inventory Management
+        $router->get('/inventory/assets', 'InventoryController@index');
+        $router->get('/inventory/assets/create', 'InventoryController@create');
+        $router->post('/inventory/assets', 'InventoryController@store', ['csrf']);
+        $router->get('/inventory/stock', 'InventoryController@stock');
+        $router->get('/inventory/purchase-orders', 'InventoryController@purchaseOrders');
+        $router->get('/inventory/suppliers', 'InventoryController@suppliers');
+        
+        // Reports
+        $router->get('/reports/attendance', 'ReportController@attendance');
+        $router->get('/reports/academic', 'ReportController@academic');
+        $router->get('/reports/financial', 'ReportController@financial');
+        $router->get('/reports/custom', 'ReportController@custom');
+        
+        // System Settings
+        $router->get('/settings', 'SettingController@index');
+        $router->get('/settings/backup', 'SettingController@backup');
+        $router->get('/settings/audit-logs', 'SettingController@auditLogs');
+        $router->post('/settings', 'SettingController@update', ['csrf']);
+
         // New Menu Routes - Placeholder Pages
         $router->get('/admissions/waitlist', function() {
             return view('placeholder', ['title' => 'Waitlist', 'module' => 'Admissions Waitlist']);
@@ -275,109 +362,3 @@ $router->group(['middleware' => 'auth'], function($router) {
         });
     });
 });
-
-        // === COMPREHENSIVE FEATURE ROUTES ===
-        // Roles & Permissions
-        $router->get('/roles', 'RoleController@index');
-        $router->get('/roles/create', 'RoleController@create');
-        $router->post('/roles', 'RoleController@store', ['csrf']);
-        
-        // Departments
-        $router->get('/departments', 'DepartmentController@index');
-        $router->get('/departments/create', 'DepartmentController@create');
-        $router->post('/departments', 'DepartmentController@store', ['csrf']);
-        
-        // Academic Extensions
-        $router->get('/syllabus', 'SyllabusController@index');
-        $router->get('/syllabus/create', 'SyllabusController@create');
-        $router->post('/syllabus', 'SyllabusController@store', ['csrf']);
-        
-        $router->get('/lesson-plans', 'LessonPlanController@index');
-        $router->get('/lesson-plans/create', 'LessonPlanController@create');
-        $router->post('/lesson-plans', 'LessonPlanController@store', ['csrf']);
-        
-        $router->get('/question-bank', 'QuestionBankController@index');
-        $router->get('/question-bank/create', 'QuestionBankController@create');
-        $router->post('/question-bank', 'QuestionBankController@store', ['csrf']);
-        
-        $router->get('/academic-calendar', 'AcademicCalendarController@index');
-        $router->get('/academic-calendar/create', 'AcademicCalendarController@create');
-        $router->post('/academic-calendar', 'AcademicCalendarController@store', ['csrf']);
-        
-        // Leave Management (available to all authenticated users)
-    });
-    
-    // Leave Management - Available to all authenticated users
-    $router->group(['middleware' => 'auth'], function($router) {
-        $router->get('/leave', 'LeaveController@index');
-        $router->get('/leave/create', 'LeaveController@create');
-        $router->post('/leave', 'LeaveController@store', ['csrf']);
-        
-        // Assignments & Quizzes - Available to all
-        $router->get('/assignments', 'AssignmentController@index');
-        $router->get('/quizzes', 'QuizController@index');
-        $router->get('/forums', 'ForumController@index');
-        $router->get('/announcements', 'AnnouncementController@index');
-        $router->get('/messages', 'MessageController@index');
-    });
-    
-    // Admin-only features
-    $router->group(['middleware' => 'role:admin'], function($router) {
-        // Finance Extensions
-        $router->get('/fee-structure', 'FeeStructureController@index');
-        $router->get('/fee-structure/create', 'FeeStructureController@create');
-        $router->post('/fee-structure', 'FeeStructureController@store', ['csrf']);
-        
-        $router->get('/expenses', 'ExpenseController@index');
-        $router->get('/expenses/create', 'ExpenseController@create');
-        $router->post('/expenses', 'ExpenseController@store', ['csrf']);
-        
-        $router->get('/payroll', 'PayrollController@index');
-        $router->get('/payroll/create', 'PayrollController@create');
-        $router->post('/payroll', 'PayrollController@store', ['csrf']);
-        
-        $router->get('/budget', 'BudgetController@index');
-        $router->get('/budget/create', 'BudgetController@create');
-        $router->post('/budget', 'BudgetController@store', ['csrf']);
-        
-        // Library Management
-        $router->get('/library/books', 'LibraryController@index');
-        $router->get('/library/books/create', 'LibraryController@create');
-        $router->post('/library/books', 'LibraryController@store', ['csrf']);
-        $router->get('/library/issue', 'LibraryController@issue');
-        $router->get('/library/members', 'LibraryController@members');
-        
-        // Transport Management
-        $router->get('/transport/vehicles', 'TransportController@index');
-        $router->get('/transport/vehicles/create', 'TransportController@create');
-        $router->post('/transport/vehicles', 'TransportController@store', ['csrf']);
-        $router->get('/transport/routes', 'TransportController@routes');
-        $router->get('/transport/assignments', 'TransportController@assignments');
-        
-        // Hostel Management
-        $router->get('/hostel/rooms', 'HostelController@index');
-        $router->get('/hostel/rooms/create', 'HostelController@create');
-        $router->post('/hostel/rooms', 'HostelController@store', ['csrf']);
-        $router->get('/hostel/residents', 'HostelController@residents');
-        $router->get('/hostel/visitors', 'HostelController@visitors');
-        $router->get('/hostel/complaints', 'HostelController@complaints');
-        
-        // Inventory Management
-        $router->get('/inventory/assets', 'InventoryController@index');
-        $router->get('/inventory/assets/create', 'InventoryController@create');
-        $router->post('/inventory/assets', 'InventoryController@store', ['csrf']);
-        $router->get('/inventory/stock', 'InventoryController@stock');
-        $router->get('/inventory/purchase-orders', 'InventoryController@purchaseOrders');
-        $router->get('/inventory/suppliers', 'InventoryController@suppliers');
-        
-        // Reports
-        $router->get('/reports/attendance', 'ReportController@attendance');
-        $router->get('/reports/academic', 'ReportController@academic');
-        $router->get('/reports/financial', 'ReportController@financial');
-        $router->get('/reports/custom', 'ReportController@custom');
-        
-        // System Settings
-        $router->get('/settings', 'SettingController@index');
-        $router->get('/settings/backup', 'SettingController@backup');
-        $router->get('/settings/audit-logs', 'SettingController@auditLogs');
-        $router->post('/settings', 'SettingController@update', ['csrf']);
