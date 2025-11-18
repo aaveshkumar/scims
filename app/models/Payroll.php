@@ -6,11 +6,9 @@ class Payroll
     
     public static function getAll($filters = [])
     {
-        $sql = "SELECT p.*, s.first_name, s.last_name, s.employee_id,
-                u.name as created_by_name
+        $sql = "SELECT p.*, s.first_name, s.last_name, s.employee_id
                 FROM payroll p
                 JOIN staff s ON p.staff_id = s.id
-                LEFT JOIN users u ON p.created_by = u.id
                 WHERE 1=1";
         $params = [];
         
@@ -41,11 +39,9 @@ class Payroll
     
     public static function find($id)
     {
-        $sql = "SELECT p.*, s.first_name, s.last_name, s.employee_id, s.designation,
-                u.name as created_by_name
+        $sql = "SELECT p.*, s.first_name, s.last_name, s.employee_id, s.designation
                 FROM payroll p
                 JOIN staff s ON p.staff_id = s.id
-                LEFT JOIN users u ON p.created_by = u.id
                 WHERE p.id = ?";
         
         return db()->fetchOne($sql, [$id]);

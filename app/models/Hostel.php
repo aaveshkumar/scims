@@ -6,7 +6,7 @@ class Hostel
     
     public static function getAll($filters = [])
     {
-        $sql = "SELECT h.*, u.name as warden_name
+        $sql = "SELECT h.*, CONCAT(u.first_name, ' ', u.last_name) as warden_name
                 FROM hostels h
                 LEFT JOIN users u ON h.warden_id = u.id
                 WHERE 1=1";
@@ -36,7 +36,7 @@ class Hostel
     
     public static function find($id)
     {
-        $sql = "SELECT h.*, u.name as warden_name, u.email as warden_email
+        $sql = "SELECT h.*, CONCAT(u.first_name, ' ', u.last_name) as warden_name, u.email as warden_email
                 FROM hostels h
                 LEFT JOIN users u ON h.warden_id = u.id
                 WHERE h.id = ?";

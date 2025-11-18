@@ -10,7 +10,7 @@ class HostelComplaint
                 s.first_name as student_first_name, s.last_name as student_last_name, 
                 s.roll_number,
                 h.name as hostel_name,
-                u.name as assigned_to_name
+                CONCAT(u.first_name, ' ', u.last_name) as assigned_to_name
                 FROM hostel_complaints c
                 JOIN hostel_residents r ON c.resident_id = r.id
                 JOIN students s ON r.student_id = s.id
@@ -53,7 +53,7 @@ class HostelComplaint
                 s.first_name as student_first_name, s.last_name as student_last_name, 
                 s.roll_number, s.phone as student_phone,
                 h.name as hostel_name,
-                u.name as assigned_to_name, u.email as assigned_to_email
+                CONCAT(u.first_name, ' ', u.last_name) as assigned_to_name, u.email as assigned_to_email
                 FROM hostel_complaints c
                 JOIN hostel_residents r ON c.resident_id = r.id
                 JOIN students s ON r.student_id = s.id

@@ -9,7 +9,7 @@ class LibraryMember
      */
     public static function getAll($filters = [])
     {
-        $sql = "SELECT lm.*, u.name, u.email, u.role_name as user_role
+        $sql = "SELECT lm.*, CONCAT(u.first_name, ' ', u.last_name) as name, u.email
                 FROM library_members lm
                 JOIN users u ON lm.user_id = u.id
                 WHERE 1=1";
@@ -26,7 +26,7 @@ class LibraryMember
         }
         
         if (!empty($filters['search'])) {
-            $sql .= " AND (u.name LIKE ? OR u.email LIKE ? OR lm.member_number LIKE ?)";
+            $sql .= " AND (CONCAT(u.first_name, ' ', u.last_name) LIKE ? OR u.email LIKE ? OR lm.member_number LIKE ?)";
             $search = "%{$filters['search']}%";
             $params[] = $search;
             $params[] = $search;
@@ -43,7 +43,7 @@ class LibraryMember
      */
     public static function find($id)
     {
-        $sql = "SELECT lm.*, u.name, u.email, u.role_name
+        $sql = "SELECT lm.*, CONCAT(u.first_name, ' ', u.last_name) as name, u.email
                 FROM library_members lm
                 JOIN users u ON lm.user_id = u.id
                 WHERE lm.id = ?";
@@ -56,7 +56,7 @@ class LibraryMember
      */
     public static function getByUserId($userId)
     {
-        $sql = "SELECT lm.*, u.name, u.email
+        $sql = "SELECT lm.*, CONCAT(u.first_name, ' ', u.last_name) as name, u.email
                 FROM library_members lm
                 JOIN users u ON lm.user_id = u.id
                 WHERE lm.user_id = ?";
@@ -69,7 +69,7 @@ class LibraryMember
      */
     public static function getByMemberNumber($memberNumber)
     {
-        $sql = "SELECT lm.*, u.name, u.email
+        $sql = "SELECT lm.*, CONCAT(u.first_name, ' ', u.last_name) as name, u.email
                 FROM library_members lm
                 JOIN users u ON lm.user_id = u.id
                 WHERE lm.member_number = ?";

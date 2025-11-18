@@ -6,14 +6,14 @@ class Asset
     
     public static function getAll($filters = [])
     {
-        $sql = "SELECT a.*, u.name as assigned_to_name
+        $sql = "SELECT a.*, CONCAT(u.first_name, ' ', u.last_name) as assigned_to_name
                 FROM assets a
                 LEFT JOIN users u ON a.assigned_to = u.id
                 WHERE 1=1";
         $params = [];
         
         if (!empty($filters['search'])) {
-            $sql .= " AND (a.asset_code LIKE ? OR a.name LIKE ?)";
+            $sql .= " AND (a.asset_code LIKE ? OR a.asset_name LIKE ?)";
             $search = "%{$filters['search']}%";
             $params[] = $search;
             $params[] = $search;
@@ -29,9 +29,9 @@ class Asset
             $params[] = $filters['status'];
         }
         
-        if (!empty($filters['item_condition'])) {
-            $sql .= " AND a.item_condition = ?";
-            $params[] = $filters['item_condition'];
+        if (!empty($filters['condition_status'])) {
+            $sql .= " AND a.condition_status = ?";
+            $params[] = $filters['condition_status'];
         }
         
         $sql .= " ORDER BY a.asset_code ASC";
@@ -41,7 +41,7 @@ class Asset
     
     public static function find($id)
     {
-        $sql = "SELECT a.*, u.name as assigned_to_name, u.email as assigned_to_email
+        $sql = "SELECT a.*, CONCAT(u.first_name, ' ', u.last_name) as assigned_to_name, u.email as assigned_to_email
                 FROM assets a
                 LEFT JOIN users u ON a.assigned_to = u.id
                 WHERE a.id = ?";

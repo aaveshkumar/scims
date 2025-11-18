@@ -10,8 +10,8 @@ class BookIssue
     public static function getAll($filters = [])
     {
         $sql = "SELECT bi.*, b.title as book_title, b.isbn, b.author,
-                u.name as user_name, u.email as user_email,
-                ib.name as issued_by_name
+                CONCAT(u.first_name, ' ', u.last_name) as user_name, u.email as user_email,
+                CONCAT(ib.first_name, ' ', ib.last_name) as issued_by_name
                 FROM book_issues bi
                 JOIN books b ON bi.book_id = b.id
                 JOIN users u ON bi.user_id = u.id
@@ -35,7 +35,7 @@ class BookIssue
         }
         
         if (!empty($filters['search'])) {
-            $sql .= " AND (b.title LIKE ? OR b.isbn LIKE ? OR u.name LIKE ?)";
+            $sql .= " AND (b.title LIKE ? OR b.isbn LIKE ? OR CONCAT(u.first_name, ' ', u.last_name) LIKE ?)";
             $search = "%{$filters['search']}%";
             $params[] = $search;
             $params[] = $search;
@@ -53,7 +53,7 @@ class BookIssue
     public static function find($id)
     {
         $sql = "SELECT bi.*, b.title as book_title, b.isbn, b.author,
-                u.name as user_name, u.email as user_email
+                CONCAT(u.first_name, ' ', u.last_name) as user_name, u.email as user_email
                 FROM book_issues bi
                 JOIN books b ON bi.book_id = b.id
                 JOIN users u ON bi.user_id = u.id
@@ -118,7 +118,7 @@ class BookIssue
      */
     public static function getOverdue()
     {
-        $sql = "SELECT bi.*, b.title as book_title, u.name as user_name, u.email
+        $sql = "SELECT bi.*, b.title as book_title, CONCAT(u.first_name, ' ', u.last_name) as user_name, u.email
                 FROM book_issues bi
                 JOIN books b ON bi.book_id = b.id
                 JOIN users u ON bi.user_id = u.id

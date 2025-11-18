@@ -10,7 +10,7 @@ class Route
     public static function getAll($filters = [])
     {
         $sql = "SELECT r.*, v.vehicle_number, v.model as vehicle_model,
-                u.name as driver_name
+                CONCAT(u.first_name, ' ', u.last_name) as driver_name
                 FROM routes r
                 LEFT JOIN vehicles v ON r.vehicle_id = v.id
                 LEFT JOIN users u ON r.driver_id = u.id
@@ -40,7 +40,7 @@ class Route
     public static function find($id)
     {
         $sql = "SELECT r.*, v.vehicle_number, v.model as vehicle_model, v.capacity,
-                u.name as driver_name, u.email as driver_email
+                CONCAT(u.first_name, ' ', u.last_name) as driver_name, u.email as driver_email
                 FROM routes r
                 LEFT JOIN vehicles v ON r.vehicle_id = v.id
                 LEFT JOIN users u ON r.driver_id = u.id

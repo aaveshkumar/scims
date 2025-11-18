@@ -10,7 +10,7 @@ class HostelVisitor
                 s.first_name as student_first_name, s.last_name as student_last_name, 
                 s.roll_number,
                 h.name as hostel_name, hr.room_number,
-                u.name as approved_by_name
+                CONCAT(u.first_name, ' ', u.last_name) as approved_by_name
                 FROM hostel_visitors v
                 JOIN hostel_residents r ON v.resident_id = r.id
                 JOIN students s ON r.student_id = s.id
@@ -54,7 +54,7 @@ class HostelVisitor
                 s.first_name as student_first_name, s.last_name as student_last_name, 
                 s.roll_number, s.phone as student_phone,
                 h.name as hostel_name, hr.room_number,
-                u.name as approved_by_name
+                CONCAT(u.first_name, ' ', u.last_name) as approved_by_name
                 FROM hostel_visitors v
                 JOIN hostel_residents r ON v.resident_id = r.id
                 JOIN students s ON r.student_id = s.id
