@@ -80,6 +80,21 @@ $router->group(['middleware' => 'auth'], function($router) {
     });
 
     $router->group(['middleware' => 'role:admin'], function($router) {
+        // Calendar & Holiday Management
+        $router->get('/calendar', 'CalendarController@index');
+        $router->get('/calendar/create', 'CalendarController@create');
+        $router->post('/calendar/create', 'CalendarController@create', ['csrf']);
+        $router->get('/calendar/{id}/edit', 'CalendarController@edit');
+        $router->post('/calendar/{id}/edit', 'CalendarController@edit', ['csrf']);
+        $router->post('/calendar/{id}/delete', 'CalendarController@delete', ['csrf']);
+        
+        $router->get('/calendar/holidays', 'CalendarController@holidays');
+        $router->get('/calendar/holidays/create', 'CalendarController@createHoliday');
+        $router->post('/calendar/holidays/create', 'CalendarController@createHoliday', ['csrf']);
+        $router->get('/calendar/holidays/{id}/edit', 'CalendarController@editHoliday');
+        $router->post('/calendar/holidays/{id}/edit', 'CalendarController@editHoliday', ['csrf']);
+        $router->post('/calendar/holidays/{id}/delete', 'CalendarController@deleteHoliday', ['csrf']);
+
         $router->get('/students', 'StudentController@index');
         $router->get('/students/create', 'StudentController@create');
         $router->post('/students', 'StudentController@store', ['csrf']);

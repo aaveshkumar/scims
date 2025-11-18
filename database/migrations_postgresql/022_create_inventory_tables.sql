@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS assets (
     depreciation_rate DECIMAL(5,2),
     location VARCHAR(255),
     assigned_to INT,
-    item_condition VARCHAR(50) DEFAULT 'good',
+    condition VARCHAR(50) DEFAULT 'good',
     warranty_expiry DATE,
     status VARCHAR(20) DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -103,3 +103,19 @@ CREATE TABLE IF NOT EXISTS purchase_order_items (
     INDEX idx_po (po_id),
     INDEX idx_item (item_id)
 );
+
+
+-- Trigger for updated_at
+CREATE OR REPLACE FUNCTION update_assets_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_update_assets_updated_at ON assets;
+CREATE TRIGGER trigger_update_assets_updated_at
+    BEFORE UPDATE ON assets
+    FOR EACH ROW
+    EXECUTE FUNCTION update_assets_updated_at();
