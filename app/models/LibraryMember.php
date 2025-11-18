@@ -9,9 +9,12 @@ class LibraryMember
      */
     public static function getAll($filters = [])
     {
-        $sql = "SELECT lm.*, CONCAT(u.first_name, ' ', u.last_name) as name, u.email
+        $sql = "SELECT lm.*, CONCAT(u.first_name, ' ', u.last_name) as name, u.email,
+                       COALESCE(r.display_name, 'No Role') as user_role
                 FROM library_members lm
                 JOIN users u ON lm.user_id = u.id
+                LEFT JOIN user_roles ur ON u.id = ur.user_id
+                LEFT JOIN roles r ON ur.role_id = r.id
                 WHERE 1=1";
         $params = [];
         
