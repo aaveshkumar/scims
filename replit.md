@@ -56,7 +56,8 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - Updated all queries to use `CONCAT(u.first_name, ' ', u.last_name)` for user names
 - Fixed `u.role` references - users table doesn't have `role` column, uses `user_roles` junction table
 - Fixed staff table queries - staff has `user_id` not `first_name/last_name`, requires JOIN with users table
-- Files fixed: BookIssue, LibraryMember, LibraryController (createMember), DepartmentController (create, edit, show), Hostel, Asset, Route, Payroll, HostelVisitor, HostelComplaint
+- Files fixed: BookIssue, LibraryMember (getAll query), LibraryController (createMember), DepartmentController (create, edit, show), Hostel, Asset, Route, Payroll, HostelVisitor, HostelComplaint
+- Fixed LibraryMember::getAll() to include user_role with proper JOIN to user_roles and roles tables
 
 **Database Schema Verified:**
 - `users` table: has `first_name`, `last_name` (no `role` column)
