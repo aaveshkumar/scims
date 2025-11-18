@@ -54,8 +54,15 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 ### SQL Query Fixes
 - Fixed 21+ SQL queries across 9 files that were referencing non-existent `u.name` or `u.role_name` columns
 - Updated all queries to use `CONCAT(u.first_name, ' ', u.last_name)` for user names
-- Fixed `u.role` references for role names
-- Files fixed: BookIssue, LibraryMember, LibraryController, Hostel, Asset, Route, Payroll, HostelVisitor, HostelComplaint
+- Fixed `u.role` references - users table doesn't have `role` column, uses `user_roles` junction table
+- Fixed staff table queries - staff has `user_id` not `first_name/last_name`, requires JOIN with users table
+- Files fixed: BookIssue, LibraryMember, LibraryController (createMember), DepartmentController (create, edit, show), Hostel, Asset, Route, Payroll, HostelVisitor, HostelComplaint
+
+**Database Schema Verified:**
+- `users` table: has `first_name`, `last_name` (no `role` column)
+- `user_roles` junction table: links users to roles via `user_id` and `role_id`
+- `roles` table: has `name`, `display_name`, `description`
+- `staff` table: has `user_id` (no `first_name/last_name`), links to users via `user_id`
 
 ### Controllers Implemented
 - **RoleController**: Full CRUD implementation with database operations
