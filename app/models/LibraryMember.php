@@ -151,7 +151,7 @@ class LibraryMember
      */
     public static function getExpiringSoon()
     {
-        $sql = "SELECT lm.*, u.name, u.email
+        $sql = "SELECT lm.*, CONCAT(u.first_name, ' ', u.last_name) as name, u.email
                 FROM library_members lm
                 JOIN users u ON lm.user_id = u.id
                 WHERE lm.expiry_date IS NOT NULL 
