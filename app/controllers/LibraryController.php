@@ -351,11 +351,11 @@ class LibraryController
     {
         // Get all users who are not already library members
         $users = db()->fetchAll(
-            "SELECT u.id, u.name, u.email, u.role_name 
+            "SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email, u.role as role_name 
              FROM users u 
              LEFT JOIN library_members lm ON u.id = lm.user_id 
              WHERE lm.id IS NULL 
-             ORDER BY u.name"
+             ORDER BY u.first_name, u.last_name"
         );
         
         return view('library/create_member', [
