@@ -104,10 +104,15 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
   - To fix properly: would need to add `department_id` foreign key column to staff table
   - Current workaround: Department CRUD works, but staff assignment is not enforced
 
+### Bug Fixes
+- Fixed `auth()->id()` calls in LibraryController - changed to `auth()['id']` since auth() returns array, not object
+- Fixed book issue and return functionality in library module
+
 ### Current Status
 - All 10 modules fully operational: Library, Transport, Hostel, Inventory, Fee Structure, Payroll, Assignments, Quizzes, Roles, Departments
 - Database: 47 tables total
 - Server running successfully with no errors
 - All CRUD operations tested and working
 - Library member creation: ✓ Working with proper role display
+- Library book issue/return: ✓ Working with proper auth integration
 - Departments management: ✓ Working (with staff assignment limitation noted above)
