@@ -4,54 +4,382 @@ class HostelController
 {
     public function index($request)
     {
-        return view('hostel/index', ['title' => 'Hostel Management']);
+        $filters = [
+            'search' => $request->get('search'),
+            'hostel_type' => $request->get('hostel_type'),
+            'status' => $request->get('status')
+        ];
+        
+        $hostels = Hostel::getAll($filters);
+        $types = Hostel::getTypes();
+        $stats = Hostel::getStatistics();
+        
+        $wardens = db()->fetchAll(
+            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+        );
+        
+        return view('hostel/index', [
+            'title' => 'Hostel Management',
+            'hostels' => $hostels,
+            'types' => $types,
+            'stats' => $stats,
+            'wardens' => $wardens,
+            'filters' => $filters
+        ]);
     }
 
     public function create($request)
     {
-        return view('hostel/create', ['title' => 'Create - Hostel Management']);
+        $wardens = db()->fetchAll(
+            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+        );
+        
+        return view('hostel/create', [
+            'title' => 'Add New Hostel',
+            'wardens' => $wardens
+        ]);
     }
 
     public function store($request)
     {
-        flash('success', 'Record created successfully');
-        return redirect('/hostel');
+        $rules = [
+            'name' => 'required',
+            'total_rooms' => 'required|numeric'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'name' => $request->post('name'),
+                'hostel_type' => $request->post('hostel_type'),
+                'address' => $request->post('address'),
+                'warden_id' => $request->post('warden_id'),
+                'total_rooms' => $request->post('total_rooms'),
+                'occupied_rooms' => 0,
+                'status' => $request->post('status') ?? 'active'
+            ];
+
+            Hostel::create($data);
+            flash('success', 'Hostel added successfully');
+            return redirect('/hostel');
+        } catch (Exception $e) {
+            flash('error', 'Failed to add hostel: ' . $e->getMessage());
+            return back();
+        }
     }
 
     public function show($request, $id)
     {
-        return view('hostel/show', ['title' => 'View - Hostel Management', 'id' => $id]);
+        $hostel = Hostel::find($id);
+        
+        if (!$hostel) {
+            flash('error', 'Hostel not found');
+            return redirect('/hostel');
+        }
+        
+        $rooms = HostelRoom::getAll(['hostel_id' => $id]);
+        $residents = HostelResident::getAll(['hostel_id' => $id, 'status' => 'active']);
+        $complaints = HostelComplaint::getAll(['hostel_id' => $id, 'status' => 'pending']);
+        
+        return view('hostel/show', [
+            'title' => 'Hostel Details',
+            'hostel' => $hostel,
+            'rooms' => $rooms,
+            'residents' => $residents,
+            'complaints' => $complaints
+        ]);
     }
 
     public function edit($request, $id)
     {
-        return view('hostel/edit', ['title' => 'Edit - Hostel Management', 'id' => $id]);
+        $hostel = Hostel::find($id);
+        
+        if (!$hostel) {
+            flash('error', 'Hostel not found');
+            return redirect('/hostel');
+        }
+        
+        $wardens = db()->fetchAll(
+            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+        );
+        
+        return view('hostel/edit', [
+            'title' => 'Edit Hostel',
+            'hostel' => $hostel,
+            'wardens' => $wardens
+        ]);
     }
 
     public function update($request, $id)
     {
-        flash('success', 'Record updated successfully');
-        return redirect('/hostel');
+        $rules = [
+            'name' => 'required',
+            'total_rooms' => 'required|numeric'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'name' => $request->post('name'),
+                'hostel_type' => $request->post('hostel_type'),
+                'address' => $request->post('address'),
+                'warden_id' => $request->post('warden_id'),
+                'total_rooms' => $request->post('total_rooms'),
+                'occupied_rooms' => $request->post('occupied_rooms'),
+                'status' => $request->post('status')
+            ];
+
+            Hostel::update($id, $data);
+            flash('success', 'Hostel updated successfully');
+            return redirect('/hostel');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update hostel: ' . $e->getMessage());
+            return back();
+        }
     }
 
     public function destroy($request, $id)
     {
-        flash('success', 'Record deleted successfully');
-        return redirect('/hostel');
+        try {
+            Hostel::delete($id);
+            flash('success', 'Hostel deleted successfully');
+            return redirect('/hostel');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete hostel: ' . $e->getMessage());
+            return back();
+        }
     }
 
     public function residents($request)
     {
-        return view('hostel/residents', ['title' => 'Hostel Residents']);
+        $filters = [
+            'search' => $request->get('search'),
+            'hostel_id' => $request->get('hostel_id'),
+            'status' => $request->get('status')
+        ];
+        
+        $residents = HostelResident::getAll($filters);
+        $hostels = Hostel::getAll(['status' => 'active']);
+        $stats = HostelResident::getStatistics();
+        
+        $studentsWithoutHostel = db()->fetchAll(
+            "SELECT s.id, s.first_name, s.last_name, s.roll_number, s.class 
+             FROM students s 
+             LEFT JOIN hostel_residents r ON s.id = r.student_id AND r.status = 'active' 
+             WHERE r.id IS NULL 
+             ORDER BY s.first_name, s.last_name
+             LIMIT 100"
+        );
+        
+        return view('hostel/residents', [
+            'title' => 'Hostel Residents',
+            'residents' => $residents,
+            'hostels' => $hostels,
+            'stats' => $stats,
+            'studentsWithoutHostel' => $studentsWithoutHostel,
+            'filters' => $filters
+        ]);
+    }
+    
+    public function storeResident($request)
+    {
+        $rules = [
+            'student_id' => 'required',
+            'hostel_id' => 'required',
+            'room_id' => 'required',
+            'admission_date' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $studentId = $request->post('student_id');
+            $roomId = $request->post('room_id');
+            
+            if (HostelResident::isStudentResident($studentId)) {
+                flash('error', 'Student is already a resident in another hostel');
+                return back();
+            }
+            
+            if (!HostelRoom::hasCapacity($roomId)) {
+                flash('error', 'Selected room has reached maximum capacity');
+                return back();
+            }
+            
+            $data = [
+                'student_id' => $studentId,
+                'hostel_id' => $request->post('hostel_id'),
+                'room_id' => $roomId,
+                'admission_date' => $request->post('admission_date'),
+                'checkout_date' => $request->post('checkout_date'),
+                'guardian_contact' => $request->post('guardian_contact'),
+                'emergency_contact' => $request->post('emergency_contact'),
+                'status' => 'active'
+            ];
+
+            HostelResident::create($data);
+            flash('success', 'Resident added successfully');
+            return redirect('/hostel/residents');
+        } catch (Exception $e) {
+            flash('error', 'Failed to add resident: ' . $e->getMessage());
+            return back();
+        }
     }
 
     public function visitors($request)
     {
-        return view('hostel/visitors', ['title' => 'Hostel Visitors']);
+        $filters = [
+            'search' => $request->get('search'),
+            'date_from' => $request->get('date_from'),
+            'date_to' => $request->get('date_to')
+        ];
+        
+        $visitors = HostelVisitor::getAll($filters);
+        $activeVisitors = HostelVisitor::getActiveVisitors();
+        $residents = HostelResident::getAll(['status' => 'active']);
+        $stats = HostelVisitor::getStatistics();
+        
+        return view('hostel/visitors', [
+            'title' => 'Hostel Visitors',
+            'visitors' => $visitors,
+            'activeVisitors' => $activeVisitors,
+            'residents' => $residents,
+            'stats' => $stats,
+            'filters' => $filters
+        ]);
+    }
+    
+    public function storeVisitor($request)
+    {
+        $rules = [
+            'resident_id' => 'required',
+            'visitor_name' => 'required',
+            'visit_date' => 'required',
+            'entry_time' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'resident_id' => $request->post('resident_id'),
+                'visitor_name' => $request->post('visitor_name'),
+                'visitor_phone' => $request->post('visitor_phone'),
+                'visitor_id_proof' => $request->post('visitor_id_proof'),
+                'visit_date' => $request->post('visit_date'),
+                'entry_time' => $request->post('entry_time'),
+                'exit_time' => $request->post('exit_time'),
+                'purpose' => $request->post('purpose'),
+                'approved_by' => auth()->user()['id']
+            ];
+
+            HostelVisitor::create($data);
+            flash('success', 'Visitor entry recorded successfully');
+            return redirect('/hostel/visitors');
+        } catch (Exception $e) {
+            flash('error', 'Failed to record visitor: ' . $e->getMessage());
+            return back();
+        }
     }
 
     public function complaints($request)
     {
-        return view('hostel/complaints', ['title' => 'Hostel Complaints']);
+        $filters = [
+            'hostel_id' => $request->get('hostel_id'),
+            'status' => $request->get('status'),
+            'priority' => $request->get('priority'),
+            'complaint_type' => $request->get('complaint_type')
+        ];
+        
+        $complaints = HostelComplaint::getAll($filters);
+        $hostels = Hostel::getAll(['status' => 'active']);
+        $residents = HostelResident::getAll(['status' => 'active']);
+        $stats = HostelComplaint::getStatistics();
+        $types = HostelComplaint::getComplaintTypes();
+        
+        $staff = db()->fetchAll(
+            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+        );
+        
+        return view('hostel/complaints', [
+            'title' => 'Hostel Complaints',
+            'complaints' => $complaints,
+            'hostels' => $hostels,
+            'residents' => $residents,
+            'stats' => $stats,
+            'types' => $types,
+            'staff' => $staff,
+            'filters' => $filters
+        ]);
+    }
+    
+    public function storeComplaint($request)
+    {
+        $rules = [
+            'resident_id' => 'required',
+            'hostel_id' => 'required',
+            'description' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'resident_id' => $request->post('resident_id'),
+                'hostel_id' => $request->post('hostel_id'),
+                'complaint_type' => $request->post('complaint_type'),
+                'description' => $request->post('description'),
+                'priority' => $request->post('priority') ?? 'medium',
+                'status' => 'pending',
+                'assigned_to' => $request->post('assigned_to'),
+                'remarks' => $request->post('remarks')
+            ];
+
+            HostelComplaint::create($data);
+            flash('success', 'Complaint registered successfully');
+            return redirect('/hostel/complaints');
+        } catch (Exception $e) {
+            flash('error', 'Failed to register complaint: ' . $e->getMessage());
+            return back();
+        }
+    }
+    
+    public function updateComplaint($request, $id)
+    {
+        try {
+            $data = [
+                'complaint_type' => $request->post('complaint_type'),
+                'description' => $request->post('description'),
+                'priority' => $request->post('priority'),
+                'status' => $request->post('status'),
+                'assigned_to' => $request->post('assigned_to'),
+                'resolved_date' => $request->post('resolved_date'),
+                'remarks' => $request->post('remarks')
+            ];
+
+            HostelComplaint::update($id, $data);
+            flash('success', 'Complaint updated successfully');
+            return redirect('/hostel/complaints');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update complaint: ' . $e->getMessage());
+            return back();
+        }
     }
 }
