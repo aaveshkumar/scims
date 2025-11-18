@@ -42,10 +42,11 @@ class DepartmentController
     public function create($request)
     {
         $staff = db()->fetchAll(
-            "SELECT id, CONCAT(first_name, ' ', last_name) as name 
-             FROM staff 
-             WHERE status = 'active' 
-             ORDER BY first_name, last_name"
+            "SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name 
+             FROM staff s 
+             INNER JOIN users u ON s.user_id = u.id
+             WHERE s.status = 'active' 
+             ORDER BY u.first_name, u.last_name"
         );
         
         return view('departments/create', [
@@ -102,10 +103,11 @@ class DepartmentController
         }
         
         $staff = db()->fetchAll(
-            "SELECT s.*, CONCAT(s.first_name, ' ', s.last_name) as name 
+            "SELECT s.*, CONCAT(u.first_name, ' ', u.last_name) as name 
              FROM staff s 
+             INNER JOIN users u ON s.user_id = u.id
              WHERE s.department_id = ? 
-             ORDER BY s.first_name, s.last_name",
+             ORDER BY u.first_name, u.last_name",
             [$id]
         );
         
@@ -126,10 +128,11 @@ class DepartmentController
         }
         
         $staff = db()->fetchAll(
-            "SELECT id, CONCAT(first_name, ' ', last_name) as name 
-             FROM staff 
-             WHERE status = 'active' 
-             ORDER BY first_name, last_name"
+            "SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name 
+             FROM staff s 
+             INNER JOIN users u ON s.user_id = u.id
+             WHERE s.status = 'active' 
+             ORDER BY u.first_name, u.last_name"
         );
         
         return view('departments/edit', [

@@ -351,9 +351,12 @@ class LibraryController
     {
         // Get all users who are not already library members
         $users = db()->fetchAll(
-            "SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email, u.role as role_name 
+            "SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email, 
+                    COALESCE(r.display_name, 'No Role') as role_name 
              FROM users u 
              LEFT JOIN library_members lm ON u.id = lm.user_id 
+             LEFT JOIN user_roles ur ON u.id = ur.user_id
+             LEFT JOIN roles r ON ur.role_id = r.id
              WHERE lm.id IS NULL 
              ORDER BY u.first_name, u.last_name"
         );
