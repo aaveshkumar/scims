@@ -1,8 +1,8 @@
 <?php
 
-class LibraryMember extends Model
+class LibraryMember
 {
-    protected $table = 'library_members';
+    protected static $table = 'library_members';
     
     /**
      * Get all library members

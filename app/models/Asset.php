@@ -1,8 +1,8 @@
 <?php
 
-class Asset extends Model
+class Asset
 {
-    protected $table = 'assets';
+    protected static $table = 'assets';
     
     public static function getAll($filters = [])
     {

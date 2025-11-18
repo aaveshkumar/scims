@@ -1,8 +1,8 @@
 <?php
 
-class HostelComplaint extends Model
+class HostelComplaint
 {
-    protected $table = 'hostel_complaints';
+    protected static $table = 'hostel_complaints';
     
     public static function getAll($filters = [])
     {

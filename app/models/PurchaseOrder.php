@@ -1,8 +1,8 @@
 <?php
 
-class PurchaseOrder extends Model
+class PurchaseOrder
 {
-    protected $table = 'purchase_orders';
+    protected static $table = 'purchase_orders';
     
     public static function getAll($filters = [])
     {

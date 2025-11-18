@@ -1,8 +1,8 @@
 <?php
 
-class InventoryItem extends Model
+class InventoryItem
 {
-    protected $table = 'inventory_items';
+    protected static $table = 'inventory_items';
     
     public static function getAll($filters = [])
     {

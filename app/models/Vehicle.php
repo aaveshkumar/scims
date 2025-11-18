@@ -1,8 +1,8 @@
 <?php
 
-class Vehicle extends Model
+class Vehicle
 {
-    protected $table = 'vehicles';
+    protected static $table = 'vehicles';
     
     /**
      * Get all vehicles with optional filters

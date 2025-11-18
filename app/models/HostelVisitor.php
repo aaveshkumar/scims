@@ -1,8 +1,8 @@
 <?php
 
-class HostelVisitor extends Model
+class HostelVisitor
 {
-    protected $table = 'hostel_visitors';
+    protected static $table = 'hostel_visitors';
     
     public static function getAll($filters = [])
     {

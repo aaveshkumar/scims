@@ -1,8 +1,8 @@
 <?php
 
-class BookIssue extends Model
+class BookIssue
 {
-    protected $table = 'book_issues';
+    protected static $table = 'book_issues';
     
     /**
      * Get all book issues with book and user details

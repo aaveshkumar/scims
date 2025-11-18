@@ -1,8 +1,8 @@
 <?php
 
-class Route extends Model
+class Route
 {
-    protected $table = 'routes';
+    protected static $table = 'routes';
     
     /**
      * Get all routes with vehicle and driver details

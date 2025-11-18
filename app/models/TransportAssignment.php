@@ -1,8 +1,8 @@
 <?php
 
-class TransportAssignment extends Model
+class TransportAssignment
 {
-    protected $table = 'transport_assignments';
+    protected static $table = 'transport_assignments';
     
     /**
      * Get all assignments with student and route details

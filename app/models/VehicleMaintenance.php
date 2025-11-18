@@ -1,8 +1,8 @@
 <?php
 
-class VehicleMaintenance extends Model
+class VehicleMaintenance
 {
-    protected $table = 'vehicle_maintenance';
+    protected static $table = 'vehicle_maintenance';
     
     /**
      * Get all maintenance records with vehicle details

@@ -1,8 +1,8 @@
 <?php
 
-class Supplier extends Model
+class Supplier
 {
-    protected $table = 'suppliers';
+    protected static $table = 'suppliers';
     
     public static function getAll($filters = [])
     {

@@ -1,8 +1,8 @@
 <?php
 
-class Book extends Model
+class Book
 {
-    protected $table = 'books';
+    protected static $table = 'books';
     
     /**
      * Get all books with optional filters
