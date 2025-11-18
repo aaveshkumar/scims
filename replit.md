@@ -48,19 +48,46 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 
 ### Database Tables Created
 - Created `library_members` table for library membership management
+- Created `departments` table for department management
 - Previously created 12 tables: books, book_issues, vehicles, routes, hostels, hostel_rooms, assets, stock_items, fee_templates, payroll, assignments, quizzes
 
 ### SQL Query Fixes
-- Fixed 21 SQL queries across 8 model files that were referencing non-existent `u.name` column
+- Fixed 21+ SQL queries across 9 files that were referencing non-existent `u.name` or `u.role_name` columns
 - Updated all queries to use `CONCAT(u.first_name, ' ', u.last_name)` for user names
-- Models fixed: BookIssue, LibraryMember, Hostel, Asset, Route, Payroll, HostelVisitor, HostelComplaint
+- Fixed `u.role` references for role names
+- Files fixed: BookIssue, LibraryMember, LibraryController, Hostel, Asset, Route, Payroll, HostelVisitor, HostelComplaint
+
+### Controllers Implemented
+- **RoleController**: Full CRUD implementation with database operations
+  - index: Lists all roles with search functionality
+  - create/store: Add new roles with validation
+  - show: View role details and assigned users
+  - edit/update: Modify existing roles
+  - destroy: Delete roles (with protection if users assigned)
+  
+- **DepartmentController**: Full CRUD implementation with database operations
+  - index: Lists all departments with search and status filters
+  - create/store: Add new departments with department head assignment
+  - show: View department details and assigned staff
+  - edit/update: Modify existing departments
+  - destroy: Delete departments (with protection if staff assigned)
+
+### Views Created/Updated
+- **Roles Module**: index.php, create.php, edit.php, show.php (all with improved UI/UX)
+- **Departments Module**: index.php, create.php, edit.php, show.php (all with improved UI/UX)
+- All views now display dynamic data from database
+- Added helpful instructions, examples, and validation feedback
+- Implemented proper error states and empty states
 
 ### Route Additions
 - Added RESTful routes for library books: show, edit, update, delete
 - Added routes for library member management: create, store
-- Routes now support full CRUD operations for library module
+- Added full CRUD routes for roles: index, create, store, show, edit, update, destroy
+- Added full CRUD routes for departments: index, create, store, show, edit, update, destroy
+- All routes follow RESTful conventions with proper CSRF protection
 
 ### Current Status
-- All 8 extended modules fully operational: Library, Transport, Hostel, Inventory, Fee Structure, Payroll, Assignments, Quizzes
-- Database: 46 tables total (45 + library_members)
+- All 10 modules fully operational: Library, Transport, Hostel, Inventory, Fee Structure, Payroll, Assignments, Quizzes, Roles, Departments
+- Database: 47 tables total (46 + departments)
 - Server running successfully with no errors
+- All CRUD operations tested and working
