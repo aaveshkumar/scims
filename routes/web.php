@@ -170,11 +170,19 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/roles', 'RoleController@index');
         $router->get('/roles/create', 'RoleController@create');
         $router->post('/roles', 'RoleController@store', ['csrf']);
+        $router->get('/roles/{id}', 'RoleController@show');
+        $router->get('/roles/{id}/edit', 'RoleController@edit');
+        $router->post('/roles/{id}', 'RoleController@update', ['csrf']);
+        $router->post('/roles/{id}/delete', 'RoleController@destroy', ['csrf']);
         
         // Departments
         $router->get('/departments', 'DepartmentController@index');
         $router->get('/departments/create', 'DepartmentController@create');
         $router->post('/departments', 'DepartmentController@store', ['csrf']);
+        $router->get('/departments/{id}', 'DepartmentController@show');
+        $router->get('/departments/{id}/edit', 'DepartmentController@edit');
+        $router->post('/departments/{id}', 'DepartmentController@update', ['csrf']);
+        $router->post('/departments/{id}/delete', 'DepartmentController@destroy', ['csrf']);
         
         // Academic Extensions
         $router->get('/syllabus', 'SyllabusController@index');
