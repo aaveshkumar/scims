@@ -4,39 +4,144 @@ class PayrollController
 {
     public function index($request)
     {
-        return view('payroll/index', ['title' => 'Payroll']);
+        $filters = [
+            'staff_id' => $request->get('staff_id'),
+            'month' => $request->get('month'),
+            'year' => $request->get('year'),
+            'status' => $request->get('status')
+        ];
+        
+        $payrollRecords = Payroll::getAll($filters);
+        $staff = db()->fetchAll("SELECT id, first_name, last_name, employee_id FROM staff ORDER BY first_name");
+        $stats = Payroll::getStatistics();
+        
+        return view('payroll/index', [
+            'title' => 'Payroll Management',
+            'payrollRecords' => $payrollRecords,
+            'staff' => $staff,
+            'stats' => $stats,
+            'filters' => $filters
+        ]);
     }
 
     public function create($request)
     {
-        return view('payroll/create', ['title' => 'Create - Payroll']);
+        $staff = db()->fetchAll("SELECT id, first_name, last_name, employee_id, salary FROM staff ORDER BY first_name");
+        
+        return view('payroll/create', [
+            'title' => 'Generate Payroll',
+            'staff' => $staff
+        ]);
     }
 
     public function store($request)
     {
-        flash('success', 'Record created successfully');
-        return redirect('/payroll');
+        $rules = [
+            'staff_id' => 'required',
+            'month' => 'required',
+            'year' => 'required',
+            'basic_salary' => 'required|numeric'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'staff_id' => $request->post('staff_id'),
+                'month' => $request->post('month'),
+                'year' => $request->post('year'),
+                'basic_salary' => $request->post('basic_salary'),
+                'allowances' => $request->post('allowances') ?? 0,
+                'deductions' => $request->post('deductions') ?? 0,
+                'payment_date' => $request->post('payment_date'),
+                'payment_method' => $request->post('payment_method'),
+                'status' => 'pending',
+                'remarks' => $request->post('remarks'),
+                'created_by' => auth()->user()['id']
+            ];
+
+            Payroll::create($data);
+            flash('success', 'Payroll generated successfully');
+            return redirect('/payroll');
+        } catch (Exception $e) {
+            flash('error', 'Failed to generate payroll: ' . $e->getMessage());
+            return back();
+        }
     }
 
     public function show($request, $id)
     {
-        return view('payroll/show', ['title' => 'View - Payroll', 'id' => $id]);
+        $payroll = Payroll::find($id);
+        
+        if (!$payroll) {
+            flash('error', 'Payroll record not found');
+            return redirect('/payroll');
+        }
+        
+        return view('payroll/show', [
+            'title' => 'Payroll Details',
+            'payroll' => $payroll
+        ]);
     }
 
     public function edit($request, $id)
     {
-        return view('payroll/edit', ['title' => 'Edit - Payroll', 'id' => $id]);
+        $payroll = Payroll::find($id);
+        
+        if (!$payroll) {
+            flash('error', 'Payroll record not found');
+            return redirect('/payroll');
+        }
+        
+        return view('payroll/edit', [
+            'title' => 'Edit Payroll',
+            'payroll' => $payroll
+        ]);
     }
 
     public function update($request, $id)
     {
-        flash('success', 'Record updated successfully');
-        return redirect('/payroll');
+        $rules = [
+            'basic_salary' => 'required|numeric'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'basic_salary' => $request->post('basic_salary'),
+                'allowances' => $request->post('allowances') ?? 0,
+                'deductions' => $request->post('deductions') ?? 0,
+                'payment_date' => $request->post('payment_date'),
+                'payment_method' => $request->post('payment_method'),
+                'status' => $request->post('status'),
+                'remarks' => $request->post('remarks')
+            ];
+
+            Payroll::update($id, $data);
+            flash('success', 'Payroll updated successfully');
+            return redirect('/payroll');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update payroll: ' . $e->getMessage());
+            return back();
+        }
     }
 
     public function destroy($request, $id)
     {
-        flash('success', 'Record deleted successfully');
-        return redirect('/payroll');
+        try {
+            Payroll::delete($id);
+            flash('success', 'Payroll record deleted successfully');
+            return redirect('/payroll');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete payroll: ' . $e->getMessage());
+            return back();
+        }
     }
 }
