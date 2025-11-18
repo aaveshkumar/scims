@@ -1,0 +1,65 @@
+Add the following missing features to the existing School/College ERP system. Build clean, modular code in the backend (Node.js + Express or PHP as required) and frontend (React or standard HTML/CSS/JS) with proper APIs, controllers, models, and database collections/tables.
+
+========================================================
+A. SCHOOL-SPECIFIC FEATURES
+========================================================
+1. Parent–Teacher Meeting Management  
+2. School Calendar & Holiday Management  
+3. Student Promotion & Class Transition  
+4. Student Disciplinary Report System  
+5. Notice Board / Events & Announcements  
+6. Student Transfer Certificate (TC) Generation  
+7. School Canteen / Store Inventory System  
+8. Attendance Alert System (SMS/Push to Parents)  
+9. Student Transport Slips (Bus/Route info for Parents)
+
+========================================================
+B. COLLEGE-SPECIFIC FEATURES
+========================================================
+1. Placement & Recruitment Cell Management  
+2. Alumni Management Portal  
+3. Industrial Training / Internship Tracking  
+4. GPA / Credit-Based Evaluation System  
+5. Research & Department-Performance Reporting  
+6. Academic Department Budgeting  
+7. Admission Counselor & Interview Scheduling  
+8. College Store Purchases / Vendor Billing System  
+9. Multi-Department Employee Structure
+
+========================================================
+C. HR MODULE ENHANCEMENTS
+========================================================
+1. Employee Meal Plan Management  
+2. Employee Gate Pass Generation  
+3. Staff Recruitment & Job Application Workflow  
+4. Faculty Feedback & Student Survey System  
+5. Event & Holiday Management (HR-Level)
+
+========================================================
+D. COMMUNICATION PORTAL ENHANCEMENTS
+========================================================
+1. Parent-to-Parent Networking Platform  
+2. Auto-Triggers for Notifications  
+3. Custom Sender IDs for Departments  
+4. iOS + Android App Integration Endpoints  
+5. Departmental Notification Broadcasting  
+6. Dedicated Parent–Teacher Messaging System
+
+========================================================
+E. ANALYTICS & DASHBOARD ENHANCEMENTS
+========================================================
+1. Predictive Insights (Attendance, Performance, Finance)  
+2. Drill-Down Analytics for All Modules  
+3. Automated Scheduled Reports (Daily/Weekly/Monthly)  
+4. Real-Time Dashboard Updates (Socket.io supported)  
+5. Comparative Analytics (Year/Semester/Class)
+
+========================================================
+F. CAMPUS MANAGEMENT ENHANCEMENTS
+========================================================
+1. Auto Timetable Generation (Optimized for Teachers/Rooms)  
+2. Grievance & Ticketing Portal  
+3. Transport Alerts (Overspeed, Route Deviation, History Logs)  
+4. Multi-Store Inventory with Supplier Billing  
+5. Library Borrowing Limits (Batch-Wise)  
+6. Hostel Warden Controls & Reporting
