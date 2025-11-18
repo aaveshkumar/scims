@@ -157,6 +157,45 @@
             </div>
 
             <?php if (hasRole('admin')): ?>
+            
+            <!-- NEW: Calendar & Holidays Menu -->
+            <div class="accordion accordion-flush" id="calendarMenu">
+                <div class="accordion-item sidebar-accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#calendarCollapse">
+                            <i class="bi bi-calendar-event me-2"></i>Calendar & Holidays <span class="badge bg-warning text-dark ms-1" style="font-size: 0.6rem;">NEW</span>
+                        </button>
+                    </h2>
+                    <div id="calendarCollapse" class="accordion-collapse collapse" data-bs-parent="#calendarMenu">
+                        <div class="accordion-body p-0">
+                            <a href="/calendar" class="sidebar-link list-group-item list-group-item-action border-0 ps-4"><i class="bi bi-star-fill text-warning me-1" style="font-size: 0.7rem;"></i>School Calendar</a>
+                            <a href="/calendar/create" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Add Event</a>
+                            <a href="/calendar/holidays" class="sidebar-link list-group-item list-group-item-action border-0 ps-4"><i class="bi bi-star-fill text-warning me-1" style="font-size: 0.7rem;"></i>Manage Holidays</a>
+                            <a href="/calendar/holidays/create" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Add Holiday</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW: HR Management Menu -->
+            <div class="accordion accordion-flush" id="hrMenu">
+                <div class="accordion-item sidebar-accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#hrCollapse">
+                            <i class="bi bi-person-badge me-2"></i>HR Management <span class="badge bg-info ms-1" style="font-size: 0.6rem;">NEW</span>
+                        </button>
+                    </h2>
+                    <div id="hrCollapse" class="accordion-collapse collapse" data-bs-parent="#hrMenu">
+                        <div class="accordion-body p-0">
+                            <a href="/hr/events" class="sidebar-link list-group-item list-group-item-action border-0 ps-4"><i class="bi bi-star-fill text-info me-1" style="font-size: 0.7rem;"></i>HR Events</a>
+                            <a href="/hr/events/create" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Create Event</a>
+                            <a href="/hr/recruitment" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Recruitment</a>
+                            <a href="/hr/payroll" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Payroll</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Library Menu -->
             <div class="accordion accordion-flush" id="libraryMenu">
                 <div class="accordion-item sidebar-accordion-item border-0">
@@ -243,7 +282,8 @@
                     <div id="communicationCollapse" class="accordion-collapse collapse" data-bs-parent="#communicationMenu">
                         <div class="accordion-body p-0">
                             <a href="/notifications" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Notifications</a>
-                            <a href="/announcements" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Announcements</a>
+                            <a href="/announcements" class="sidebar-link list-group-item list-group-item-action border-0 ps-4"><i class="bi bi-star-fill text-primary me-1" style="font-size: 0.7rem;"></i>Announcements</a>
+                            <a href="/announcements/create" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Create Announcement</a>
                             <a href="/messages" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Messages</a>
                         </div>
                     </div>

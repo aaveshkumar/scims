@@ -7,6 +7,66 @@
     </div>
 
     <div class="row">
+        <!-- NEW FEATURE: School Calendar & Holiday Management -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm border-warning" style="border-width: 3px !important;">
+                <div class="card-header bg-warning text-dark position-relative">
+                    <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>School Calendar & Holidays <span class="badge bg-danger ms-2"><i class="bi bi-star-fill"></i> NEW</span></h5>
+                </div>
+                <div class="card-body bg-light">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="bi bi-star text-warning me-2"></i><strong>School Calendar Management</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-warning me-2"></i><strong>Holiday Scheduling</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-warning me-2"></i><strong>Multi-day Events</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-warning me-2"></i><strong>Event Categories & Color-Coding</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-warning me-2"></i><strong>Class/Department-Specific Events</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-warning me-2"></i><strong>Recurring Holiday Support</strong></li>
+                    </ul>
+                    <a href="/calendar" class="btn btn-sm btn-warning mt-2">Access Module</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW FEATURE: HR Events & Management -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm border-info" style="border-width: 3px !important;">
+                <div class="card-header bg-info text-white position-relative">
+                    <h5 class="mb-0"><i class="bi bi-calendar-week me-2"></i>HR Events & Management <span class="badge bg-danger ms-2"><i class="bi bi-star-fill"></i> NEW</span></h5>
+                </div>
+                <div class="card-body bg-light">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="bi bi-star text-info me-2"></i><strong>Staff Event Management</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-info me-2"></i><strong>HR Holiday Management</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-info me-2"></i><strong>Meeting & Training Scheduling</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-info me-2"></i><strong>Event Participant Tracking</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-info me-2"></i><strong>Attendance Marking for Events</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-info me-2"></i><strong>Department-Level Events</strong></li>
+                    </ul>
+                    <a href="/hr/events" class="btn btn-sm btn-info mt-2">Access Module</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW FEATURE: Enhanced Announcements & Notice Board -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm border-primary" style="border-width: 3px !important;">
+                <div class="card-header bg-primary text-white position-relative">
+                    <h5 class="mb-0"><i class="bi bi-megaphone me-2"></i>Notice Board & Announcements <span class="badge bg-danger ms-2"><i class="bi bi-star-fill"></i> NEW</span></h5>
+                </div>
+                <div class="card-body bg-light">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="bi bi-star text-primary me-2"></i><strong>Enhanced Notice Board</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-primary me-2"></i><strong>Priority Levels (Urgent/High/Normal)</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-primary me-2"></i><strong>Visibility Controls</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-primary me-2"></i><strong>Pin Important Announcements</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-primary me-2"></i><strong>File Attachments</strong></li>
+                        <li class="mb-2"><i class="bi bi-star text-primary me-2"></i><strong>Auto-Expiry & Archiving</strong></li>
+                    </ul>
+                    <a href="/announcements" class="btn btn-sm btn-primary mt-2">Access Module</a>
+                </div>
+            </div>
+        </div>
+
         <!-- Admissions Module -->
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card h-100 shadow-sm">
@@ -314,15 +374,15 @@
             <h5 class="card-title">System Statistics</h5>
             <div class="row text-center">
                 <div class="col-md-3">
-                    <h3 class="text-primary">19</h3>
+                    <h3 class="text-primary">22</h3>
                     <p class="text-muted mb-0">Total Modules</p>
                 </div>
                 <div class="col-md-3">
-                    <h3 class="text-success">15</h3>
+                    <h3 class="text-success">18</h3>
                     <p class="text-muted mb-0">Active Modules</p>
                 </div>
                 <div class="col-md-3">
-                    <h3 class="text-info">60+</h3>
+                    <h3 class="text-info">70+</h3>
                     <p class="text-muted mb-0">Features</p>
                 </div>
                 <div class="col-md-3">
