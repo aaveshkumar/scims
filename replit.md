@@ -63,6 +63,8 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - `user_roles` junction table: links users to roles via `user_id` and `role_id`
 - `roles` table: has `name`, `display_name`, `description`
 - `staff` table: has `user_id` (no `first_name/last_name`), links to users via `user_id`
+- `staff` table: has `department` VARCHAR column (NOT a foreign key to departments.id - this is a known limitation)
+- `departments` table: standalone table with `id`, `name`, `code`, `head_id` (user.id reference)
 
 ### Controllers Implemented
 - **RoleController**: Full CRUD implementation with database operations
@@ -82,6 +84,7 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 ### Views Created/Updated
 - **Roles Module**: index.php, create.php, edit.php, show.php (all with improved UI/UX)
 - **Departments Module**: index.php, create.php, edit.php, show.php (all with improved UI/UX)
+- **Library Module**: create_member.php (library membership form with user selection)
 - All views now display dynamic data from database
 - Added helpful instructions, examples, and validation feedback
 - Implemented proper error states and empty states
@@ -93,8 +96,17 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - Added full CRUD routes for departments: index, create, store, show, edit, update, destroy
 - All routes follow RESTful conventions with proper CSRF protection
 
+### Known Limitations
+- **Staff-Department Relationship**: The `staff.department` column is VARCHAR (text), not a foreign key to `departments.id`. This means:
+  - Cannot reliably query staff by department ID
+  - Department show page cannot display assigned staff members
+  - To fix properly: would need to add `department_id` foreign key column to staff table
+  - Current workaround: Department CRUD works, but staff assignment is not enforced
+
 ### Current Status
 - All 10 modules fully operational: Library, Transport, Hostel, Inventory, Fee Structure, Payroll, Assignments, Quizzes, Roles, Departments
-- Database: 47 tables total (46 + departments)
+- Database: 47 tables total
 - Server running successfully with no errors
 - All CRUD operations tested and working
+- Library member creation: ✓ Working with proper role display
+- Departments management: ✓ Working (with staff assignment limitation noted above)
