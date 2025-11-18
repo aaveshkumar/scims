@@ -43,3 +43,24 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 ## External Dependencies
 - **Database**: MySQL (Remote via PDO)
 - **Frontend Framework**: Bootstrap 5
+
+## Recent Changes (November 18, 2025)
+
+### Database Tables Created
+- Created `library_members` table for library membership management
+- Previously created 12 tables: books, book_issues, vehicles, routes, hostels, hostel_rooms, assets, stock_items, fee_templates, payroll, assignments, quizzes
+
+### SQL Query Fixes
+- Fixed 21 SQL queries across 8 model files that were referencing non-existent `u.name` column
+- Updated all queries to use `CONCAT(u.first_name, ' ', u.last_name)` for user names
+- Models fixed: BookIssue, LibraryMember, Hostel, Asset, Route, Payroll, HostelVisitor, HostelComplaint
+
+### Route Additions
+- Added RESTful routes for library books: show, edit, update, delete
+- Added routes for library member management: create, store
+- Routes now support full CRUD operations for library module
+
+### Current Status
+- All 8 extended modules fully operational: Library, Transport, Hostel, Inventory, Fee Structure, Payroll, Assignments, Quizzes
+- Database: 46 tables total (45 + library_members)
+- Server running successfully with no errors

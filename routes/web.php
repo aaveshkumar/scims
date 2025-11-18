@@ -216,10 +216,16 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/library/books', 'LibraryController@index');
         $router->get('/library/books/create', 'LibraryController@create');
         $router->post('/library/books', 'LibraryController@store', ['csrf']);
+        $router->get('/library/books/{id}', 'LibraryController@show');
+        $router->get('/library/books/{id}/edit', 'LibraryController@edit');
+        $router->post('/library/books/{id}', 'LibraryController@update', ['csrf']);
+        $router->post('/library/books/{id}/delete', 'LibraryController@destroy', ['csrf']);
         $router->get('/library/issue', 'LibraryController@issue');
         $router->post('/library/issue', 'LibraryController@processIssue', ['csrf']);
         $router->post('/library/return', 'LibraryController@processReturn', ['csrf']);
         $router->get('/library/members', 'LibraryController@members');
+        $router->get('/library/members/create', 'LibraryController@createMember');
+        $router->post('/library/members', 'LibraryController@storeMember', ['csrf']);
         
         // Transport Management
         $router->get('/transport', function() { return redirect('/transport/vehicles'); });
