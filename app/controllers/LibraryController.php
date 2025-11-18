@@ -249,7 +249,7 @@ class LibraryController
                 'issue_date' => $request->post('issue_date'),
                 'due_date' => $request->post('due_date'),
                 'remarks' => $request->post('remarks'),
-                'issued_by' => auth()->id()
+                'issued_by' => auth()['id']
             ];
             
             // Create issue record
@@ -290,7 +290,7 @@ class LibraryController
             }
             
             // Return the book
-            BookIssue::returnBook($issueId, auth()->id());
+            BookIssue::returnBook($issueId, auth()['id']);
             
             // Increase available copies
             Book::increaseAvailableCopies($issue['book_id']);
