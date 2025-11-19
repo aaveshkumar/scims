@@ -188,6 +188,110 @@ class AdmissionController
     }
 
     /**
+     * Admin: Show edit form (admin only)
+     */
+    public function edit($request, $id)
+    {
+        if (!hasRole('admin')) {
+            flash('error', 'Unauthorized action');
+            return redirect('/admissions');
+        }
+        
+        $admission = $this->admissionModel->find($id);
+        
+        if (!$admission) {
+            flash('error', 'Application not found');
+            return redirect('/admissions');
+        }
+        
+        // Only allow editing if pending or waitlisted
+        if (!in_array($admission['status'], ['pending', 'waitlisted'])) {
+            flash('error', 'This application cannot be edited');
+            return redirect('/admissions/' . $id);
+        }
+        
+        $courses = $this->courseModel->where('status', 'active')->get();
+        $classes = $this->classModel->where('status', 'active')->get();
+        
+        return view('admissions/edit', [
+            'title' => 'Edit Application',
+            'admission' => $admission,
+            'courses' => $courses,
+            'classes' => $classes
+        ]);
+    }
+
+    /**
+     * Admin: Update application (admin only)
+     */
+    public function update($request, $id)
+    {
+        if (!hasRole('admin')) {
+            flash('error', 'Unauthorized action');
+            return redirect('/admissions');
+        }
+        
+        $admission = $this->admissionModel->find($id);
+        
+        if (!$admission) {
+            flash('error', 'Application not found');
+            return redirect('/admissions');
+        }
+        
+        // Only allow editing if pending or waitlisted
+        if (!in_array($admission['status'], ['pending', 'waitlisted'])) {
+            flash('error', 'This application cannot be edited');
+            return redirect('/admissions/' . $id);
+        }
+        
+        $rules = [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'date_of_birth' => 'required',
+            'gender' => 'required',
+            'address' => 'required',
+            'course_id' => 'required',
+            'class_id' => 'required',
+            'guardian_name' => 'required',
+            'guardian_phone' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fix the validation errors');
+            return back();
+        }
+
+        try {
+            $data = [
+                'first_name' => $request->post('first_name'),
+                'last_name' => $request->post('last_name'),
+                'email' => $request->post('email'),
+                'phone' => $request->post('phone'),
+                'date_of_birth' => $request->post('date_of_birth'),
+                'gender' => $request->post('gender'),
+                'address' => $request->post('address'),
+                'course_id' => $request->post('course_id'),
+                'class_id' => $request->post('class_id'),
+                'previous_school' => $request->post('previous_school'),
+                'guardian_name' => $request->post('guardian_name'),
+                'guardian_phone' => $request->post('guardian_phone'),
+                'guardian_email' => $request->post('guardian_email')
+            ];
+
+            $this->admissionModel->update($id, $data);
+            
+            flash('success', 'Application updated successfully!');
+            return redirect('/admissions/' . $id);
+            
+        } catch (Exception $e) {
+            flash('error', 'Failed to update application: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    /**
      * Admin: Approve application
      */
     public function approve($request, $id)

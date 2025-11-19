@@ -141,6 +141,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/admissions', 'AdmissionController@index');
         $router->get('/admissions/statistics', 'AdmissionController@statistics');
         $router->get('/admissions/{id}', 'AdmissionController@show');
+        $router->get('/admissions/{id}/edit', 'AdmissionController@edit');
+        $router->put('/admissions/{id}', 'AdmissionController@update', ['csrf']);
         $router->post('/admissions/{id}/approve', 'AdmissionController@approve', ['csrf']);
         $router->post('/admissions/{id}/reject', 'AdmissionController@reject', ['csrf']);
         $router->post('/admissions/{id}/waitlist', 'AdmissionController@waitlist', ['csrf']);

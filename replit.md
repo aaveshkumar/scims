@@ -105,6 +105,8 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
   - Current workaround: Department CRUD works, but staff assignment is not enforced
 
 ### Bug Fixes (November 19, 2025)
+
+#### Session 1 - Database & Core Issues
 - **Admissions - Duplicate email error**: Fixed conversion logic to check if user exists before creating new account, reuses existing user if email matches
 - **Admissions - Waiting list approve/reject**: Added approve/reject buttons for waitlisted applicants (previously only pending had these options)
 - **Students - Update error**: Fixed "Student not found" by explicitly selecting columns to avoid id column conflict in JOIN query
@@ -117,6 +119,27 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - **Staff edit ID conflict**: Fixed SELECT query to avoid id column overwriting by explicitly selecting columns
 - Fixed `auth()->id()` calls in LibraryController - changed to `auth()['id']` since auth() returns array, not object
 - Fixed book issue and return functionality in library module
+
+#### Session 2 - CSRF, Loading & Edit Features
+- **CSRF Token Validation**: Updated CsrfMiddleware to support AJAX requests by checking:
+  - X-CSRF-TOKEN header
+  - _token in JSON body
+  - _token in POST data
+  - Returns proper JSON error for AJAX requests (403) instead of redirecting
+- **CSRF Meta Tag**: Added CSRF token meta tag to header for all authenticated pages
+- **Global Loading Indicator**: Implemented loading spinner for all page navigations with:
+  - Fixed overlay with spinner animation
+  - Shows on link clicks (excludes # links, javascript:, _blank targets)
+  - Hides on page load and back navigation
+  - Checks for element existence before initializing
+- **Delete Confirmation**: Updated confirmDelete function to include CSRF token in headers and body
+- **Status Toggle**: Enhanced toggleStatus function with proper CSRF token handling and error messages
+- **Admissions Edit**: Added edit functionality for pending/waitlisted applications with:
+  - Edit and update controller methods (admin only)
+  - Edit view with pre-filled values
+  - Routes for GET /admissions/{id}/edit and PUT /admissions/{id}
+  - Edit button in admission show page (only for admin role)
+  - Authorization checks to ensure only admins can edit
 
 ### Current Status
 - All 10 modules fully operational: Library, Transport, Hostel, Inventory, Fee Structure, Payroll, Assignments, Quizzes, Roles, Departments

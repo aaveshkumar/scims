@@ -27,6 +27,11 @@
                 </button>
             </form>
         <?php endif; ?>
+        <?php if (in_array($admission['status'], ['pending', 'waitlisted']) && hasRole('admin')): ?>
+            <a href="/admissions/<?= $admission['id'] ?>/edit" class="btn btn-primary">
+                <i class="bi bi-pencil me-2"></i>Edit Application
+            </a>
+        <?php endif; ?>
         <a href="/admissions" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-2"></i>Back
         </a>

@@ -45,17 +45,64 @@
             }
         })();
         
+        // Page Loader Functionality
+        (function() {
+            const loader = document.getElementById('page-loader');
+            
+            // Only initialize if loader element exists
+            if (!loader) return;
+            
+            // Show loader on all link clicks (except # links and logout)
+            document.addEventListener('click', function(e) {
+                const target = e.target.closest('a');
+                if (target && target.getAttribute('href') && 
+                    !target.getAttribute('href').startsWith('#') && 
+                    !target.getAttribute('href').startsWith('javascript:') &&
+                    !target.classList.contains('no-loader') &&
+                    target.getAttribute('target') !== '_blank') {
+                    loader.classList.add('active');
+                }
+            });
+            
+            // Hide loader when page loads
+            window.addEventListener('load', function() {
+                loader.classList.remove('active');
+            });
+            
+            // Hide loader if user navigates back
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    loader.classList.remove('active');
+                }
+            });
+        })();
+        
         // Delete Confirmation Function
         function confirmDelete(url, message = 'Are you sure you want to delete this?') {
             if (confirm(message)) {
+                // Get CSRF token from meta tag
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                
+                if (!csrfToken) {
+                    alert('CSRF token not found. Please refresh the page.');
+                    return;
+                }
+                
                 fetch(url, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({ _token: csrfToken })
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         location.reload();
@@ -64,8 +111,8 @@
                     }
                 })
                 .catch(error => {
-                    alert('An error occurred');
-                    console.error(error);
+                    alert('An error occurred. Please refresh the page and try again.');
+                    console.error('Delete error:', error);
                 });
             }
         }
@@ -84,20 +131,29 @@
                 return;
             }
             
-            // Get CSRF token from meta tag or form
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || 
-                            document.querySelector('input[name="_token"]')?.value;
+            // Get CSRF token from meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+            
+            if (!csrfToken) {
+                alert('CSRF token not found. Please refresh the page.');
+                return;
+            }
             
             fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-Token': csrfToken
+                    'X-CSRF-TOKEN': csrfToken
                 },
                 body: JSON.stringify({ _token: csrfToken })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     location.reload();
@@ -106,8 +162,8 @@
                 }
             })
             .catch(error => {
-                alert('An error occurred while toggling status');
-                console.error(error);
+                alert('An error occurred while toggling status. Please refresh the page and try again.');
+                console.error('Toggle status error:', error);
             });
         }
         
