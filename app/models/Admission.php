@@ -104,34 +104,53 @@ class Admission extends Model
         $db->beginTransaction();
         
         try {
-            // 1. Create user account
-            $password = password_hash('student@' . date('Y'), PASSWORD_DEFAULT);
-            
-            $db->execute(
-                "INSERT INTO users (first_name, last_name, email, phone, password, 
-                 gender, date_of_birth, address, status, created_at, updated_at) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW(), NOW())",
-                [
-                    $admission['first_name'],
-                    $admission['last_name'],
-                    $admission['email'],
-                    $admission['phone'],
-                    $password,
-                    $admission['gender'],
-                    $admission['date_of_birth'],
-                    $admission['address']
-                ]
+            // 1. Check if user with this email already exists
+            $existingUser = $db->fetchOne(
+                "SELECT id FROM users WHERE email = ?",
+                [$admission['email']]
             );
             
-            $userId = $db->lastInsertId();
+            if ($existingUser) {
+                // User exists - use existing user account
+                $userId = $existingUser['id'];
+                $password = null; // Don't change existing password
+            } else {
+                // Create new user account
+                $password = password_hash('student@' . date('Y'), PASSWORD_DEFAULT);
+                
+                $db->execute(
+                    "INSERT INTO users (first_name, last_name, email, phone, password, 
+                     gender, date_of_birth, address, status, created_at, updated_at) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW(), NOW())",
+                    [
+                        $admission['first_name'],
+                        $admission['last_name'],
+                        $admission['email'],
+                        $admission['phone'],
+                        $password,
+                        $admission['gender'],
+                        $admission['date_of_birth'],
+                        $admission['address']
+                    ]
+                );
+                
+                $userId = $db->lastInsertId();
+            }
 
-            // 2. Assign student role
+            // 2. Assign student role (only if not already assigned)
             $studentRole = $db->fetchOne("SELECT id FROM roles WHERE name = 'student' LIMIT 1");
             if ($studentRole) {
-                $db->execute(
-                    "INSERT INTO user_roles (user_id, role_id, created_at) VALUES (?, ?, NOW())",
+                $hasRole = $db->fetchOne(
+                    "SELECT id FROM user_roles WHERE user_id = ? AND role_id = ?",
                     [$userId, $studentRole['id']]
                 );
+                
+                if (!$hasRole) {
+                    $db->execute(
+                        "INSERT INTO user_roles (user_id, role_id, created_at) VALUES (?, ?, NOW())",
+                        [$userId, $studentRole['id']]
+                    );
+                }
             }
 
             // 3. Create student record
@@ -165,12 +184,20 @@ class Admission extends Model
             // Commit transaction
             $db->commit();
 
+            $message = $existingUser 
+                ? 'Student record linked to existing user account' 
+                : 'Student account created successfully';
+            
+            $defaultPassword = $existingUser 
+                ? null 
+                : 'student@' . date('Y');
+
             return [
                 'success' => true,
                 'student_id' => $studentId,
                 'user_id' => $userId,
-                'message' => 'Student account created successfully',
-                'default_password' => 'student@' . date('Y')
+                'message' => $message,
+                'default_password' => $defaultPassword
             ];
             
         } catch (Exception $e) {

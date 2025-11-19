@@ -138,9 +138,9 @@
                                 </td>
                                 <td>
                                     <?php if ($member['status'] == 'active'): ?>
-                                        <span class="badge bg-success">Active</span>
+                                        <span class="badge bg-success" id="status-badge-<?php echo $member['id']; ?>">Active</span>
                                     <?php else: ?>
-                                        <span class="badge bg-secondary">Inactive</span>
+                                        <span class="badge bg-secondary" id="status-badge-<?php echo $member['id']; ?>">Inactive</span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -149,6 +149,11 @@
                                            class="btn btn-sm btn-warning" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
+                                        <button onclick="toggleStatus('library-member', <?php echo $member['id']; ?>)" 
+                                                class="btn btn-sm btn-<?php echo $member['status'] === 'active' ? 'secondary' : 'success'; ?>" 
+                                                title="Toggle Status">
+                                            <i class="bi bi-<?php echo $member['status'] === 'active' ? 'x-circle' : 'check-circle'; ?>"></i>
+                                        </button>
                                         <?php if ($isExpiringSoon || $isExpired): ?>
                                             <form method="POST" action="/library/members/<?php echo $member['id']; ?>/renew" style="display: inline;">
                                                 <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">

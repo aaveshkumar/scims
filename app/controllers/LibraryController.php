@@ -467,4 +467,28 @@ class LibraryController
             return back();
         }
     }
+    
+    /**
+     * Toggle library member status
+     */
+    public function toggleMemberStatus($request, $id)
+    {
+        try {
+            $member = LibraryMember::find($id);
+            if (!$member) {
+                return responseJSON(['success' => false, 'message' => 'Library member not found'], 404);
+            }
+
+            $newStatus = $member['status'] === 'active' ? 'inactive' : 'active';
+            LibraryMember::update($id, ['status' => $newStatus]);
+
+            return responseJSON([
+                'success' => true, 
+                'message' => 'Member status updated successfully',
+                'status' => $newStatus
+            ]);
+        } catch (Exception $e) {
+            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 }

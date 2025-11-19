@@ -70,6 +70,47 @@
             }
         }
         
+        // Toggle Status Function
+        function toggleStatus(type, id) {
+            const urls = {
+                'student': `/students/${id}/toggle-status`,
+                'staff': `/staff/${id}/toggle-status`,
+                'library-member': `/library/members/${id}/toggle-status`
+            };
+            
+            const url = urls[type];
+            if (!url) {
+                alert('Invalid type');
+                return;
+            }
+            
+            // Get CSRF token from meta tag or form
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || 
+                            document.querySelector('input[name="_token"]')?.value;
+            
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': csrfToken
+                },
+                body: JSON.stringify({ _token: csrfToken })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Status toggle failed');
+                }
+            })
+            .catch(error => {
+                alert('An error occurred while toggling status');
+                console.error(error);
+            });
+        }
+        
         // Global Form Handler with Loading States
         (function() {
             document.addEventListener('DOMContentLoaded', function() {

@@ -101,6 +101,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/students/{id}', 'StudentController@show');
         $router->get('/students/{id}/edit', 'StudentController@edit');
         $router->post('/students/{id}', 'StudentController@update', ['csrf']);
+        $router->post('/students/{id}/toggle-status', 'StudentController@toggleStatus', ['csrf']);
         $router->delete('/students/{id}', 'StudentController@destroy', ['csrf']);
 
         $router->get('/staff', 'StaffController@index');
@@ -109,6 +110,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/staff/{id}', 'StaffController@show');
         $router->get('/staff/{id}/edit', 'StaffController@edit');
         $router->post('/staff/{id}', 'StaffController@update', ['csrf']);
+        $router->post('/staff/{id}/toggle-status', 'StaffController@toggleStatus', ['csrf']);
         $router->delete('/staff/{id}', 'StaffController@destroy', ['csrf']);
 
         $router->get('/courses', 'CourseController@index');
@@ -234,6 +236,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/library/members', 'LibraryController@members');
         $router->get('/library/members/create', 'LibraryController@createMember');
         $router->post('/library/members', 'LibraryController@storeMember', ['csrf']);
+        $router->post('/library/members/{id}/toggle-status', 'LibraryController@toggleMemberStatus', ['csrf']);
         
         // Transport Management
         $router->get('/transport', function() { return redirect('/transport/vehicles'); });

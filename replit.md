@@ -104,7 +104,17 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
   - To fix properly: would need to add `department_id` foreign key column to staff table
   - Current workaround: Department CRUD works, but staff assignment is not enforced
 
-### Bug Fixes
+### Bug Fixes (November 19, 2025)
+- **Admissions - Duplicate email error**: Fixed conversion logic to check if user exists before creating new account, reuses existing user if email matches
+- **Admissions - Waiting list approve/reject**: Added approve/reject buttons for waitlisted applicants (previously only pending had these options)
+- **Students - Update error**: Fixed "Student not found" by explicitly selecting columns to avoid id column conflict in JOIN query
+- **Students - Delete error**: Added check for foreign key constraints with helpful error message suggesting to mark inactive instead
+- **Status toggle system-wide**: Implemented toggle status functionality for students, staff, and library members with:
+  - Backend routes and controllers (toggleStatus methods)
+  - Frontend toggle buttons in index pages
+  - JavaScript function to handle AJAX toggle requests
+- **Department staff assignment**: Changed staff create/edit forms to use department dropdown instead of text input, loads active departments from database
+- **Staff edit ID conflict**: Fixed SELECT query to avoid id column overwriting by explicitly selecting columns
 - Fixed `auth()->id()` calls in LibraryController - changed to `auth()['id']` since auth() returns array, not object
 - Fixed book issue and return functionality in library module
 

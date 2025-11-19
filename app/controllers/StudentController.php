@@ -118,7 +118,12 @@ class StudentController
     public function edit($request, $id)
     {
         $student = db()->fetchOne(
-            "SELECT s.*, u.* FROM students s
+            "SELECT s.id, s.user_id, s.admission_number, s.class_id, s.roll_number,
+                    s.admission_date, s.guardian_name, s.guardian_phone, s.guardian_email,
+                    s.guardian_relation, s.blood_group, s.status,
+                    u.first_name, u.last_name, u.email, u.phone, u.gender, 
+                    u.date_of_birth, u.address
+             FROM students s
              INNER JOIN users u ON s.user_id = u.id
              WHERE s.id = ?",
             [$id]
@@ -190,9 +195,54 @@ class StudentController
                 return responseJSON(['success' => false, 'message' => 'Student not found'], 404);
             }
 
+            // Check if student has related records
+            $db = db();
+            $hasAttendance = $db->fetchOne("SELECT COUNT(*) as count FROM attendance WHERE student_id = ?", [$id])['count'] > 0;
+            $hasMarks = $db->fetchOne("SELECT COUNT(*) as count FROM marks WHERE student_id = ?", [$id])['count'] > 0;
+            $hasInvoices = $db->fetchOne("SELECT COUNT(*) as count FROM invoices WHERE student_id = ?", [$id])['count'] > 0;
+            $hasAssignments = $db->fetchOne("SELECT COUNT(*) as count FROM assignment_submissions WHERE student_id = ?", [$id])['count'] > 0;
+            $hasQuizzes = $db->fetchOne("SELECT COUNT(*) as count FROM quiz_attempts WHERE student_id = ?", [$id])['count'] > 0;
+
+            if ($hasAttendance || $hasMarks || $hasInvoices || $hasAssignments || $hasQuizzes) {
+                return responseJSON([
+                    'success' => false, 
+                    'message' => 'Cannot delete student with existing records (attendance, marks, invoices, assignments, or quizzes). Consider marking the student as inactive instead.'
+                ], 400);
+            }
+
             $this->studentModel->delete($id);
 
             return responseJSON(['success' => true, 'message' => 'Student deleted successfully']);
+        } catch (Exception $e) {
+            // Check if it's a foreign key constraint error
+            if (strpos($e->getMessage(), 'foreign key constraint') !== false || 
+                strpos($e->getMessage(), 'Cannot delete or update a parent row') !== false) {
+                return responseJSON([
+                    'success' => false, 
+                    'message' => 'Cannot delete student with existing records. Consider marking the student as inactive instead.'
+                ], 400);
+            }
+            
+            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function toggleStatus($request, $id)
+    {
+        try {
+            $student = $this->studentModel->find($id);
+            if (!$student) {
+                return responseJSON(['success' => false, 'message' => 'Student not found'], 404);
+            }
+
+            $newStatus = $student['status'] === 'active' ? 'inactive' : 'active';
+            $this->studentModel->update($id, ['status' => $newStatus]);
+
+            return responseJSON([
+                'success' => true, 
+                'message' => 'Student status updated successfully',
+                'status' => $newStatus
+            ]);
         } catch (Exception $e) {
             return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
         }

@@ -3,7 +3,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Application Details</h2>
     <div>
-        <?php if ($admission['status'] === 'pending' && hasRole('admin')): ?>
+        <?php if (($admission['status'] === 'pending' || $admission['status'] === 'waitlisted') && hasRole('admin')): ?>
             <form method="POST" action="/admissions/<?= $admission['id'] ?>/approve" class="d-inline">
                 <?= csrf_field() ?>
                 <button type="submit" class="btn btn-success">
@@ -13,9 +13,11 @@
             <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
                 <i class="bi bi-x-circle me-2"></i>Reject
             </button>
+            <?php if ($admission['status'] === 'pending'): ?>
             <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#waitlistModal">
                 <i class="bi bi-hourglass me-2"></i>Waitlist
             </button>
+            <?php endif; ?>
         <?php endif; ?>
         <?php if ($admission['status'] === 'approved' && hasRole('admin')): ?>
             <form method="POST" action="/admissions/<?= $admission['id'] ?>/convert" class="d-inline">

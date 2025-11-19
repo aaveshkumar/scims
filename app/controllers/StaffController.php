@@ -25,7 +25,10 @@ class StaffController
 
     public function create($request)
     {
-        return view('staff.create');
+        // Get all departments
+        $departments = db()->fetchAll("SELECT * FROM departments WHERE status = 'active' ORDER BY name");
+        
+        return view('staff.create', ['departments' => $departments]);
     }
 
     public function store($request)
@@ -119,7 +122,12 @@ class StaffController
     public function edit($request, $id)
     {
         $staff = db()->fetchOne(
-            "SELECT s.*, u.* FROM staff s
+            "SELECT s.id, s.user_id, s.designation, s.department, s.qualification,
+                    s.experience_years, s.salary, s.join_date, s.bank_name, s.account_number,
+                    s.emergency_contact, s.status,
+                    u.first_name, u.last_name, u.email, u.phone, u.gender, 
+                    u.date_of_birth, u.address
+             FROM staff s
              INNER JOIN users u ON s.user_id = u.id
              WHERE s.id = ?",
             [$id]
@@ -130,7 +138,10 @@ class StaffController
             return redirect('/staff');
         }
 
-        return view('staff.edit', ['staff' => $staff]);
+        // Get all departments
+        $departments = db()->fetchAll("SELECT * FROM departments WHERE status = 'active' ORDER BY name");
+
+        return view('staff.edit', ['staff' => $staff, 'departments' => $departments]);
     }
 
     public function update($request, $id)
@@ -189,6 +200,27 @@ class StaffController
         try {
             $this->staffModel->delete($id);
             return responseJSON(['success' => true, 'message' => 'Staff member deleted successfully']);
+        } catch (Exception $e) {
+            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function toggleStatus($request, $id)
+    {
+        try {
+            $staff = $this->staffModel->find($id);
+            if (!$staff) {
+                return responseJSON(['success' => false, 'message' => 'Staff member not found'], 404);
+            }
+
+            $newStatus = $staff['status'] === 'active' ? 'inactive' : 'active';
+            $this->staffModel->update($id, ['status' => $newStatus]);
+
+            return responseJSON([
+                'success' => true, 
+                'message' => 'Staff status updated successfully',
+                'status' => $newStatus
+            ]);
         } catch (Exception $e) {
             return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
         }

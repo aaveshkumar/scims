@@ -45,7 +45,14 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Department</label>
-                    <input type="text" name="department" class="form-control" value="<?= htmlspecialchars($staff['department'] ?? '') ?>">
+                    <select name="department" class="form-select">
+                        <option value="">Select Department</option>
+                        <?php foreach ($departments as $dept): ?>
+                            <option value="<?= htmlspecialchars($dept['name']) ?>" <?= ($staff['department'] ?? '') === $dept['name'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($dept['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </div>
 

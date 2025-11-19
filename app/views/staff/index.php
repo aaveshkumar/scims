@@ -39,18 +39,21 @@
                                 <td><?= htmlspecialchars($member['phone']) ?></td>
                                 <td><?= htmlspecialchars($member['designation']) ?></td>
                                 <td>
-                                    <span class="badge bg-<?= $member['status'] === 'active' ? 'success' : 'secondary' ?>">
+                                    <span class="badge bg-<?= $member['status'] === 'active' ? 'success' : 'secondary' ?>" id="status-badge-<?= $member['id'] ?>">
                                         <?= ucfirst($member['status']) ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="/staff/<?= $member['id'] ?>" class="btn btn-sm btn-info">
+                                    <a href="/staff/<?= $member['id'] ?>" class="btn btn-sm btn-info" title="View">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="/staff/<?= $member['id'] ?>/edit" class="btn btn-sm btn-warning">
+                                    <a href="/staff/<?= $member['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button onclick="confirmDelete('/staff/<?= $member['id'] ?>')" class="btn btn-sm btn-danger">
+                                    <button onclick="toggleStatus('staff', <?= $member['id'] ?>)" class="btn btn-sm btn-<?= $member['status'] === 'active' ? 'secondary' : 'success' ?>" title="Toggle Status">
+                                        <i class="bi bi-<?= $member['status'] === 'active' ? 'x-circle' : 'check-circle' ?>"></i>
+                                    </button>
+                                    <button onclick="confirmDelete('/staff/<?= $member['id'] ?>')" class="btn btn-sm btn-danger" title="Delete">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
