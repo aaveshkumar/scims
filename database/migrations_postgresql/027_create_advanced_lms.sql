@@ -2,7 +2,7 @@
 
 -- Assignments table
 CREATE TABLE IF NOT EXISTS assignments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     subject_id INT NOT NULL,
     class_id INT NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS assignments (
 
 -- Assignment Submissions table
 CREATE TABLE IF NOT EXISTS assignment_submissions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     assignment_id INT NOT NULL,
     student_id INT NOT NULL,
     submission_date TIMESTAMP NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS assignment_submissions (
 
 -- Quizzes table
 CREATE TABLE IF NOT EXISTS quizzes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     subject_id INT NOT NULL,
     class_id INT NOT NULL,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS quizzes (
 
 -- Quiz Questions table
 CREATE TABLE IF NOT EXISTS quiz_questions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     quiz_id INT NOT NULL,
     question_id INT NOT NULL,
     question_order INT NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS quiz_questions (
 
 -- Quiz Attempts table
 CREATE TABLE IF NOT EXISTS quiz_attempts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     quiz_id INT NOT NULL,
     student_id INT NOT NULL,
     start_time TIMESTAMP NOT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS quiz_attempts (
 
 -- Discussion Forums table
 CREATE TABLE IF NOT EXISTS forums (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     subject_id INT,
     class_id INT,
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS forums (
 
 -- Forum Posts table
 CREATE TABLE IF NOT EXISTS forum_posts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     forum_id INT NOT NULL,
     parent_post_id INT,
     user_id INT NOT NULL,

@@ -19,9 +19,8 @@ class Database
         $database = $this->config['database'];
         $username = $this->config['username'];
         $password = $this->config['password'];
-        $charset = $this->config['charset'];
 
-        $dsn = "mysql:host={$host};port={$port};dbname={$database};charset={$charset}";
+        $dsn = "pgsql:host={$host};port={$port};dbname={$database}";
 
         try {
             $this->pdo = new PDO($dsn, $username, $password, $this->config['options']);

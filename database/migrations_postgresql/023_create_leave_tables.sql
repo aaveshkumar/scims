@@ -2,7 +2,7 @@
 
 -- Leave Types table
 CREATE TABLE IF NOT EXISTS leave_types (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     code VARCHAR(20) UNIQUE NOT NULL,
     days_allowed INT DEFAULT 0,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS leave_types (
 
 -- Leave Applications table
 CREATE TABLE IF NOT EXISTS leave_applications (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     application_number VARCHAR(50) UNIQUE NOT NULL,
     user_id INT NOT NULL,
     leave_type_id INT NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS leave_applications (
 
 -- Leave Balances table
 CREATE TABLE IF NOT EXISTS leave_balances (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     leave_type_id INT NOT NULL,
     year INT NOT NULL,

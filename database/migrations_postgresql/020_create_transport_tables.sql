@@ -2,7 +2,7 @@
 
 -- Vehicles table
 CREATE TABLE IF NOT EXISTS vehicles (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     vehicle_number VARCHAR(50) UNIQUE NOT NULL,
     vehicle_type VARCHAR(50),
     model VARCHAR(100),
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS vehicles (
 
 -- Routes table
 CREATE TABLE IF NOT EXISTS routes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     route_name VARCHAR(100) NOT NULL,
     route_number VARCHAR(50) UNIQUE,
     start_point VARCHAR(255),
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS routes (
 
 -- Route Stops table
 CREATE TABLE IF NOT EXISTS route_stops (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     route_id INT NOT NULL,
     stop_name VARCHAR(255) NOT NULL,
     stop_order INT NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS route_stops (
 
 -- Transport Assignments table
 CREATE TABLE IF NOT EXISTS transport_assignments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     student_id INT NOT NULL,
     route_id INT NOT NULL,
     stop_id INT,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS transport_assignments (
 
 -- Vehicle Maintenance table
 CREATE TABLE IF NOT EXISTS vehicle_maintenance (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     vehicle_id INT NOT NULL,
     maintenance_type VARCHAR(100),
     description TEXT,

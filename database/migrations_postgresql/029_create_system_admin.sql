@@ -2,7 +2,7 @@
 
 -- System Settings table
 CREATE TABLE IF NOT EXISTS system_settings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     setting_key VARCHAR(100) UNIQUE NOT NULL,
     setting_value TEXT,
     setting_type VARCHAR(50),
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS system_settings (
 
 -- Audit Logs table
 CREATE TABLE IF NOT EXISTS audit_logs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     user_id INT,
     action VARCHAR(100) NOT NULL,
     table_name VARCHAR(100),
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 
 -- Database Backups table
 CREATE TABLE IF NOT EXISTS database_backups (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     backup_name VARCHAR(255) NOT NULL,
     backup_path VARCHAR(255) NOT NULL,
     backup_size BIGINT,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS database_backups (
 
 -- Integrations table
 CREATE TABLE IF NOT EXISTS integrations (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     integration_type VARCHAR(50),
     api_key TEXT,

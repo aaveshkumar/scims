@@ -2,7 +2,7 @@
 
 -- Assets table
 CREATE TABLE IF NOT EXISTS assets (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     asset_code VARCHAR(50) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     category VARCHAR(100),
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS assets (
 
 -- Inventory Items table
 CREATE TABLE IF NOT EXISTS inventory_items (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     item_code VARCHAR(50) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     category VARCHAR(100),
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS inventory_items (
 
 -- Suppliers table
 CREATE TABLE IF NOT EXISTS suppliers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     supplier_code VARCHAR(50) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     contact_person VARCHAR(255),
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS suppliers (
 
 -- Purchase Orders table
 CREATE TABLE IF NOT EXISTS purchase_orders (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     po_number VARCHAR(50) UNIQUE NOT NULL,
     supplier_id INT NOT NULL,
     order_date DATE NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS purchase_orders (
 
 -- Purchase Order Items table
 CREATE TABLE IF NOT EXISTS purchase_order_items (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     po_id INT NOT NULL,
     item_id INT NOT NULL,
     quantity INT NOT NULL,

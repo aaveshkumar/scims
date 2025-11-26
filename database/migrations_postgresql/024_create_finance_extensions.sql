@@ -2,7 +2,7 @@
 
 -- Fee Structure Templates table
 CREATE TABLE IF NOT EXISTS fee_structure_templates (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     class_id INT,
     academic_year VARCHAR(20),
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS fee_structure_templates (
 
 -- Expenses table
 CREATE TABLE IF NOT EXISTS expenses (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     expense_number VARCHAR(50) UNIQUE NOT NULL,
     category VARCHAR(100) NOT NULL,
     description TEXT,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS expenses (
 
 -- Payroll table
 CREATE TABLE IF NOT EXISTS payroll (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     payroll_number VARCHAR(50) UNIQUE NOT NULL,
     staff_id INT NOT NULL,
     month VARCHAR(20) NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS payroll (
 
 -- Budgets table
 CREATE TABLE IF NOT EXISTS budgets (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     budget_name VARCHAR(255) NOT NULL,
     category VARCHAR(100) NOT NULL,
     fiscal_year VARCHAR(20) NOT NULL,

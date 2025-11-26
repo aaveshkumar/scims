@@ -2,7 +2,7 @@
 
 -- Announcements table
 CREATE TABLE IF NOT EXISTS announcements (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     target_audience VARCHAR(50),
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS announcements (
 
 -- Messages table (Internal Messaging)
 CREATE TABLE IF NOT EXISTS messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     sender_id INT NOT NULL,
     receiver_id INT NOT NULL,
     subject VARCHAR(255),
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS messages (
 
 -- SMS Logs table
 CREATE TABLE IF NOT EXISTS sms_logs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     recipient_phone VARCHAR(20) NOT NULL,
     recipient_name VARCHAR(255),
     message_content TEXT NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS sms_logs (
 
 -- Email Logs table
 CREATE TABLE IF NOT EXISTS email_logs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     recipient_email VARCHAR(255) NOT NULL,
     recipient_name VARCHAR(255),
     subject VARCHAR(255) NOT NULL,

@@ -2,7 +2,7 @@
 
 -- Syllabus table
 CREATE TABLE IF NOT EXISTS syllabuses (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     subject_id INT NOT NULL,
     class_id INT NOT NULL,
     academic_year VARCHAR(20),
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS syllabuses (
 
 -- Lesson Plans table
 CREATE TABLE IF NOT EXISTS lesson_plans (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     subject_id INT NOT NULL,
     class_id INT NOT NULL,
     teacher_id INT NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS lesson_plans (
 
 -- Question Bank table
 CREATE TABLE IF NOT EXISTS question_bank (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     subject_id INT NOT NULL,
     class_id INT,
     question_text TEXT NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS question_bank (
 
 -- Academic Calendar table
 CREATE TABLE IF NOT EXISTS academic_calendar (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     event_title VARCHAR(255) NOT NULL,
     event_type VARCHAR(100),
     event_date DATE NOT NULL,

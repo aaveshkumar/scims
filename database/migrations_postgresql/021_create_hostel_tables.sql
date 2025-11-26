@@ -2,7 +2,7 @@
 
 -- Hostels table
 CREATE TABLE IF NOT EXISTS hostels (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     hostel_type VARCHAR(50),
     address TEXT,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS hostels (
 
 -- Hostel Rooms table
 CREATE TABLE IF NOT EXISTS hostel_rooms (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     hostel_id INT NOT NULL,
     room_number VARCHAR(50) NOT NULL,
     room_type VARCHAR(50),
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS hostel_rooms (
 
 -- Hostel Residents table
 CREATE TABLE IF NOT EXISTS hostel_residents (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     student_id INT NOT NULL,
     hostel_id INT NOT NULL,
     room_id INT NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS hostel_residents (
 
 -- Hostel Visitors table
 CREATE TABLE IF NOT EXISTS hostel_visitors (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     resident_id INT NOT NULL,
     visitor_name VARCHAR(255) NOT NULL,
     visitor_phone VARCHAR(20),
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS hostel_visitors (
 
 -- Hostel Complaints table
 CREATE TABLE IF NOT EXISTS hostel_complaints (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     resident_id INT NOT NULL,
     hostel_id INT NOT NULL,
     complaint_type VARCHAR(100),
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS hostel_complaints (
 
 -- Mess Menu table
 CREATE TABLE IF NOT EXISTS mess_menu (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     hostel_id INT NOT NULL,
     day_of_week VARCHAR(20) NOT NULL,
     meal_type VARCHAR(50) NOT NULL,
