@@ -56,17 +56,22 @@ class AttendanceController
 
     public function store($request)
     {
-        // Get data from JSON body (sent by AJAX)
-        $data = $request->json();
-        $classId = $data['class_id'] ?? null;
-        $date = $data['date'] ?? null;
-        $attendance = $data['attendance'] ?? [];
-
-        if (!$classId || !$date) {
-            return responseJSON(['success' => false, 'message' => 'Class and date are required'], 400);
-        }
-
         try {
+            // Get data from JSON body (sent by AJAX)
+            $data = $request->json();
+            
+            if (!is_array($data)) {
+                return responseJSON(['success' => false, 'message' => 'Invalid request format'], 400);
+            }
+
+            $classId = $data['class_id'] ?? null;
+            $date = $data['date'] ?? null;
+            $attendance = $data['attendance'] ?? [];
+
+            if (!$classId || !$date) {
+                return responseJSON(['success' => false, 'message' => 'Class and date are required'], 400);
+            }
+
             db()->execute(
                 "DELETE FROM attendance WHERE class_id = ? AND date = ? AND period IS NULL",
                 [$classId, $date]
@@ -84,7 +89,8 @@ class AttendanceController
 
             return responseJSON(['success' => true, 'message' => 'Attendance marked successfully']);
         } catch (Exception $e) {
-            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+            error_log('Attendance Store Error: ' . $e->getMessage());
+            return responseJSON(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
         }
     }
 

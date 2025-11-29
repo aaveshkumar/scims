@@ -115,31 +115,47 @@ document.getElementById('attendanceForm').addEventListener('submit', function(e)
         data._token = csrfToken;
     }
 
+    const requestBody = JSON.stringify(data);
+    console.log('Sending attendance data:', data);
+
     fetch('/attendance/store', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': csrfToken
         },
-        body: JSON.stringify(data)
+        body: requestBody
     })
     .then(response => {
-        if (!response.ok) {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        // Check if response is actually JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error(`Expected JSON response but got ${contentType}`);
+        }
+        
+        if (!response.ok && response.status !== 400 && response.status !== 500) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
         return response.json();
     })
     .then(result => {
+        console.log('Response data:', result);
+        
         if (result.success) {
             alert('Attendance saved successfully!');
             window.location.href = '/attendance';
         } else {
-            alert(result.message || 'Failed to save attendance');
+            alert('Error: ' + (result.message || 'Failed to save attendance'));
         }
     })
     .catch(error => {
+        console.error('Full error:', error);
         alert('An error occurred: ' + error.message);
-        console.error(error);
     });
 });
 </script>
