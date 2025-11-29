@@ -129,10 +129,10 @@ class ClassController
             $this->classModel->update($id, [
                 'name' => $request->post('name'),
                 'code' => $request->post('code'),
-                'course_id' => $request->post('course_id'),
+                'course_id' => $request->post('course_id') ?: null,
                 'section' => $request->post('section'),
                 'academic_year' => $request->post('academic_year'),
-                'capacity' => $request->post('capacity'),
+                'capacity' => $request->post('capacity') ?: null,
                 'room_number' => $request->post('room_number'),
                 'status' => $request->post('status')
             ]);
