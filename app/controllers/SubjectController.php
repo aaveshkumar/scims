@@ -15,17 +15,26 @@ class SubjectController
 
     public function index($request)
     {
-        $subjects = db()->fetchAll(
-            "SELECT s.*, c.name as course_name, cl.name as class_name,
+        $classId = $request->get('class_id');
+        
+        $query = "SELECT s.*, c.name as course_name, cl.name as class_name,
                     u.first_name as teacher_first_name, u.last_name as teacher_last_name
              FROM subjects s
              LEFT JOIN courses c ON s.course_id = c.id
              LEFT JOIN classes cl ON s.class_id = cl.id
-             LEFT JOIN users u ON s.teacher_id = u.id
-             ORDER BY s.created_at DESC"
-        );
+             LEFT JOIN users u ON s.teacher_id = u.id";
+        
+        $params = [];
+        if ($classId) {
+            $query .= " WHERE s.class_id = ?";
+            $params[] = $classId;
+        }
+        
+        $query .= " ORDER BY s.created_at DESC";
+        
+        $subjects = db()->fetchAll($query, $params);
 
-        return view('subjects.index', ['subjects' => $subjects]);
+        return view('subjects.index', ['subjects' => $subjects, 'classId' => $classId]);
     }
 
     public function create($request)
@@ -34,11 +43,12 @@ class SubjectController
         $classes = $this->classModel->where('status', 'active')->get();
         
         $teachers = db()->fetchAll(
-            "SELECT u.id, u.first_name, u.last_name 
+            "SELECT DISTINCT u.id, u.first_name, u.last_name 
              FROM users u
-             INNER JOIN user_roles ur ON u.id = ur.user_id
-             INNER JOIN roles r ON ur.role_id = r.id
-             WHERE r.name = 'teacher' AND u.status = 'active'"
+             LEFT JOIN user_roles ur ON u.id = ur.user_id
+             LEFT JOIN roles r ON ur.role_id = r.id
+             WHERE (r.name = 'teacher' OR r.name = 'staff') AND u.status = 'active'
+             ORDER BY u.first_name ASC"
         );
 
         return view('subjects.create', [
@@ -114,11 +124,12 @@ class SubjectController
         $classes = $this->classModel->where('status', 'active')->get();
         
         $teachers = db()->fetchAll(
-            "SELECT u.id, u.first_name, u.last_name 
+            "SELECT DISTINCT u.id, u.first_name, u.last_name 
              FROM users u
-             INNER JOIN user_roles ur ON u.id = ur.user_id
-             INNER JOIN roles r ON ur.role_id = r.id
-             WHERE r.name = 'teacher' AND u.status = 'active'"
+             LEFT JOIN user_roles ur ON u.id = ur.user_id
+             LEFT JOIN roles r ON ur.role_id = r.id
+             WHERE (r.name = 'teacher' OR r.name = 'staff') AND u.status = 'active'
+             ORDER BY u.first_name ASC"
         );
 
         return view('subjects.edit', [

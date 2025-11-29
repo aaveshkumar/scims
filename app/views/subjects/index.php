@@ -1,7 +1,13 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">Subjects</h1>
+    <h1 class="h3 mb-0">
+        <?php if ($classId): ?>
+            Class Subjects
+        <?php else: ?>
+            All Subjects
+        <?php endif; ?>
+    </h1>
     <a href="/subjects/create" class="btn btn-primary">
         <i class="bi bi-plus-circle me-2"></i>Add Subject
     </a>
@@ -9,7 +15,13 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">All Subjects</h5>
+        <h5 class="mb-0">
+            <?php if ($classId): ?>
+                Subjects in Class
+            <?php else: ?>
+                All Subjects
+            <?php endif; ?>
+        </h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">
