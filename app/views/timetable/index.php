@@ -1,13 +1,13 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
 <style>
-    body.dark-mode .nav-link {
+    html[data-bs-theme="dark"] .nav-link {
         color: white !important;
     }
-    body.dark-mode .nav-link:hover {
+    html[data-bs-theme="dark"] .nav-link:hover {
         color: white !important;
     }
-    body.dark-mode .nav-link.active {
+    html[data-bs-theme="dark"] .nav-link.active {
         color: white !important;
     }
 </style>
