@@ -203,6 +203,10 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/lesson-plans', 'LessonPlanController@index');
         $router->get('/lesson-plans/create', 'LessonPlanController@create');
         $router->post('/lesson-plans', 'LessonPlanController@store', ['csrf']);
+        $router->get('/lesson-plans/{id}', 'LessonPlanController@show');
+        $router->get('/lesson-plans/{id}/edit', 'LessonPlanController@edit');
+        $router->post('/lesson-plans/{id}', 'LessonPlanController@update', ['csrf']);
+        $router->delete('/lesson-plans/{id}', 'LessonPlanController@destroy', ['csrf']);
         
         $router->get('/question-bank', 'QuestionBankController@index');
         $router->get('/question-bank/create', 'QuestionBankController@create');
