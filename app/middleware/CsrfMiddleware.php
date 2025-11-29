@@ -7,17 +7,22 @@ class CsrfMiddleware
         if (in_array($request->method(), ['POST', 'PUT', 'DELETE'])) {
             $token = null;
             
-            $token = $request->post('_token');
-            
-            if (!$token) {
-                $token = $request->header('X-CSRF-TOKEN');
-            }
-            
-            if (!$token && $request->isAjax()) {
+            // For AJAX requests, check JSON body first
+            if ($request->isAjax()) {
                 $jsonData = $request->json();
-                if (isset($jsonData['_token'])) {
+                if (is_array($jsonData) && isset($jsonData['_token'])) {
                     $token = $jsonData['_token'];
                 }
+            }
+            
+            // Check POST data
+            if (!$token) {
+                $token = $request->post('_token');
+            }
+            
+            // Check header
+            if (!$token) {
+                $token = $request->header('X-CSRF-TOKEN');
             }
             
             if (!$token || !isset($_SESSION['_token']) || $token !== $_SESSION['_token']) {
