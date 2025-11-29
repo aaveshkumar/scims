@@ -3,7 +3,15 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Learning Materials</h1>
     <?php if (hasRole('admin') || hasRole('teacher')): ?>
-        <a href="/materials/create" class="btn btn-primary">
+        <?php 
+            $createUrl = '/materials/create';
+            if (!empty($_GET['subject_id'])) {
+                $createUrl .= '?subject_id=' . urlencode($_GET['subject_id']);
+            } elseif (!empty($_GET['class_id'])) {
+                $createUrl .= '?class_id=' . urlencode($_GET['class_id']);
+            }
+        ?>
+        <a href="<?= $createUrl ?>" class="btn btn-primary">
             <i class="bi bi-plus-circle me-2"></i>Upload Material
         </a>
     <?php endif; ?>

@@ -55,10 +55,14 @@ class MaterialController
     {
         $classes = $this->classModel->where('status', 'active')->get();
         $subjects = $this->subjectModel->where('status', 'active')->get();
+        $subjectId = $request->get('subject_id');
+        $classId = $request->get('class_id');
 
         return view('materials.create', [
             'classes' => $classes,
-            'subjects' => $subjects
+            'subjects' => $subjects,
+            'subjectId' => $subjectId,
+            'classId' => $classId
         ]);
     }
 

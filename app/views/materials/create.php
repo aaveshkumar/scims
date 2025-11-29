@@ -26,7 +26,7 @@
                     <select name="class_id" class="form-select" required>
                         <option value="">Select Class</option>
                         <?php foreach ($classes as $class): ?>
-                            <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['name']) ?></option>
+                            <option value="<?= $class['id'] ?>" <?= $classId == $class['id'] ? 'selected' : '' ?>><?= htmlspecialchars($class['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -35,7 +35,7 @@
                     <select name="subject_id" class="form-select">
                         <option value="">Select Subject (Optional)</option>
                         <?php foreach ($subjects as $subject): ?>
-                            <option value="<?= $subject['id'] ?>"><?= htmlspecialchars($subject['name']) ?></option>
+                            <option value="<?= $subject['id'] ?>" <?= $subjectId == $subject['id'] ? 'selected' : '' ?>><?= htmlspecialchars($subject['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
