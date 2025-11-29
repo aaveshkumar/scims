@@ -76,6 +76,8 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 ### Class Management Module - Critical Fixes
 - **Fixed Class Edit 404 Error**: Removed _method=PUT from edit form (route expects POST)
 - **Fixed Class Delete JSON Response**: Changed destroy() to use redirect instead of JSON response
+- **Added Missing Code Field**: Added Class Code input field (required) to fix validation error
+- **Added Status Dropdown**: Added status selector to toggle active/inactive in edit form
 - **All Class CRUD Operations**: CREATE/READ/UPDATE/DELETE fully functional
 
 ### Module CRUD Status:

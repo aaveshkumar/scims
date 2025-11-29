@@ -21,8 +21,22 @@
                     <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($class['name']) ?>" required>
                 </div>
                 <div class="col-md-6 mb-3">
+                    <label class="form-label">Class Code *</label>
+                    <input type="text" name="code" class="form-control" value="<?= htmlspecialchars($class['code']) ?>" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
                     <label class="form-label">Section</label>
                     <input type="text" name="section" class="form-control" value="<?= htmlspecialchars($class['section'] ?? '') ?>">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select" required>
+                        <option value="active" <?= $class['status'] === 'active' ? 'selected' : '' ?>>Active</option>
+                        <option value="inactive" <?= $class['status'] === 'inactive' ? 'selected' : '' ?>>Inactive</option>
+                    </select>
                 </div>
             </div>
 
