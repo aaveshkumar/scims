@@ -4,45 +4,56 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Theme Toggle Functionality
+        // Theme Toggle Functionality - Enhanced
         (function() {
-            const themeToggle = document.getElementById('themeToggle');
-            const themeIcon = document.getElementById('themeIcon');
             const htmlElement = document.documentElement;
             
-            if (themeToggle) {
-                // Load saved theme from localStorage
+            // Initialize theme on page load
+            function initTheme() {
                 const savedTheme = localStorage.getItem('theme') || 'light';
                 setTheme(savedTheme);
-                
-                // Theme toggle click handler
-                themeToggle.addEventListener('click', function() {
-                    const currentTheme = htmlElement.getAttribute('data-bs-theme');
-                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                    setTheme(newTheme);
-                    localStorage.setItem('theme', newTheme);
-                });
             }
             
             function setTheme(theme) {
+                // Set data attribute for CSS
                 htmlElement.setAttribute('data-bs-theme', theme);
                 
-                if (theme === 'dark') {
-                    if (themeIcon) {
+                // Update icon if it exists
+                const themeIcon = document.getElementById('themeIcon');
+                if (themeIcon) {
+                    if (theme === 'dark') {
                         themeIcon.classList.remove('bi-moon-stars-fill');
                         themeIcon.classList.add('bi-sun-fill');
-                    }
-                    document.body.style.backgroundColor = '#1a1d20';
-                    document.body.style.color = '#e9ecef';
-                } else {
-                    if (themeIcon) {
+                    } else {
                         themeIcon.classList.remove('bi-sun-fill');
                         themeIcon.classList.add('bi-moon-stars-fill');
                     }
-                    document.body.style.backgroundColor = '#f8f9fc';
-                    document.body.style.color = '#212529';
                 }
+                
+                // Save to localStorage
+                localStorage.setItem('theme', theme);
             }
+            
+            // Initialize theme immediately
+            initTheme();
+            
+            // Set up theme toggle button if it exists
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const currentTheme = htmlElement.getAttribute('data-bs-theme') || 'light';
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    setTheme(newTheme);
+                });
+            }
+            
+            // Listen for storage changes in other tabs
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'theme' && e.newValue) {
+                    setTheme(e.newValue);
+                }
+            });
         })();
         
         // Page Loader Functionality
