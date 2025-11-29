@@ -256,15 +256,9 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Global Text Color Rules - Black on white backgrounds, White on colored */
+        /* Black text ONLY on white backgrounds */
         
-        /* Light Mode - Black text on light backgrounds */
-        body {
-            color: #000 !important;
-        }
-        h1, h2, h3, h4, h5, h6, p, span, div, li, a, label, button, input, textarea, select {
-            color: inherit;
-        }
+        /* White background elements - Black text */
         .card {
             color: #000 !important;
         }
@@ -272,15 +266,6 @@
             color: #000 !important;
         }
         .card-header {
-            color: #000 !important;
-        }
-        .table {
-            color: #000 !important;
-        }
-        .table thead th {
-            color: #4e73df !important;
-        }
-        .table tbody {
             color: #000 !important;
         }
         .table tbody td {
@@ -291,86 +276,27 @@
         }
         .form-control, .form-select {
             color: #000 !important;
-            background-color: #fff !important;
-            border-color: #ddd !important;
         }
         .form-control::placeholder {
             color: #999 !important;
         }
         .dropdown-menu {
-            background-color: #fff !important;
             color: #000 !important;
         }
         .dropdown-item {
             color: #000 !important;
         }
         .dropdown-item:hover, .dropdown-item.active {
-            background-color: #f0f0f0 !important;
-            color: #000 !important;
-        }
-        .alert {
-            color: #000 !important;
-        }
-        .alert-danger, .alert-warning, .alert-info, .alert-success {
-            color: #000 !important;
-        }
-        .badge {
-            color: #fff !important;
-        }
-        .badge.bg-light, .badge.bg-warning {
             color: #000 !important;
         }
         textarea.form-control {
             color: #000 !important;
         }
-        .text-muted {
-            color: #666 !important;
-        }
-        .nav-tabs {
-            border-bottom-color: #ddd !important;
-        }
         .nav-tabs .nav-link {
             color: #000 !important;
         }
         .nav-tabs .nav-link.active {
-            background-color: #fff !important;
             color: #000 !important;
-            border-color: #ddd #ddd transparent !important;
-        }
-
-        /* Buttons - White text on colored backgrounds */
-        .btn-primary, .btn-success, .btn-danger, .btn-warning, .btn-info, .btn-secondary {
-            color: #fff !important;
-        }
-        .btn-outline-primary, .btn-outline-success, .btn-outline-danger, .btn-outline-warning, .btn-outline-info, .btn-outline-secondary {
-            color: inherit !important;
-        }
-
-        /* Sidebar - White text (already correct) */
-        .sidebar {
-            color: #fff !important;
-        }
-        .sidebar h6, .sidebar p, .sidebar span, .sidebar a, .sidebar label {
-            color: #fff !important;
-        }
-
-        /* Top Navbar - White text (already correct) */
-        .navbar.topbar {
-            color: #fff !important;
-        }
-        .navbar.topbar h6, .navbar.topbar p, .navbar.topbar span, .navbar.topbar label {
-            color: #fff !important;
-        }
-
-        /* Links on light backgrounds */
-        a {
-            color: #4e73df !important;
-        }
-        a:hover {
-            color: #224abe !important;
-        }
-        .card a, .card-body a {
-            color: #4e73df !important;
         }
     </style>
 </head>
