@@ -28,43 +28,66 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Class *</label>
-                    <select name="class_id" class="form-select" required>
-                        <option value="">Select Class</option>
-                        <?php foreach ($classes as $class): ?>
-                            <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['name']) ?></option>
-                        <?php endforeach; ?>
+                    <label class="form-label">Course *</label>
+                    <select name="course_id" class="form-select" required>
+                        <option value="">Select Course</option>
+                        <?php if (!empty($courses)): ?>
+                            <?php foreach ($courses as $course): ?>
+                                <option value="<?= $course['id'] ?>"><?= htmlspecialchars($course['name']) ?></option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="">No courses available</option>
+                        <?php endif; ?>
                     </select>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Teacher</label>
-                    <select name="teacher_id" class="form-select">
-                        <option value="">Select Teacher (Optional)</option>
-                        <?php foreach ($teachers as $teacher): ?>
-                            <option value="<?= $teacher['id'] ?>">
-                                <?= htmlspecialchars($teacher['first_name'] . ' ' . $teacher['last_name']) ?>
-                            </option>
+                    <label class="form-label">Class</label>
+                    <select name="class_id" class="form-select">
+                        <option value="">Select Class (Optional)</option>
+                        <?php foreach ($classes as $class): ?>
+                            <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Subject Type *</label>
-                    <select name="subject_type" class="form-select" required>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Teacher</label>
+                    <select name="teacher_id" class="form-select">
+                        <option value="">Select Teacher (Optional)</option>
+                        <?php if (!empty($teachers)): ?>
+                            <?php foreach ($teachers as $teacher): ?>
+                                <option value="<?= $teacher['id'] ?>">
+                                    <?= htmlspecialchars($teacher['first_name'] . ' ' . $teacher['last_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="">No teachers available</option>
+                        <?php endif; ?>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Credits</label>
+                    <input type="number" name="credits" class="form-control" placeholder="e.g., 3" min="0" step="0.5">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Type</label>
+                    <select name="type" class="form-select">
                         <option value="theory">Theory</option>
                         <option value="practical">Practical</option>
                         <option value="both">Both</option>
                     </select>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Total Marks</label>
-                    <input type="number" name="total_marks" class="form-control" placeholder="e.g., 100" min="0">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Passing Marks</label>
-                    <input type="number" name="passing_marks" class="form-control" placeholder="e.g., 40" min="0">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
                 </div>
             </div>
 

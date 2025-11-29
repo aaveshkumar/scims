@@ -64,13 +64,13 @@ class SubjectController
             $this->subjectModel->create([
                 'name' => $request->post('name'),
                 'code' => $request->post('code'),
-                'course_id' => $request->post('course_id'),
-                'class_id' => $request->post('class_id'),
-                'teacher_id' => $request->post('teacher_id'),
-                'credits' => $request->post('credits'),
+                'course_id' => $request->post('course_id') ?: null,
+                'class_id' => $request->post('class_id') ?: null,
+                'teacher_id' => $request->post('teacher_id') ?: null,
+                'credits' => $request->post('credits') ?: null,
                 'type' => $request->post('type', 'theory'),
                 'description' => $request->post('description'),
-                'status' => 'active'
+                'status' => $request->post('status', 'active')
             ]);
 
             flash('success', 'Subject created successfully');
@@ -145,10 +145,10 @@ class SubjectController
             $this->subjectModel->update($id, [
                 'name' => $request->post('name'),
                 'code' => $request->post('code'),
-                'course_id' => $request->post('course_id'),
-                'class_id' => $request->post('class_id'),
-                'teacher_id' => $request->post('teacher_id'),
-                'credits' => $request->post('credits'),
+                'course_id' => $request->post('course_id') ?: null,
+                'class_id' => $request->post('class_id') ?: null,
+                'teacher_id' => $request->post('teacher_id') ?: null,
+                'credits' => $request->post('credits') ?: null,
                 'type' => $request->post('type'),
                 'description' => $request->post('description'),
                 'status' => $request->post('status')
