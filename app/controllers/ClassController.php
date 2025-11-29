@@ -149,9 +149,11 @@ class ClassController
     {
         try {
             $this->classModel->delete($id);
-            return responseJSON(['success' => true, 'message' => 'Class deleted successfully']);
+            flash('success', 'Class deleted successfully');
+            return redirect('/classes');
         } catch (Exception $e) {
-            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+            flash('error', 'Failed to delete class: ' . $e->getMessage());
+            return back();
         }
     }
 }

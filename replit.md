@@ -73,10 +73,16 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - `app/controllers/StudentController.php` - Changed destroy() to redirect, fixed delete
 - `app/models/Timetable.php` - Fixed PostgreSQL compatibility, proper field aliasing
 
+### Class Management Module - Critical Fixes
+- **Fixed Class Edit 404 Error**: Removed _method=PUT from edit form (route expects POST)
+- **Fixed Class Delete JSON Response**: Changed destroy() to use redirect instead of JSON response
+- **All Class CRUD Operations**: CREATE/READ/UPDATE/DELETE fully functional
+
 ### Module CRUD Status:
 ✅ **Courses** - CREATE/READ/UPDATE/DELETE all working
 ✅ **Students** - CREATE/READ/UPDATE/DELETE all working, Status toggle working
 ✅ **Timetable** - VIEW/CREATE/DELETE all working without errors
+✅ **Classes** - CREATE/READ/UPDATE/DELETE all working without errors
 
 ## Previous Changes (November 18, 2025)
 
