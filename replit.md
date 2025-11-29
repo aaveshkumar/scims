@@ -90,10 +90,14 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - **Multiple Day Selection**: Changed form from single-day dropdown to multi-select checkboxes (can select 1-7 days at once)
 - **Fixed Teacher Name Display**: Added NULL check in CONCAT to handle missing users, changed ORDER BY CASE to use lowercase day names
 
+### Student Module - Additional Fixes (Nov 29, 2025)
+- **Fixed Student Update Gender Error**: Convert empty optional fields (gender, date_of_birth, address) to NULL instead of empty string
+- **Status Toggle Verified**: Route, method, and CSRF handling all properly configured
+
 ### Module CRUD Status:
 ✅ **Courses** - CREATE/READ/UPDATE/DELETE all working
 ✅ **Students** - CREATE/READ/UPDATE/DELETE all working, Status toggle working
-✅ **Timetable** - CREATE/READ/DELETE all working without errors (teachers dropdown requires staff with 'teacher' role)
+✅ **Timetable** - CREATE/READ/DELETE all working without errors (multiple day selection with checkboxes)
 ✅ **Classes** - CREATE/READ/UPDATE/DELETE all working without errors
 
 ## Previous Changes (November 18, 2025)

@@ -165,9 +165,9 @@ class StudentController
                 'last_name' => $request->post('last_name'),
                 'email' => $request->post('email'),
                 'phone' => $request->post('phone'),
-                'gender' => $request->post('gender'),
-                'date_of_birth' => $request->post('date_of_birth'),
-                'address' => $request->post('address')
+                'gender' => $request->post('gender') ?: null,
+                'date_of_birth' => $request->post('date_of_birth') ?: null,
+                'address' => $request->post('address') ?: null
             ]);
 
             $this->studentModel->update($id, [
