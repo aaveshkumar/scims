@@ -18,7 +18,7 @@ class SubjectController
         $classId = $request->get('class_id');
         
         $query = "SELECT s.*, c.name as course_name, cl.name as class_name,
-                    u.first_name as teacher_first_name, u.last_name as teacher_last_name
+                    CASE WHEN u.id IS NOT NULL THEN CONCAT(u.first_name, ' ', u.last_name) ELSE NULL END as teacher_name
              FROM subjects s
              LEFT JOIN courses c ON s.course_id = c.id
              LEFT JOIN classes cl ON s.class_id = cl.id
