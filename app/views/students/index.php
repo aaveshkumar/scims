@@ -62,11 +62,6 @@
                                     <a href="/students/<?= $student['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <?php if (!$classId): ?>
-                                        <button onclick="toggleStatus('student', <?= $student['id'] ?>)" class="btn btn-sm btn-<?= $student['status'] === 'active' ? 'secondary' : 'success' ?>" title="Toggle Status">
-                                            <i class="bi bi-<?= $student['status'] === 'active' ? 'x-circle' : 'check-circle' ?>"></i>
-                                        </button>
-                                    <?php endif; ?>
                                     <button onclick="confirmDelete('/students/<?= $student['id'] ?>' + window.location.search)" class="btn btn-sm btn-danger" title="<?= $classId ? 'Remove from Class' : 'Delete' ?>">
                                         <i class="bi bi-trash"></i>
                                     </button>
