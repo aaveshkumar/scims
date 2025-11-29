@@ -66,6 +66,7 @@ $router->group(['middleware' => 'auth'], function($router) {
     $router->get('/materials/{id}', 'MaterialController@show');
     $router->get('/materials/{id}/download', 'MaterialController@download');
 
+    $router->group(['middleware' => 'role:admin,teacher'], function($router) {
         $router->get('/attendance', 'AttendanceController@index');
         $router->get('/attendance/mark', 'AttendanceController@mark');
         $router->post('/attendance/store', 'AttendanceController@store', ['csrf']);
