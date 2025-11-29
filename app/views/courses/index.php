@@ -46,7 +46,7 @@
                                     <a href="/courses/<?= $course['id'] ?>/edit" class="btn btn-sm btn-warning">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button onclick="confirmDelete('/courses/<?= $course['id'] ?>')" class="btn btn-sm btn-danger">
+                                    <button type="button" onclick="if(typeof confirmDelete !== 'undefined') confirmDelete('/courses/<?= $course['id'] ?>'); else alert('Delete function not ready')" class="btn btn-sm btn-danger">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>

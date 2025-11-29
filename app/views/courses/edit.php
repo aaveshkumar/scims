@@ -37,6 +37,14 @@
                 <textarea name="description" class="form-control" rows="4"><?= htmlspecialchars($course['description'] ?? '') ?></textarea>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select" required>
+                    <option value="active" <?= $course['status'] === 'active' ? 'selected' : '' ?>>Active</option>
+                    <option value="inactive" <?= $course['status'] === 'inactive' ? 'selected' : '' ?>>Inactive</option>
+                </select>
+            </div>
+
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-check-circle me-2"></i>Update Course
