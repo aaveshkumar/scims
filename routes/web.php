@@ -211,6 +211,10 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/question-bank', 'QuestionBankController@index');
         $router->get('/question-bank/create', 'QuestionBankController@create');
         $router->post('/question-bank', 'QuestionBankController@store', ['csrf']);
+        $router->get('/question-bank/{id}', 'QuestionBankController@show');
+        $router->get('/question-bank/{id}/edit', 'QuestionBankController@edit');
+        $router->post('/question-bank/{id}', 'QuestionBankController@update', ['csrf']);
+        $router->delete('/question-bank/{id}', 'QuestionBankController@destroy', ['csrf']);
         
         $router->get('/academic-calendar', 'AcademicCalendarController@index');
         $router->get('/academic-calendar/create', 'AcademicCalendarController@create');
