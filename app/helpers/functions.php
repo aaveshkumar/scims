@@ -38,7 +38,9 @@ function back()
 
 function responseJSON($data, $statusCode = 200)
 {
-    return (new Response())->json($data, $statusCode);
+    $response = (new Response())->json($data, $statusCode);
+    $response->send();
+    exit;
 }
 
 function old($key, $default = '')

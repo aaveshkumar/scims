@@ -43,8 +43,12 @@ The system employs a custom MVC architecture for clear separation of concerns.
 ## Recent Updates (Session: Nov 29, 2025)
 - **Syllabus Module**: Complete CRUD with show/edit views, database integration
 - **Lesson Plans Module**: Comprehensive form with detailed placeholders, database model, CRUD operations
+- **Question Bank Module**: Full CRUD implementation with meaningful form, database table, 7 routes
+- **Academic Calendar Module**: Complete with detailed form, dates, holidays, events management
 - **LessonPlan Model Fix**: Uses fetchAll()/fetchOne() for proper array returns instead of PDOStatement
 - **Theme Toggle**: Fully functional dark/light mode in navbar with localStorage persistence
+- **Timetable Dark Mode Fix**: Navigation text ("By Class", "By Subject") now displays in white in dark mode
+- **Attendance Marking Fix**: Fixed responseJSON() to properly send JSON responses with correct headers
 - **Database**: Migrated from MySQL to PostgreSQL (Neon), all models updated for proper data handling
 
 ## External Dependencies
