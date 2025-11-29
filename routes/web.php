@@ -56,13 +56,15 @@ $router->group(['middleware' => 'auth'], function($router) {
     $router->post('/announcements', 'AnnouncementController@store', ['csrf']);
 
     $router->get('/materials', 'MaterialController@index');
-    $router->get('/materials/{id}', 'MaterialController@show');
-    $router->get('/materials/{id}/download', 'MaterialController@download');
 
     $router->group(['middleware' => 'role:admin,teacher'], function($router) {
         $router->get('/materials/create', 'MaterialController@create');
         $router->post('/materials', 'MaterialController@store', ['csrf']);
         $router->delete('/materials/{id}', 'MaterialController@destroy', ['csrf']);
+    });
+
+    $router->get('/materials/{id}', 'MaterialController@show');
+    $router->get('/materials/{id}/download', 'MaterialController@download');
 
         $router->get('/attendance', 'AttendanceController@index');
         $router->get('/attendance/mark', 'AttendanceController@mark');
