@@ -41,18 +41,18 @@ class Timetable extends Model
     {
         return $this->db->fetchAll(
             "SELECT t.*, s.name as subject_name, s.code as subject_code,
-                    CONCAT(u.first_name, ' ', u.last_name) as teacher_name
+                    CASE WHEN u.id IS NOT NULL THEN CONCAT(u.first_name, ' ', u.last_name) ELSE NULL END as teacher_name
              FROM timetables t
              INNER JOIN subjects s ON t.subject_id = s.id
              LEFT JOIN users u ON t.teacher_id = u.id
              WHERE t.class_id = ? AND t.academic_year = ? AND t.status = 'active'
              ORDER BY 
-                CASE WHEN t.day_of_week = 'Monday' THEN 1
-                     WHEN t.day_of_week = 'Tuesday' THEN 2
-                     WHEN t.day_of_week = 'Wednesday' THEN 3
-                     WHEN t.day_of_week = 'Thursday' THEN 4
-                     WHEN t.day_of_week = 'Friday' THEN 5
-                     WHEN t.day_of_week = 'Saturday' THEN 6
+                CASE WHEN t.day_of_week = 'monday' THEN 1
+                     WHEN t.day_of_week = 'tuesday' THEN 2
+                     WHEN t.day_of_week = 'wednesday' THEN 3
+                     WHEN t.day_of_week = 'thursday' THEN 4
+                     WHEN t.day_of_week = 'friday' THEN 5
+                     WHEN t.day_of_week = 'saturday' THEN 6
                      ELSE 7
                 END,
                 t.start_time",
@@ -69,7 +69,14 @@ class Timetable extends Model
              INNER JOIN classes c ON t.class_id = c.id
              WHERE t.teacher_id = ? AND t.academic_year = ? AND t.status = 'active'
              ORDER BY 
-                FIELD(t.day_of_week, 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'),
+                CASE WHEN t.day_of_week = 'monday' THEN 1
+                     WHEN t.day_of_week = 'tuesday' THEN 2
+                     WHEN t.day_of_week = 'wednesday' THEN 3
+                     WHEN t.day_of_week = 'thursday' THEN 4
+                     WHEN t.day_of_week = 'friday' THEN 5
+                     WHEN t.day_of_week = 'saturday' THEN 6
+                     ELSE 7
+                END,
                 t.start_time",
             [$teacherId, $academicYear]
         );

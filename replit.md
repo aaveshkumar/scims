@@ -88,6 +88,7 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - **Fixed Timetable Delete**: Changed destroy() from JSON response to redirect
 - **Added Sunday Option**: Added missing Sunday to day of week dropdown
 - **Multiple Day Selection**: Changed form from single-day dropdown to multi-select checkboxes (can select 1-7 days at once)
+- **Fixed Teacher Name Display**: Added NULL check in CONCAT to handle missing users, changed ORDER BY CASE to use lowercase day names
 
 ### Module CRUD Status:
 ✅ **Courses** - CREATE/READ/UPDATE/DELETE all working
