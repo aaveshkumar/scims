@@ -90,4 +90,40 @@ class LeaveController
         flash('success', 'Leave request deleted successfully');
         return redirect('/leave');
     }
+
+    public function approve($request, $id)
+    {
+        $leave = $this->leaveModel->find($id);
+        if (!$leave) {
+            flash('error', 'Leave request not found');
+            return back();
+        }
+
+        $this->leaveModel->update($id, [
+            'status' => 'approved',
+            'approved_by' => auth()['id'],
+            'remarks' => $request->post('remarks', '')
+        ]);
+
+        flash('success', 'Leave request approved successfully');
+        return redirect('/leave/' . $id);
+    }
+
+    public function reject($request, $id)
+    {
+        $leave = $this->leaveModel->find($id);
+        if (!$leave) {
+            flash('error', 'Leave request not found');
+            return back();
+        }
+
+        $this->leaveModel->update($id, [
+            'status' => 'rejected',
+            'approved_by' => auth()['id'],
+            'remarks' => $request->post('remarks', '')
+        ]);
+
+        flash('success', 'Leave request rejected successfully');
+        return redirect('/leave/' . $id);
+    }
 }

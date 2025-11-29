@@ -92,6 +92,78 @@
                     </button>
                 </form>
             </div>
+
+            <?php if (auth()['role'] === 'admin'): ?>
+                <div class="mt-4 border-top pt-4">
+                    <h5 class="mb-3">Admin Actions</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#approveModal">
+                                <i class="bi bi-check-circle me-2"></i>Approve Request
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                <i class="bi bi-x-circle me-2"></i>Reject Request
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approve Modal -->
+                <div class="modal fade" id="approveModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Approve Leave Request</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form method="POST" action="/leave/<?= $leave['id'] ?>/approve">
+                                <?= csrf_field() ?>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Remarks (Optional)</label>
+                                        <textarea name="remarks" class="form-control" rows="3" placeholder="Add any remarks..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle me-2"></i>Approve
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reject Modal -->
+                <div class="modal fade" id="rejectModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Reject Leave Request</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form method="POST" action="/leave/<?= $leave['id'] ?>/reject">
+                                <?= csrf_field() ?>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Remarks (Required)</label>
+                                        <textarea name="remarks" class="form-control" rows="3" placeholder="Reason for rejection..." required></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="bi bi-x-circle me-2"></i>Reject
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 

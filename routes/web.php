@@ -363,5 +363,11 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/leave/{id}/edit', 'LeaveController@edit');
         $router->post('/leave/{id}', 'LeaveController@update', ['csrf']);
         $router->delete('/leave/{id}', 'LeaveController@destroy', ['csrf']);
+        
+        // Admin Leave Approval
+        $router->group(['middleware' => 'role:admin'], function($router) {
+            $router->post('/leave/{id}/approve', 'LeaveController@approve', ['csrf']);
+            $router->post('/leave/{id}/reject', 'LeaveController@reject', ['csrf']);
+        });
     });
 });
