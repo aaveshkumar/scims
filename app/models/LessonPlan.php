@@ -18,7 +18,7 @@ class LessonPlan
                   LEFT JOIN subjects s ON lp.subject_id = s.id
                   LEFT JOIN classes c ON lp.class_id = c.id
                   ORDER BY lp.created_at DESC";
-        return $this->db->query($query);
+        return $this->db->fetchAll($query);
     }
 
     public function find($id)
@@ -28,7 +28,7 @@ class LessonPlan
                   LEFT JOIN subjects s ON lp.subject_id = s.id
                   LEFT JOIN classes c ON lp.class_id = c.id
                   WHERE lp.id = ?";
-        return $this->db->query($query, [$id])[0] ?? null;
+        return $this->db->fetchOne($query, [$id]);
     }
 
     public function create($data)
@@ -63,12 +63,12 @@ class LessonPlan
     {
         if (!isset($this->whereConditions)) {
             $query = "SELECT * FROM {$this->table} ORDER BY created_at DESC";
-            return $this->db->query($query);
+            return $this->db->fetchAll($query);
         }
 
         $column = array_key_first($this->whereConditions);
         $value = $this->whereConditions[$column];
         $query = "SELECT * FROM {$this->table} WHERE {$column} = ? ORDER BY created_at DESC";
-        return $this->db->query($query, [$value]);
+        return $this->db->fetchAll($query, [$value]);
     }
 }

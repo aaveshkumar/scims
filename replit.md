@@ -40,6 +40,15 @@ The system employs a custom MVC architecture for clear separation of concerns.
 - **File Structure**: Industry-standard organization (`/app`, `/config`, `/database`, `/public`, `/routes`).
 - **Database Schema**: Proper relationships, foreign keys, indexing, and cascading operations.
 
+## Recent Updates (Session: Nov 29, 2025)
+- **Syllabus Module**: Complete CRUD with show/edit views, database integration
+- **Lesson Plans Module**: Comprehensive form with detailed placeholders, database model, CRUD operations
+- **LessonPlan Model Fix**: Uses fetchAll()/fetchOne() for proper array returns instead of PDOStatement
+- **Theme Toggle**: Fully functional dark/light mode in navbar with localStorage persistence
+- **Database**: Migrated from MySQL to PostgreSQL (Neon), all models updated for proper data handling
+
 ## External Dependencies
-- **Database**: MySQL (Remote via PDO)
+- **Database**: PostgreSQL (Neon) via PDO
 - **Frontend Framework**: Bootstrap 5
+- **Icons**: Bootstrap Icons 1.11.0
+- **Features**: Dark/Light mode toggle, CSRF protection, session-based RBAC
