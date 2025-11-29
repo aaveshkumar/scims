@@ -41,11 +41,11 @@
         <h5 class="mb-0">View Attendance Records</h5>
     </div>
     <div class="card-body">
-        <form method="GET" action="/attendance" class="row g-3 mb-4">
+        <form method="GET" action="/attendance" class="row g-3 mb-4" id="attendanceFilterForm">
             <div class="col-md-5">
-                <label class="form-label">Class</label>
-                <select name="class_id" class="form-select">
-                    <option value="">All Classes</option>
+                <label class="form-label">Class *</label>
+                <select name="class_id" class="form-select" id="classSelect">
+                    <option value="">Select a Class</option>
                     <?php foreach ($classes as $class): ?>
                         <option value="<?= $class['id'] ?>" <?= (isset($_GET['class_id']) && $_GET['class_id'] == $class['id']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($class['name']) ?>
@@ -55,15 +55,23 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label">Date</label>
-                <input type="date" name="date" class="form-control" value="<?= $_GET['date'] ?? date('Y-m-d') ?>">
+                <input type="date" name="date" class="form-control" id="dateInput" value="<?= $_GET['date'] ?? date('Y-m-d') ?>">
             </div>
             <div class="col-md-3">
                 <label class="form-label">&nbsp;</label>
-                <button type="submit" class="btn btn-secondary w-100">
+                <button type="submit" class="btn btn-secondary w-100" id="viewBtn">
                     <i class="bi bi-search me-2"></i>View Records
                 </button>
             </div>
         </form>
+        
+        <script>
+        document.getElementById('classSelect').addEventListener('change', function() {
+            if (this.value) {
+                document.getElementById('attendanceFilterForm').submit();
+            }
+        });
+        </script>
 
         <div class="table-responsive">
             <table class="table table-striped">
@@ -82,57 +90,62 @@
                     $date = $_GET['date'] ?? date('Y-m-d');
                     
                     if ($classId):
-                        // Simpler query without complex JOINs
+                        // Get all attendance for this class and date
                         $records = db()->fetchAll(
-                            "SELECT a.id, a.date, a.class_id, a.student_id, a.status, a.marked_by
-                             FROM attendance a
+                            "SELECT a.* FROM attendance a
                              WHERE a.class_id = ? AND a.date = ? AND a.period IS NULL
                              ORDER BY a.id DESC",
-                            [$classId, $date]
+                            [(int)$classId, $date]
                         );
                         
                         if (!empty($records)):
                             foreach ($records as $record):
                                 // Get class name
-                                $class = db()->fetchOne("SELECT name FROM classes WHERE id = ?", [$record['class_id']]);
+                                $cls = db()->fetchOne("SELECT name FROM classes WHERE id = ?", [(int)$record['class_id']]);
                                 
-                                // Get student info
-                                $student = db()->fetchOne(
-                                    "SELECT CONCAT(u.first_name, ' ', u.last_name) as name FROM students s 
+                                // Get student name
+                                $studentData = db()->fetchOne(
+                                    "SELECT u.first_name, u.last_name FROM students s 
                                      JOIN users u ON s.user_id = u.id WHERE s.id = ?", 
-                                    [$record['student_id']]
+                                    [(int)$record['student_id']]
                                 );
                                 
-                                // Get marked by user
-                                $markedBy = db()->fetchOne(
-                                    "SELECT CONCAT(first_name, ' ', last_name) as name FROM users WHERE id = ?", 
-                                    [$record['marked_by']]
+                                // Get who marked it
+                                $markerData = db()->fetchOne(
+                                    "SELECT first_name, last_name FROM users WHERE id = ?", 
+                                    [(int)$record['marked_by']]
                                 );
                     ?>
                         <tr>
                             <td><?= date('d M Y', strtotime($record['date'])) ?></td>
-                            <td><?= htmlspecialchars($class['name'] ?? 'N/A') ?></td>
-                            <td><?= htmlspecialchars($student['name'] ?? 'N/A') ?></td>
+                            <td><?= $cls ? htmlspecialchars($cls['name']) : 'Unknown' ?></td>
+                            <td><?php if($studentData) echo htmlspecialchars($studentData['first_name'] . ' ' . $studentData['last_name']); else echo 'Unknown'; ?></td>
                             <td>
                                 <span class="badge bg-<?= $record['status'] === 'present' ? 'success' : ($record['status'] === 'absent' ? 'danger' : 'warning') ?>">
                                     <?= ucfirst($record['status']) ?>
                                 </span>
                             </td>
-                            <td><?= htmlspecialchars($markedBy['name'] ?? 'N/A') ?></td>
+                            <td><?php if($markerData) echo htmlspecialchars($markerData['first_name'] . ' ' . $markerData['last_name']); else echo 'Unknown'; ?></td>
                         </tr>
                     <?php
                             endforeach;
                         else:
                     ?>
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-3">No attendance records found for <?= htmlspecialchars($classes[array_search($classId, array_column($classes, 'id'))]['name'] ?? '') ?> on <?= date('d M Y', strtotime($date)) ?></td>
+                            <td colspan="5" class="text-center text-muted py-3">
+                                <?php 
+                                    $selectedClass = array_filter($classes, fn($c) => $c['id'] == $classId);
+                                    $className = !empty($selectedClass) ? reset($selectedClass)['name'] : 'Selected class';
+                                    echo "No attendance records for " . htmlspecialchars($className) . " on " . date('d M Y', strtotime($date));
+                                ?>
+                            </td>
                         </tr>
                     <?php
                         endif;
                     else:
                     ?>
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-3">Select a class and click "View Records" to see attendance</td>
+                            <td colspan="5" class="text-center text-muted py-3">Select a class to view attendance records</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
