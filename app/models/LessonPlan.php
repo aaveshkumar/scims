@@ -4,6 +4,7 @@ class LessonPlan
 {
     protected $table = 'lesson_plans';
     protected $db;
+    protected $whereConditions;
 
     public function __construct()
     {
@@ -12,22 +13,20 @@ class LessonPlan
 
     public function all()
     {
-        $query = "SELECT lp.*, s.name as subject_name, c.name as class_name, u.full_name as teacher_name
+        $query = "SELECT lp.*, s.name as subject_name, c.name as class_name
                   FROM {$this->table} lp
                   LEFT JOIN subjects s ON lp.subject_id = s.id
                   LEFT JOIN classes c ON lp.class_id = c.id
-                  LEFT JOIN users u ON lp.teacher_id = u.id
                   ORDER BY lp.created_at DESC";
         return $this->db->query($query);
     }
 
     public function find($id)
     {
-        $query = "SELECT lp.*, s.name as subject_name, c.name as class_name, u.full_name as teacher_name
+        $query = "SELECT lp.*, s.name as subject_name, c.name as class_name
                   FROM {$this->table} lp
                   LEFT JOIN subjects s ON lp.subject_id = s.id
                   LEFT JOIN classes c ON lp.class_id = c.id
-                  LEFT JOIN users u ON lp.teacher_id = u.id
                   WHERE lp.id = ?";
         return $this->db->query($query, [$id])[0] ?? null;
     }
@@ -56,6 +55,19 @@ class LessonPlan
 
     public function where($column, $value)
     {
+        $this->whereConditions = [$column => $value];
+        return $this;
+    }
+
+    public function get()
+    {
+        if (!isset($this->whereConditions)) {
+            $query = "SELECT * FROM {$this->table} ORDER BY created_at DESC";
+            return $this->db->query($query);
+        }
+
+        $column = array_key_first($this->whereConditions);
+        $value = $this->whereConditions[$column];
         $query = "SELECT * FROM {$this->table} WHERE {$column} = ? ORDER BY created_at DESC";
         return $this->db->query($query, [$value]);
     }
