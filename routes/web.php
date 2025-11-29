@@ -219,6 +219,10 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/academic-calendar', 'AcademicCalendarController@index');
         $router->get('/academic-calendar/create', 'AcademicCalendarController@create');
         $router->post('/academic-calendar', 'AcademicCalendarController@store', ['csrf']);
+        $router->get('/academic-calendar/{id}', 'AcademicCalendarController@show');
+        $router->get('/academic-calendar/{id}/edit', 'AcademicCalendarController@edit');
+        $router->post('/academic-calendar/{id}', 'AcademicCalendarController@update', ['csrf']);
+        $router->delete('/academic-calendar/{id}', 'AcademicCalendarController@destroy', ['csrf']);
         
         // Finance Extensions
         $router->get('/fee-structure', 'FeeStructureController@index');
