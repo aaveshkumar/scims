@@ -42,12 +42,13 @@ class SubjectController
         $courses = $this->courseModel->where('status', 'active')->get();
         $classes = $this->classModel->where('status', 'active')->get();
         
-        // Get all active users as potential teachers
+        // Get all active staff/teachers only
         $teachers = db()->fetchAll(
             "SELECT u.id, u.first_name, u.last_name 
              FROM users u
-             WHERE u.status = 'active'
-             ORDER BY u.first_name ASC"
+             INNER JOIN staff s ON u.id = s.user_id
+             WHERE u.status = 'active' AND s.status = 'active'
+             ORDER BY u.first_name, u.last_name"
         );
 
         return view('subjects.create', [
@@ -122,12 +123,13 @@ class SubjectController
         $courses = $this->courseModel->where('status', 'active')->get();
         $classes = $this->classModel->where('status', 'active')->get();
         
-        // Get all active users as potential teachers
+        // Get all active staff/teachers only
         $teachers = db()->fetchAll(
             "SELECT u.id, u.first_name, u.last_name 
              FROM users u
-             WHERE u.status = 'active'
-             ORDER BY u.first_name ASC"
+             INNER JOIN staff s ON u.id = s.user_id
+             WHERE u.status = 'active' AND s.status = 'active'
+             ORDER BY u.first_name, u.last_name"
         );
 
         return view('subjects.edit', [
