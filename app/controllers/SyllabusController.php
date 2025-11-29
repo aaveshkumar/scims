@@ -3,10 +3,14 @@
 class SyllabusController
 {
     private $syllabusModel;
+    private $subjectModel;
+    private $classModel;
 
     public function __construct()
     {
         $this->syllabusModel = new Syllabus();
+        $this->subjectModel = new Subject();
+        $this->classModel = new ClassModel();
     }
 
     public function index($request)
@@ -17,7 +21,13 @@ class SyllabusController
 
     public function create($request)
     {
-        return view('syllabus/create', ['title' => 'Create - Syllabus Management']);
+        $subjects = $this->subjectModel->where('status', 'active')->get();
+        $classes = $this->classModel->where('status', 'active')->get();
+        return view('syllabus/create', [
+            'title' => 'Create - Syllabus Management',
+            'subjects' => $subjects,
+            'classes' => $classes
+        ]);
     }
 
     public function store($request)

@@ -26,23 +26,24 @@
                 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Subject *</label>
-                        <select name="subject_id" class="form-select" required>
-                            <option value="">-- Select Subject --</option>
-                            <option value="mathematics">Mathematics</option>
-                            <option value="english">English</option>
-                            <option value="science">Science</option>
+                        <label class="form-label fw-bold">Subject</label>
+                        <select name="subject_id" class="form-select">
+                            <option value="">-- Select Subject (Optional) --</option>
+                            <?php foreach ($subjects as $subject): ?>
+                                <option value="<?= $subject['id'] ?>"><?= htmlspecialchars($subject['name']) ?></option>
+                            <?php endforeach; ?>
                         </select>
                         <small class="text-muted d-block mt-1">
                             <i class="bi bi-info-circle"></i> Choose the subject this syllabus covers
                         </small>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Class/Grade *</label>
-                        <select name="class_id" class="form-select" required>
-                            <option value="">-- Select Class --</option>
-                            <option value="class_10">Class X</option>
-                            <option value="class_12">Class XII</option>
+                        <label class="form-label fw-bold">Class/Grade</label>
+                        <select name="class_id" class="form-select">
+                            <option value="">-- Select Class (Optional) --</option>
+                            <?php foreach ($classes as $class): ?>
+                                <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['name']) ?></option>
+                            <?php endforeach; ?>
                         </select>
                         <small class="text-muted d-block mt-1">
                             <i class="bi bi-info-circle"></i> The class or grade level for this syllabus
