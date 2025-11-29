@@ -11,7 +11,7 @@
 </div>
 
 <div class="card">
-    <div class="card-header bg-light">
+    <div class="card-header" style="background-color: #000; color: #fff;">
         <h5 class="mb-0">Syllabus Details</h5>
     </div>
     <div class="card-body">

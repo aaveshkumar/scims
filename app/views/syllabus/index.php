@@ -39,12 +39,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="5" class="text-center text-muted py-4">
-                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                            No records found. Click "Add New" to get started.
-                        </td>
-                    </tr>
+                    <?php if (empty($syllabuses)): ?>
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                No records found. Click "Add New" to get started.
+                            </td>
+                        </tr>
+                    <?php else: ?>
+                        <?php $i = 1; foreach ($syllabuses as $syllabus): ?>
+                            <tr>
+                                <td><?= $i++ ?></td>
+                                <td><strong><?= htmlspecialchars($syllabus['title']) ?></strong></td>
+                                <td>
+                                    <span class="badge bg-<?= $syllabus['status'] === 'active' ? 'success' : ($syllabus['status'] === 'draft' ? 'warning' : 'secondary') ?>">
+                                        <?= ucfirst($syllabus['status']) ?>
+                                    </span>
+                                </td>
+                                <td><?= date('M d, Y', strtotime($syllabus['created_at'])) ?></td>
+                                <td>
+                                    <a href="/syllabus/<?= $syllabus['id'] ?>" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="/syllabus/<?= $syllabus['id'] ?>/edit" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button onclick="confirmDelete('/syllabus/<?= $syllabus['id'] ?>')" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
