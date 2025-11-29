@@ -1,7 +1,13 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">Students</h1>
+    <h1 class="h3 mb-0">
+        <?php if ($classId): ?>
+            Class Students
+        <?php else: ?>
+            All Students
+        <?php endif; ?>
+    </h1>
     <a href="/students/create" class="btn btn-primary">
         <i class="bi bi-plus-circle me-2"></i>Add Student
     </a>
@@ -9,7 +15,13 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">All Students</h5>
+        <h5 class="mb-0">
+            <?php if ($classId): ?>
+                Students in Class
+            <?php else: ?>
+                All Students
+            <?php endif; ?>
+        </h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -50,10 +62,12 @@
                                     <a href="/students/<?= $student['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button onclick="toggleStatus('student', <?= $student['id'] ?>)" class="btn btn-sm btn-<?= $student['status'] === 'active' ? 'secondary' : 'success' ?>" title="Toggle Status">
-                                        <i class="bi bi-<?= $student['status'] === 'active' ? 'x-circle' : 'check-circle' ?>"></i>
-                                    </button>
-                                    <button onclick="confirmDelete('/students/<?= $student['id'] ?>' + window.location.search)" class="btn btn-sm btn-danger" title="Delete">
+                                    <?php if (!$classId): ?>
+                                        <button onclick="toggleStatus('student', <?= $student['id'] ?>)" class="btn btn-sm btn-<?= $student['status'] === 'active' ? 'secondary' : 'success' ?>" title="Toggle Status">
+                                            <i class="bi bi-<?= $student['status'] === 'active' ? 'x-circle' : 'check-circle' ?>"></i>
+                                        </button>
+                                    <?php endif; ?>
+                                    <button onclick="confirmDelete('/students/<?= $student['id'] ?>' + window.location.search)" class="btn btn-sm btn-danger" title="<?= $classId ? 'Remove from Class' : 'Delete' ?>">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>

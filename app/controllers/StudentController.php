@@ -32,7 +32,10 @@ class StudentController
         
         $students = db()->fetchAll($query, $params);
         
-        return view('students.index', ['students' => $students]);
+        return view('students.index', [
+            'students' => $students,
+            'classId' => $classId
+        ]);
     }
 
     public function create($request)
