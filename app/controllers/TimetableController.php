@@ -16,7 +16,33 @@ class TimetableController
     public function index($request)
     {
         $classes = $this->classModel->where('status', 'active')->get();
-        return view('timetable.index', ['classes' => $classes]);
+        $subjects = $this->subjectModel->where('status', 'active')->get();
+        $subjectId = $request->get('subject_id');
+        $academicYear = $request->get('academic_year', date('Y'));
+        $timetable = [];
+
+        if ($subjectId) {
+            $subject = $this->subjectModel->find($subjectId);
+            if (!$subject) {
+                flash('error', 'Subject not found');
+                return back();
+            }
+            $timetable = $this->timetableModel->getSubjectTimetable($subjectId, $academicYear);
+        }
+
+        $schedule = [];
+        foreach ($timetable as $entry) {
+            $schedule[$entry['day_of_week']][] = $entry;
+        }
+
+        return view('timetable.index', [
+            'classes' => $classes,
+            'subjects' => $subjects,
+            'subjectId' => $subjectId,
+            'academicYear' => $academicYear,
+            'schedule' => $schedule,
+            'subject' => $subjectId ? $this->subjectModel->find($subjectId) : null
+        ]);
     }
 
     public function view($request)
