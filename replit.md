@@ -83,6 +83,7 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 ### Timetable Module - Critical Fixes
 - **Fixed Teachers Dropdown Empty**: Changed query from user_roles to staff table (5 teachers now showing)
 - **Fixed Day of Week Constraint Error**: Changed dropdown values from capitalized to lowercase (matching database check constraint)
+- **Fixed Timetable Entries Not Displaying**: Changed view.php day loop from Capitalized to lowercase for proper matching
 - **Fixed Empty Integer Fields**: Convert empty strings to NULL for teacher_id, room_number, semester
 - **Fixed Timetable Delete**: Changed destroy() from JSON response to redirect
 - **Added Sunday Option**: Added missing Sunday to day of week dropdown

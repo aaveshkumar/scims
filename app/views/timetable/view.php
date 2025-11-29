@@ -49,7 +49,7 @@
                     ?>
                         <tr>
                             <td class="fw-bold"><?= $timeSlot ?></td>
-                            <?php foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as $day): ?>
+                            <?php foreach (['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as $day): ?>
                                 <td>
                                     <?php
                                     $found = false;
