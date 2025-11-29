@@ -44,7 +44,28 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - **Database**: MySQL (Remote via PDO)
 - **Frontend Framework**: Bootstrap 5
 
-## Recent Changes (November 18, 2025)
+## Recent Changes (November 29, 2025)
+
+### Course Management Module - Critical Fixes
+- **Fixed 500 Error on Courses List**: Null status handling with null coalesce operators
+- **Fixed Delete Button**: Implemented form-based POST with _method=DELETE override
+- **Added Status Field to Edit Form**: Dropdown to change course active/inactive status
+- **Database Cleanup**: Updated 3 courses with NULL status to 'active'
+- **Method Override Support**: Added _method parameter handling in Request class for REST operations
+
+### Files Modified:
+- `app/views/courses/index.php` - Fixed null status display, added delete button
+- `app/views/courses/edit.php` - Added status dropdown selector
+- `app/views/layouts/footer.php` - Replaced fetch DELETE with form-based submission
+- `app/helpers/Request.php` - Added _method override support for PUT/DELETE
+
+### Course CRUD Status:
+✅ **CREATE** - Working (courses save with 'active' status by default)
+✅ **READ** - Working (courses display without 500 error)
+✅ **UPDATE** - Working (all fields including status can be modified)
+✅ **DELETE** - Working (form-based submission with proper CSRF handling)
+
+## Previous Changes (November 18, 2025)
 
 ### Database Tables Created
 - Created `library_members` table for library membership management

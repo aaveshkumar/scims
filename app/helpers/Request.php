@@ -14,6 +14,12 @@ class Request
     public function __construct()
     {
         $this->method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        
+        // Support _method override for REST operations (POST with _method=DELETE/PUT)
+        if ($this->method === 'POST' && isset($_POST['_method'])) {
+            $this->method = strtoupper($_POST['_method']);
+        }
+        
         $this->uri = $this->parseUri();
         $this->get = $_GET;
         $this->post = $_POST;

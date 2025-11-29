@@ -88,14 +88,14 @@
             });
         })();
         
-        // Delete Confirmation Function
+        // Delete Confirmation Function - Using Form Submit instead of Fetch
         function confirmDelete(url, message = 'Are you sure you want to delete this?') {
             if (confirm(message)) {
                 performDelete(url);
             }
         }
         
-        // Perform actual delete
+        // Perform actual delete using form submission
         function performDelete(url) {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
             
@@ -104,32 +104,28 @@
                 return;
             }
             
-            fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ _token: csrfToken })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert(data.message || 'Delete failed');
-                }
-            })
-            .catch(error => {
-                alert('An error occurred. Please refresh the page and try again.');
-                console.error('Delete error:', error);
-            });
+            // Create a hidden form to submit DELETE request
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+            form.style.display = 'none';
+            
+            // Add _method field for DELETE
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            form.appendChild(methodInput);
+            
+            // Add CSRF token
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '_token';
+            tokenInput.value = csrfToken;
+            form.appendChild(tokenInput);
+            
+            document.body.appendChild(form);
+            form.submit();
         }
         
         // Handle delete buttons
