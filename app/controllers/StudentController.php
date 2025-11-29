@@ -192,7 +192,8 @@ class StudentController
         try {
             $student = $this->studentModel->find($id);
             if (!$student) {
-                return responseJSON(['success' => false, 'message' => 'Student not found'], 404);
+                flash('error', 'Student not found');
+                return back();
             }
 
             // Check if student has related records
@@ -204,26 +205,22 @@ class StudentController
             $hasQuizzes = $db->fetchOne("SELECT COUNT(*) as count FROM quiz_attempts WHERE student_id = ?", [$id])['count'] > 0;
 
             if ($hasAttendance || $hasMarks || $hasInvoices || $hasAssignments || $hasQuizzes) {
-                return responseJSON([
-                    'success' => false, 
-                    'message' => 'Cannot delete student with existing records (attendance, marks, invoices, assignments, or quizzes). Consider marking the student as inactive instead.'
-                ], 400);
+                flash('error', 'Cannot delete student with existing records. Consider marking the student as inactive instead.');
+                return back();
             }
 
             $this->studentModel->delete($id);
-
-            return responseJSON(['success' => true, 'message' => 'Student deleted successfully']);
+            flash('success', 'Student deleted successfully');
+            return redirect('/students');
         } catch (Exception $e) {
             // Check if it's a foreign key constraint error
             if (strpos($e->getMessage(), 'foreign key constraint') !== false || 
                 strpos($e->getMessage(), 'Cannot delete or update a parent row') !== false) {
-                return responseJSON([
-                    'success' => false, 
-                    'message' => 'Cannot delete student with existing records. Consider marking the student as inactive instead.'
-                ], 400);
+                flash('error', 'Cannot delete student with existing records. Consider marking the student as inactive instead.');
+            } else {
+                flash('error', 'Failed to delete student: ' . $e->getMessage());
             }
-            
-            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+            return back();
         }
     }
 

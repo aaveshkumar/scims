@@ -41,13 +41,20 @@ class Timetable extends Model
     {
         return $this->db->fetchAll(
             "SELECT t.*, s.name as subject_name, s.code as subject_code,
-                    u.first_name, u.last_name
+                    CONCAT(u.first_name, ' ', u.last_name) as teacher_name
              FROM timetables t
              INNER JOIN subjects s ON t.subject_id = s.id
              LEFT JOIN users u ON t.teacher_id = u.id
              WHERE t.class_id = ? AND t.academic_year = ? AND t.status = 'active'
              ORDER BY 
-                FIELD(t.day_of_week, 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'),
+                CASE WHEN t.day_of_week = 'Monday' THEN 1
+                     WHEN t.day_of_week = 'Tuesday' THEN 2
+                     WHEN t.day_of_week = 'Wednesday' THEN 3
+                     WHEN t.day_of_week = 'Thursday' THEN 4
+                     WHEN t.day_of_week = 'Friday' THEN 5
+                     WHEN t.day_of_week = 'Saturday' THEN 6
+                     ELSE 7
+                END,
                 t.start_time",
             [$classId, $academicYear]
         );

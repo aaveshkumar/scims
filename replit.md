@@ -53,17 +53,30 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - **Database Cleanup**: Updated 3 courses with NULL status to 'active'
 - **Method Override Support**: Added _method parameter handling in Request class for REST operations
 
+### Student Management Module - Critical Fixes
+- **Fixed Student Edit 404 Error**: Removed _method=PUT from edit form (route expects POST)
+- **Fixed Student Delete JSON Response**: Changed destroy() to use redirect instead of JSON response
+- **Student Status Toggle**: AJAX endpoint working correctly
+- **Edit Form Now Saves**: Student updates persist to database without 404 errors
+
+### Timetable Module - Critical Fixes
+- **Fixed 500 Error on Timetable View**: Removed MySQL FIELD() function, replaced with PostgreSQL CASE statement
+- **Fixed Teacher Name Display**: Added CONCAT() for proper teacher name formatting
+- **PostgreSQL Compatibility**: Updated SQL query to be database-agnostic
+
 ### Files Modified:
 - `app/views/courses/index.php` - Fixed null status display, added delete button
 - `app/views/courses/edit.php` - Added status dropdown selector
+- `app/views/students/edit.php` - Removed _method=PUT (use standard POST)
 - `app/views/layouts/footer.php` - Replaced fetch DELETE with form-based submission
 - `app/helpers/Request.php` - Added _method override support for PUT/DELETE
+- `app/controllers/StudentController.php` - Changed destroy() to redirect, fixed delete
+- `app/models/Timetable.php` - Fixed PostgreSQL compatibility, proper field aliasing
 
-### Course CRUD Status:
-✅ **CREATE** - Working (courses save with 'active' status by default)
-✅ **READ** - Working (courses display without 500 error)
-✅ **UPDATE** - Working (all fields including status can be modified)
-✅ **DELETE** - Working (form-based submission with proper CSRF handling)
+### Module CRUD Status:
+✅ **Courses** - CREATE/READ/UPDATE/DELETE all working
+✅ **Students** - CREATE/READ/UPDATE/DELETE all working, Status toggle working
+✅ **Timetable** - VIEW/CREATE/DELETE all working without errors
 
 ## Previous Changes (November 18, 2025)
 
