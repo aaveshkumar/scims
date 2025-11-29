@@ -94,11 +94,16 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - **Fixed Student Update Gender Error**: Convert empty optional fields (gender, date_of_birth, address) to NULL instead of empty string
 - **Status Toggle Verified**: Route, method, and CSRF handling all properly configured
 
+### Additional Bug Fixes (Nov 29, 2025 - Final)
+- **Class Student Filtering**: Students index now filters by class_id parameter (?class_id=30)
+- **Toggle Status AJAX**: Verified AuthMiddleware returns JSON for AJAX requests
+- **Gender Field NULL**: Empty optional fields (gender, date_of_birth, address) convert to NULL
+
 ### Module CRUD Status:
 ✅ **Courses** - CREATE/READ/UPDATE/DELETE all working
-✅ **Students** - CREATE/READ/UPDATE/DELETE all working, Status toggle working
+✅ **Students** - CREATE/READ/UPDATE/DELETE all working, Status toggle working, Class filtering working
 ✅ **Timetable** - CREATE/READ/DELETE all working without errors (multiple day selection with checkboxes)
-✅ **Classes** - CREATE/READ/UPDATE/DELETE all working without errors
+✅ **Classes** - CREATE/READ/UPDATE/DELETE all working without errors, View students filter working
 
 ## Previous Changes (November 18, 2025)
 

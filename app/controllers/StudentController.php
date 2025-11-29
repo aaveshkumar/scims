@@ -15,14 +15,23 @@ class StudentController
 
     public function index($request)
     {
-        $students = db()->fetchAll(
-            "SELECT s.*, u.first_name, u.last_name, u.email, u.phone, c.name as class_name
-             FROM students s
-             INNER JOIN users u ON s.user_id = u.id
-             LEFT JOIN classes c ON s.class_id = c.id
-             ORDER BY s.created_at DESC"
-        );
-
+        $classId = $request->get('class_id');
+        
+        $query = "SELECT s.*, u.first_name, u.last_name, u.email, u.phone, c.name as class_name
+                  FROM students s
+                  INNER JOIN users u ON s.user_id = u.id
+                  LEFT JOIN classes c ON s.class_id = c.id";
+        
+        $params = [];
+        if ($classId) {
+            $query .= " WHERE s.class_id = ?";
+            $params[] = $classId;
+        }
+        
+        $query .= " ORDER BY s.created_at DESC";
+        
+        $students = db()->fetchAll($query, $params);
+        
         return view('students.index', ['students' => $students]);
     }
 
