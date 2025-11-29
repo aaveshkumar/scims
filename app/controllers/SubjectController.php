@@ -176,10 +176,18 @@ class SubjectController
     public function destroy($request, $id)
     {
         try {
+            $subject = $this->subjectModel->find($id);
+            if (!$subject) {
+                flash('error', 'Subject not found');
+                return back();
+            }
+
             $this->subjectModel->delete($id);
-            return responseJSON(['success' => true, 'message' => 'Subject deleted successfully']);
+            flash('success', 'Subject deleted successfully');
+            return redirect('/subjects');
         } catch (Exception $e) {
-            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+            flash('error', 'Failed to delete subject: ' . $e->getMessage());
+            return back();
         }
     }
 }
