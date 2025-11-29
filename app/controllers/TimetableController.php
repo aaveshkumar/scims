@@ -89,13 +89,13 @@ class TimetableController
             $this->timetableModel->create([
                 'class_id' => $request->post('class_id'),
                 'subject_id' => $request->post('subject_id'),
-                'teacher_id' => $request->post('teacher_id'),
+                'teacher_id' => $request->post('teacher_id') ?: null,
                 'day_of_week' => $request->post('day_of_week'),
                 'start_time' => $request->post('start_time'),
                 'end_time' => $request->post('end_time'),
-                'room_number' => $request->post('room_number'),
+                'room_number' => $request->post('room_number') ?: null,
                 'academic_year' => $request->post('academic_year'),
-                'semester' => $request->post('semester'),
+                'semester' => $request->post('semester') ?: null,
                 'status' => 'active'
             ]);
 
@@ -111,9 +111,11 @@ class TimetableController
     {
         try {
             $this->timetableModel->delete($id);
-            return responseJSON(['success' => true, 'message' => 'Timetable entry deleted successfully']);
+            flash('success', 'Timetable entry deleted successfully');
+            return redirect('/timetable');
         } catch (Exception $e) {
-            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+            flash('error', 'Failed to delete timetable entry: ' . $e->getMessage());
+            return back();
         }
     }
 

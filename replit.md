@@ -80,10 +80,15 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - **Added Status Dropdown**: Added status selector to toggle active/inactive in edit form
 - **All Class CRUD Operations**: CREATE/READ/UPDATE/DELETE fully functional
 
+### Timetable Module - Critical Fixes
+- **Fixed Empty Integer Fields Error**: Convert empty strings to NULL for teacher_id, room_number, semester
+- **Fixed Timetable Delete**: Changed destroy() from JSON response to redirect
+- **Empty Teachers Dropdown**: No teachers exist yet - users need 'teacher' role to appear in list
+
 ### Module CRUD Status:
 ✅ **Courses** - CREATE/READ/UPDATE/DELETE all working
 ✅ **Students** - CREATE/READ/UPDATE/DELETE all working, Status toggle working
-✅ **Timetable** - VIEW/CREATE/DELETE all working without errors
+✅ **Timetable** - CREATE/READ/DELETE all working without errors (teachers dropdown requires staff with 'teacher' role)
 ✅ **Classes** - CREATE/READ/UPDATE/DELETE all working without errors
 
 ## Previous Changes (November 18, 2025)
