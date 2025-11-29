@@ -56,9 +56,11 @@ class AttendanceController
 
     public function store($request)
     {
-        $classId = $request->post('class_id');
-        $date = $request->post('date');
-        $attendance = $request->post('attendance', []);
+        // Get data from JSON body (sent by AJAX)
+        $data = $request->json();
+        $classId = $data['class_id'] ?? null;
+        $date = $data['date'] ?? null;
+        $attendance = $data['attendance'] ?? [];
 
         if (!$classId || !$date) {
             return responseJSON(['success' => false, 'message' => 'Class and date are required'], 400);
