@@ -74,7 +74,6 @@ class TimetableController
         $rules = [
             'class_id' => 'required|numeric',
             'subject_id' => 'required|numeric',
-            'day_of_week' => 'required',
             'start_time' => 'required',
             'end_time' => 'required',
             'academic_year' => 'required'
@@ -85,21 +84,31 @@ class TimetableController
             return back();
         }
 
-        try {
-            $this->timetableModel->create([
-                'class_id' => $request->post('class_id'),
-                'subject_id' => $request->post('subject_id'),
-                'teacher_id' => $request->post('teacher_id') ?: null,
-                'day_of_week' => $request->post('day_of_week'),
-                'start_time' => $request->post('start_time'),
-                'end_time' => $request->post('end_time'),
-                'room_number' => $request->post('room_number') ?: null,
-                'academic_year' => $request->post('academic_year'),
-                'semester' => $request->post('semester') ?: null,
-                'status' => 'active'
-            ]);
+        $daysOfWeek = $request->post('day_of_week', []);
+        if (empty($daysOfWeek)) {
+            flash('error', 'Please select at least one day');
+            return back();
+        }
 
-            flash('success', 'Timetable entry created successfully');
+        try {
+            $createdCount = 0;
+            foreach ($daysOfWeek as $day) {
+                $this->timetableModel->create([
+                    'class_id' => $request->post('class_id'),
+                    'subject_id' => $request->post('subject_id'),
+                    'teacher_id' => $request->post('teacher_id') ?: null,
+                    'day_of_week' => $day,
+                    'start_time' => $request->post('start_time'),
+                    'end_time' => $request->post('end_time'),
+                    'room_number' => $request->post('room_number') ?: null,
+                    'academic_year' => $request->post('academic_year'),
+                    'semester' => $request->post('semester') ?: null,
+                    'status' => 'active'
+                ]);
+                $createdCount++;
+            }
+
+            flash('success', 'Timetable entries created successfully (' . $createdCount . ' day' . ($createdCount > 1 ? 's' : '') . ')');
             return redirect('/timetable');
         } catch (Exception $e) {
             flash('error', 'Failed to create timetable entry: ' . $e->getMessage());

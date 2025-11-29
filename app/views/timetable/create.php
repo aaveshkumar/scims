@@ -49,17 +49,37 @@
                     </select>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Day of Week *</label>
-                    <select name="day_of_week" class="form-select" required>
-                        <option value="">Select Day</option>
-                        <option value="monday">Monday</option>
-                        <option value="tuesday">Tuesday</option>
-                        <option value="wednesday">Wednesday</option>
-                        <option value="thursday">Thursday</option>
-                        <option value="friday">Friday</option>
-                        <option value="saturday">Saturday</option>
-                        <option value="sunday">Sunday</option>
-                    </select>
+                    <label class="form-label">Days of Week * (Select One or More)</label>
+                    <div class="border rounded p-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="day_of_week[]" value="monday" id="monday">
+                            <label class="form-check-label" for="monday">Monday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="day_of_week[]" value="tuesday" id="tuesday">
+                            <label class="form-check-label" for="tuesday">Tuesday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="day_of_week[]" value="wednesday" id="wednesday">
+                            <label class="form-check-label" for="wednesday">Wednesday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="day_of_week[]" value="thursday" id="thursday">
+                            <label class="form-check-label" for="thursday">Thursday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="day_of_week[]" value="friday" id="friday">
+                            <label class="form-check-label" for="friday">Friday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="day_of_week[]" value="saturday" id="saturday">
+                            <label class="form-check-label" for="saturday">Saturday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="day_of_week[]" value="sunday" id="sunday">
+                            <label class="form-check-label" for="sunday">Sunday</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 

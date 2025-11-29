@@ -87,6 +87,7 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - **Fixed Empty Integer Fields**: Convert empty strings to NULL for teacher_id, room_number, semester
 - **Fixed Timetable Delete**: Changed destroy() from JSON response to redirect
 - **Added Sunday Option**: Added missing Sunday to day of week dropdown
+- **Multiple Day Selection**: Changed form from single-day dropdown to multi-select checkboxes (can select 1-7 days at once)
 
 ### Module CRUD Status:
 ✅ **Courses** - CREATE/READ/UPDATE/DELETE all working
