@@ -10,7 +10,7 @@ class LessonPlanController
     {
         $this->lessonPlanModel = new LessonPlan();
         $this->subjectModel = new Subject();
-        $this->classModel = new Classes();
+        $this->classModel = new ClassModel();
     }
 
     public function index($request)
