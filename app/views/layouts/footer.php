@@ -91,42 +91,58 @@
         // Delete Confirmation Function
         function confirmDelete(url, message = 'Are you sure you want to delete this?') {
             if (confirm(message)) {
-                // Get CSRF token from meta tag
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-                
-                if (!csrfToken) {
-                    alert('CSRF token not found. Please refresh the page.');
-                    return;
-                }
-                
-                fetch(url, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({ _token: csrfToken })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert(data.message || 'Delete failed');
-                    }
-                })
-                .catch(error => {
-                    alert('An error occurred. Please refresh the page and try again.');
-                    console.error('Delete error:', error);
-                });
+                performDelete(url);
             }
         }
+        
+        // Perform actual delete
+        function performDelete(url) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+            
+            if (!csrfToken) {
+                alert('CSRF token not found. Please refresh the page.');
+                return;
+            }
+            
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ _token: csrfToken })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Delete failed');
+                }
+            })
+            .catch(error => {
+                alert('An error occurred. Please refresh the page and try again.');
+                console.error('Delete error:', error);
+            });
+        }
+        
+        // Handle delete buttons
+        (function() {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            deleteButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = this.getAttribute('data-url');
+                    confirmDelete(url);
+                });
+            });
+        })();
         
         // Toggle Status Function
         function toggleStatus(type, id) {

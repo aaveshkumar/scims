@@ -35,8 +35,8 @@
                                 <td><?= htmlspecialchars($course['name']) ?></td>
                                 <td><?= $course['duration_years'] ?> Year(s)</td>
                                 <td>
-                                    <span class="badge bg-<?= $course['status'] === 'active' ? 'success' : 'secondary' ?>">
-                                        <?= ucfirst($course['status']) ?>
+                                    <span class="badge bg-<?= ($course['status'] ?? 'inactive') === 'active' ? 'success' : 'secondary' ?>">
+                                        <?= ucfirst($course['status'] ?? 'active') ?>
                                     </span>
                                 </td>
                                 <td>
@@ -46,7 +46,7 @@
                                     <a href="/courses/<?= $course['id'] ?>/edit" class="btn btn-sm btn-warning">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button type="button" onclick="if(typeof confirmDelete !== 'undefined') confirmDelete('/courses/<?= $course['id'] ?>'); else alert('Delete function not ready')" class="btn btn-sm btn-danger">
+                                    <button type="button" class="btn btn-sm btn-danger delete-btn" data-url="/courses/<?= $course['id'] ?>">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
