@@ -109,6 +109,12 @@ document.getElementById('attendanceForm').addEventListener('submit', function(e)
         }
     });
 
+    // Get CSRF token from meta tag
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    if (csrfToken) {
+        data._token = csrfToken;
+    }
+
     fetch('/attendance/store', {
         method: 'POST',
         headers: {
@@ -117,7 +123,12 @@ document.getElementById('attendanceForm').addEventListener('submit', function(e)
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(result => {
         if (result.success) {
             alert('Attendance saved successfully!');
@@ -127,7 +138,7 @@ document.getElementById('attendanceForm').addEventListener('submit', function(e)
         }
     })
     .catch(error => {
-        alert('An error occurred');
+        alert('An error occurred: ' + error.message);
         console.error(error);
     });
 });
