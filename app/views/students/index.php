@@ -53,7 +53,7 @@
                                     <button onclick="toggleStatus('student', <?= $student['id'] ?>)" class="btn btn-sm btn-<?= $student['status'] === 'active' ? 'secondary' : 'success' ?>" title="Toggle Status">
                                         <i class="bi bi-<?= $student['status'] === 'active' ? 'x-circle' : 'check-circle' ?>"></i>
                                     </button>
-                                    <button onclick="confirmDelete('/students/<?= $student['id'] ?>')" class="btn btn-sm btn-danger" title="Delete">
+                                    <button onclick="confirmDelete('/students/<?= $student['id'] ?>' + window.location.search)" class="btn btn-sm btn-danger" title="Delete">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>

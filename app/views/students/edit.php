@@ -53,13 +53,20 @@
                     <label class="form-label">Roll Number</label>
                     <input type="text" name="roll_number" class="form-control" value="<?= htmlspecialchars($student['roll_number'] ?? '') ?>">
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label">Gender</label>
                     <select name="gender" class="form-select">
                         <option value="">Select</option>
                         <option value="male" <?= $student['gender'] === 'male' ? 'selected' : '' ?>>Male</option>
                         <option value="female" <?= $student['gender'] === 'female' ? 'selected' : '' ?>>Female</option>
                         <option value="other" <?= $student['gender'] === 'other' ? 'selected' : '' ?>>Other</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="active" <?= $student['status'] === 'active' ? 'selected' : '' ?>>Active</option>
+                        <option value="inactive" <?= $student['status'] === 'inactive' ? 'selected' : '' ?>>Inactive</option>
                     </select>
                 </div>
             </div>

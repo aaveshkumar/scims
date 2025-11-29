@@ -180,12 +180,13 @@ class StudentController
             ]);
 
             $this->studentModel->update($id, [
-                'class_id' => $request->post('class_id'),
+                'class_id' => $request->post('class_id') ?: null,
                 'roll_number' => $request->post('roll_number'),
                 'guardian_name' => $request->post('guardian_name'),
                 'guardian_phone' => $request->post('guardian_phone'),
                 'guardian_email' => $request->post('guardian_email'),
-                'blood_group' => $request->post('blood_group')
+                'blood_group' => $request->post('blood_group'),
+                'status' => $request->post('status') ?: 'active'
             ]);
 
             flash('success', 'Student updated successfully');
@@ -205,7 +206,16 @@ class StudentController
                 return back();
             }
 
-            // Check if student has related records
+            // Check if deleting from class view (class_id parameter present)
+            $classId = $request->get('class_id');
+            if ($classId) {
+                // Only remove student from class (unenroll)
+                $this->studentModel->update($id, ['class_id' => null]);
+                flash('success', 'Student removed from class');
+                return redirect('/students?class_id=' . $classId);
+            }
+
+            // Otherwise, delete entire student record (only if no related records)
             $db = db();
             $hasAttendance = $db->fetchOne("SELECT COUNT(*) as count FROM attendance WHERE student_id = ?", [$id])['count'] > 0;
             $hasMarks = $db->fetchOne("SELECT COUNT(*) as count FROM marks WHERE student_id = ?", [$id])['count'] > 0;
