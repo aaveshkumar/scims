@@ -93,7 +93,7 @@
                 </form>
             </div>
 
-            <?php if (auth()['role'] === 'admin'): ?>
+            <?php if (hasRole('admin')): ?>
                 <div class="mt-4 border-top pt-4">
                     <h5 class="mb-3">Admin Actions</h5>
                     <div class="row">
