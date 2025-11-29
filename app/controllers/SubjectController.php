@@ -42,12 +42,11 @@ class SubjectController
         $courses = $this->courseModel->where('status', 'active')->get();
         $classes = $this->classModel->where('status', 'active')->get();
         
+        // Get all active users as potential teachers
         $teachers = db()->fetchAll(
-            "SELECT DISTINCT u.id, u.first_name, u.last_name 
+            "SELECT u.id, u.first_name, u.last_name 
              FROM users u
-             LEFT JOIN user_roles ur ON u.id = ur.user_id
-             LEFT JOIN roles r ON ur.role_id = r.id
-             WHERE (r.name = 'teacher' OR r.name = 'staff') AND u.status = 'active'
+             WHERE u.status = 'active'
              ORDER BY u.first_name ASC"
         );
 
@@ -123,12 +122,11 @@ class SubjectController
         $courses = $this->courseModel->where('status', 'active')->get();
         $classes = $this->classModel->where('status', 'active')->get();
         
+        // Get all active users as potential teachers
         $teachers = db()->fetchAll(
-            "SELECT DISTINCT u.id, u.first_name, u.last_name 
+            "SELECT u.id, u.first_name, u.last_name 
              FROM users u
-             LEFT JOIN user_roles ur ON u.id = ur.user_id
-             LEFT JOIN roles r ON ur.role_id = r.id
-             WHERE (r.name = 'teacher' OR r.name = 'staff') AND u.status = 'active'
+             WHERE u.status = 'active'
              ORDER BY u.first_name ASC"
         );
 
