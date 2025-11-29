@@ -1,5 +1,17 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
+<style>
+    body.dark-mode .nav-link {
+        color: white !important;
+    }
+    body.dark-mode .nav-link:hover {
+        color: white !important;
+    }
+    body.dark-mode .nav-link.active {
+        color: white !important;
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Timetable Management</h1>
     <?php if (hasRole('admin')): ?>
