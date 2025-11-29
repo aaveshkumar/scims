@@ -354,5 +354,14 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/logs', function() {
             return view('placeholder', ['title' => 'Audit Logs', 'module' => 'Activity Logs']);
         });
+        
+        // Leave Management
+        $router->get('/leave', 'LeaveController@index');
+        $router->get('/leave/create', 'LeaveController@create');
+        $router->post('/leave', 'LeaveController@store', ['csrf']);
+        $router->get('/leave/{id}', 'LeaveController@show');
+        $router->get('/leave/{id}/edit', 'LeaveController@edit');
+        $router->post('/leave/{id}', 'LeaveController@update', ['csrf']);
+        $router->delete('/leave/{id}', 'LeaveController@destroy', ['csrf']);
     });
 });
