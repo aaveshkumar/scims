@@ -142,11 +142,11 @@ class MaterialController
             return redirect('/materials');
         }
 
-        $materialObj = new Material();
-        foreach ($material as $key => $value) {
-            $materialObj->$key = $value;
-        }
-        $materialObj->incrementDownloads();
+        // Increment downloads counter
+        db()->execute(
+            "UPDATE materials SET downloads = downloads + 1 WHERE id = ?",
+            [$id]
+        );
 
         $filePath = PUBLIC_PATH . $material['file_path'];
 
