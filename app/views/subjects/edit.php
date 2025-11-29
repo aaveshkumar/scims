@@ -14,7 +14,6 @@
     <div class="card-body">
         <form method="POST" action="/subjects/<?= $subject['id'] ?>">
             <input type="hidden" name="_token" value="<?= csrf() ?>">
-            <input type="hidden" name="_method" value="PUT">
             
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -29,23 +28,23 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Class *</label>
-                    <select name="class_id" class="form-select" required>
-                        <option value="">Select Class</option>
-                        <?php foreach ($classes as $class): ?>
-                            <option value="<?= $class['id'] ?>" <?= $class['id'] == $subject['class_id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($class['name']) ?>
+                    <label class="form-label">Course *</label>
+                    <select name="course_id" class="form-select" required>
+                        <option value="">Select Course</option>
+                        <?php foreach ($courses as $course): ?>
+                            <option value="<?= $course['id'] ?>" <?= $course['id'] == ($subject['course_id'] ?? '') ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($course['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Teacher</label>
-                    <select name="teacher_id" class="form-select">
-                        <option value="">Select Teacher (Optional)</option>
-                        <?php foreach ($teachers as $teacher): ?>
-                            <option value="<?= $teacher['id'] ?>" <?= $teacher['id'] == ($subject['teacher_id'] ?? '') ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($teacher['first_name'] . ' ' . $teacher['last_name']) ?>
+                    <label class="form-label">Class</label>
+                    <select name="class_id" class="form-select">
+                        <option value="">Select Class</option>
+                        <?php foreach ($classes as $class): ?>
+                            <option value="<?= $class['id'] ?>" <?= $class['id'] == ($subject['class_id'] ?? '') ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($class['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -53,21 +52,42 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Subject Type *</label>
-                    <select name="subject_type" class="form-select" required>
-                        <option value="theory" <?= ($subject['subject_type'] ?? 'theory') === 'theory' ? 'selected' : '' ?>>Theory</option>
-                        <option value="practical" <?= ($subject['subject_type'] ?? '') === 'practical' ? 'selected' : '' ?>>Practical</option>
-                        <option value="both" <?= ($subject['subject_type'] ?? '') === 'both' ? 'selected' : '' ?>>Both</option>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Teacher</label>
+                    <select name="teacher_id" class="form-select">
+                        <option value="">Select Teacher (Optional)</option>
+                        <?php if (!empty($teachers)): ?>
+                            <?php foreach ($teachers as $teacher): ?>
+                                <option value="<?= $teacher['id'] ?>" <?= $teacher['id'] == ($subject['teacher_id'] ?? '') ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($teacher['first_name'] . ' ' . $teacher['last_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="">No teachers available</option>
+                        <?php endif; ?>
                     </select>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Total Marks</label>
-                    <input type="number" name="total_marks" class="form-control" value="<?= $subject['total_marks'] ?? '' ?>" min="0">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Credits</label>
+                    <input type="number" name="credits" class="form-control" value="<?= $subject['credits'] ?? '' ?>" min="0" step="0.5">
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Passing Marks</label>
-                    <input type="number" name="passing_marks" class="form-control" value="<?= $subject['passing_marks'] ?? '' ?>" min="0">
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Type</label>
+                    <select name="type" class="form-select">
+                        <option value="theory" <?= ($subject['type'] ?? 'theory') === 'theory' ? 'selected' : '' ?>>Theory</option>
+                        <option value="practical" <?= ($subject['type'] ?? '') === 'practical' ? 'selected' : '' ?>>Practical</option>
+                        <option value="both" <?= ($subject['type'] ?? '') === 'both' ? 'selected' : '' ?>>Both</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="active" <?= ($subject['status'] ?? 'active') === 'active' ? 'selected' : '' ?>>Active</option>
+                        <option value="inactive" <?= ($subject['status'] ?? '') === 'inactive' ? 'selected' : '' ?>>Inactive</option>
+                    </select>
                 </div>
             </div>
 
