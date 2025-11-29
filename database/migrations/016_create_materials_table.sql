@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS materials (
     title VARCHAR(200) NOT NULL,
     description TEXT NULL,
     file_path VARCHAR(255) NOT NULL,
-    file_type VARCHAR(50) NULL,
+    file_type VARCHAR(255) NULL,
     file_size INT NULL,
     subject_id INT UNSIGNED NULL,
     class_id INT UNSIGNED NULL,
