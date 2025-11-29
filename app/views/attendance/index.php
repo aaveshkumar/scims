@@ -82,46 +82,57 @@
                     $date = $_GET['date'] ?? date('Y-m-d');
                     
                     if ($classId):
+                        // Simpler query without complex JOINs
                         $records = db()->fetchAll(
-                            "SELECT a.*, c.name as class_name, CONCAT(u.first_name, ' ', u.last_name) as student_name, 
-                                    CONCAT(mu.first_name, ' ', mu.last_name) as marked_by_name
+                            "SELECT a.id, a.date, a.class_id, a.student_id, a.status, a.marked_by
                              FROM attendance a
-                             JOIN classes c ON a.class_id = c.id
-                             JOIN students s ON a.student_id = s.id
-                             JOIN users u ON s.user_id = u.id
-                             JOIN users mu ON a.marked_by = mu.id
                              WHERE a.class_id = ? AND a.date = ? AND a.period IS NULL
-                             ORDER BY u.first_name, u.last_name",
+                             ORDER BY a.id DESC",
                             [$classId, $date]
                         );
                         
                         if (!empty($records)):
                             foreach ($records as $record):
+                                // Get class name
+                                $class = db()->fetchOne("SELECT name FROM classes WHERE id = ?", [$record['class_id']]);
+                                
+                                // Get student info
+                                $student = db()->fetchOne(
+                                    "SELECT CONCAT(u.first_name, ' ', u.last_name) as name FROM students s 
+                                     JOIN users u ON s.user_id = u.id WHERE s.id = ?", 
+                                    [$record['student_id']]
+                                );
+                                
+                                // Get marked by user
+                                $markedBy = db()->fetchOne(
+                                    "SELECT CONCAT(first_name, ' ', last_name) as name FROM users WHERE id = ?", 
+                                    [$record['marked_by']]
+                                );
                     ?>
                         <tr>
                             <td><?= date('d M Y', strtotime($record['date'])) ?></td>
-                            <td><?= htmlspecialchars($record['class_name']) ?></td>
-                            <td><?= htmlspecialchars($record['student_name']) ?></td>
+                            <td><?= htmlspecialchars($class['name'] ?? 'N/A') ?></td>
+                            <td><?= htmlspecialchars($student['name'] ?? 'N/A') ?></td>
                             <td>
                                 <span class="badge bg-<?= $record['status'] === 'present' ? 'success' : ($record['status'] === 'absent' ? 'danger' : 'warning') ?>">
                                     <?= ucfirst($record['status']) ?>
                                 </span>
                             </td>
-                            <td><?= htmlspecialchars($record['marked_by_name']) ?></td>
+                            <td><?= htmlspecialchars($markedBy['name'] ?? 'N/A') ?></td>
                         </tr>
                     <?php
                             endforeach;
                         else:
                     ?>
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-3">No attendance records found for this date and class</td>
+                            <td colspan="5" class="text-center text-muted py-3">No attendance records found for <?= htmlspecialchars($classes[array_search($classId, array_column($classes, 'id'))]['name'] ?? '') ?> on <?= date('d M Y', strtotime($date)) ?></td>
                         </tr>
                     <?php
                         endif;
                     else:
                     ?>
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-3">Select a class to view attendance records</td>
+                            <td colspan="5" class="text-center text-muted py-3">Select a class and click "View Records" to see attendance</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
