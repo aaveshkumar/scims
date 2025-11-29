@@ -106,9 +106,11 @@ class CourseController
     {
         try {
             $this->courseModel->delete($id);
-            return responseJSON(['success' => true, 'message' => 'Course deleted successfully']);
+            flash('success', 'Course deleted successfully');
+            return redirect('/courses');
         } catch (Exception $e) {
-            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+            flash('error', 'Failed to delete course: ' . $e->getMessage());
+            return back();
         }
     }
 }
