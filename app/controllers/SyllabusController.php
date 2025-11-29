@@ -83,7 +83,14 @@ class SyllabusController
             flash('error', 'Syllabus not found');
             return redirect('/syllabus');
         }
-        return view('syllabus/edit', ['syllabus' => $syllabus, 'title' => 'Edit - Syllabus Management']);
+        $subjects = $this->subjectModel->where('status', 'active')->get();
+        $classes = $this->classModel->where('status', 'active')->get();
+        return view('syllabus/edit', [
+            'syllabus' => $syllabus,
+            'subjects' => $subjects,
+            'classes' => $classes,
+            'title' => 'Edit - Syllabus Management'
+        ]);
     }
 
     public function update($request, $id)

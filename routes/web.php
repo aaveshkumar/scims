@@ -195,6 +195,10 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/syllabus', 'SyllabusController@index');
         $router->get('/syllabus/create', 'SyllabusController@create');
         $router->post('/syllabus', 'SyllabusController@store', ['csrf']);
+        $router->get('/syllabus/{id}', 'SyllabusController@show');
+        $router->get('/syllabus/{id}/edit', 'SyllabusController@edit');
+        $router->post('/syllabus/{id}', 'SyllabusController@update', ['csrf']);
+        $router->delete('/syllabus/{id}', 'SyllabusController@destroy', ['csrf']);
         
         $router->get('/lesson-plans', 'LessonPlanController@index');
         $router->get('/lesson-plans/create', 'LessonPlanController@create');
