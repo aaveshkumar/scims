@@ -99,6 +99,7 @@ document.getElementById('attendanceForm').addEventListener('submit', function(e)
     
     const formData = new FormData(this);
     const data = {};
+    
     formData.forEach((value, key) => {
         if (key.startsWith('attendance[')) {
             const studentId = key.match(/\d+/)[0];

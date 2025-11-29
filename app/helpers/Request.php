@@ -45,8 +45,9 @@ class Request
         $headers = [];
         foreach ($_SERVER as $key => $value) {
             if (strpos($key, 'HTTP_') === 0) {
-                $header = str_replace('_', '-', substr($key, 5));
-                $headers[$header] = $value;
+                // Store with uppercase and underscores for easy lookup
+                $headerKey = strtoupper(substr($key, 5)); // Remove HTTP_ prefix
+                $headers[$headerKey] = $value;
             }
         }
         return $headers;
