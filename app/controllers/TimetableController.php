@@ -57,9 +57,9 @@ class TimetableController
         $teachers = db()->fetchAll(
             "SELECT u.id, u.first_name, u.last_name 
              FROM users u
-             INNER JOIN user_roles ur ON u.id = ur.user_id
-             INNER JOIN roles r ON ur.role_id = r.id
-             WHERE r.name = 'teacher' AND u.status = 'active'"
+             INNER JOIN staff s ON u.id = s.user_id
+             WHERE u.status = 'active' AND s.status = 'active'
+             ORDER BY u.first_name, u.last_name"
         );
 
         return view('timetable.create', [

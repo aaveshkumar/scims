@@ -81,9 +81,11 @@ The system is built on a custom MVC (Model-View-Controller) architecture, ensuri
 - **All Class CRUD Operations**: CREATE/READ/UPDATE/DELETE fully functional
 
 ### Timetable Module - Critical Fixes
-- **Fixed Empty Integer Fields Error**: Convert empty strings to NULL for teacher_id, room_number, semester
+- **Fixed Teachers Dropdown Empty**: Changed query from user_roles to staff table (5 teachers now showing)
+- **Fixed Day of Week Constraint Error**: Changed dropdown values from capitalized to lowercase (matching database check constraint)
+- **Fixed Empty Integer Fields**: Convert empty strings to NULL for teacher_id, room_number, semester
 - **Fixed Timetable Delete**: Changed destroy() from JSON response to redirect
-- **Empty Teachers Dropdown**: No teachers exist yet - users need 'teacher' role to appear in list
+- **Added Sunday Option**: Added missing Sunday to day of week dropdown
 
 ### Module CRUD Status:
 ✅ **Courses** - CREATE/READ/UPDATE/DELETE all working
