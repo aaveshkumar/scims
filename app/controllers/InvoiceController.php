@@ -112,8 +112,8 @@ class InvoiceController
 
     public function recordPayment($request, $id)
     {
-        $invoice = $this->invoiceModel->find($id);
-        if (!$invoice) {
+        $invoiceData = db()->fetchOne("SELECT * FROM invoices WHERE id = ?", [$id]);
+        if (!$invoiceData) {
             return responseJSON(['success' => false, 'message' => 'Invoice not found'], 404);
         }
 
@@ -127,16 +127,23 @@ class InvoiceController
         }
 
         try {
-            $invoiceObj = new Invoice();
-            foreach ($invoice as $key => $value) {
-                $invoiceObj->$key = $value;
+            $paymentAmount = (float) $request->post('amount');
+            $newAmountPaid = (float) $invoiceData['amount_paid'] + $paymentAmount;
+            $newBalance = (float) $invoiceData['total_amount'] - $newAmountPaid;
+
+            $paymentStatus = 'paid';
+            if ($newBalance > 0) {
+                $paymentStatus = 'partial';
             }
 
-            $invoiceObj->recordPayment(
-                $request->post('amount'),
-                $request->post('payment_method'),
-                $request->post('transaction_id')
-            );
+            db()->update('invoices', [
+                'amount_paid' => $newAmountPaid,
+                'balance' => $newBalance,
+                'payment_status' => $paymentStatus,
+                'payment_method' => $request->post('payment_method'),
+                'transaction_id' => $request->post('transaction_id') ?? null,
+                'payment_date' => date('Y-m-d')
+            ], ['id' => $id]);
 
             return responseJSON(['success' => true, 'message' => 'Payment recorded successfully']);
         } catch (Exception $e) {
