@@ -43,37 +43,14 @@ The system employs a custom MVC architecture for clear separation of concerns.
 - **Database Schema**: Proper relationships, foreign keys, indexing, and cascading operations.
 
 ## Recent Updates (Session: Nov 30, 2025)
-- **Assignments Module**: Fixed database join queries (students → users for names), added comprehensive delete buttons with confirmation dialogs
-- **Login Page**: Added animated loader spinner when user clicks Sign In, auto-hides on errors, disabled button during auth
-- **Quizzes Module**: Fixed 404 error by registering routes, corrected auth() function usage (array not object), fixed Quiz model getAttempts joins
-- **Quiz Creation Form**: Built meaningful multi-section form with:
-  - Quiz Details (title, description)
-  - Subject & Class selection
-  - Quiz Schedule (start/end date-time)
-  - Duration & Marks settings
-  - Passing marks configuration
-- **Quiz Index Page**: Added delete buttons (trash icon) with confirmation dialogs for inline actions
-- **Forums Module**: Complete implementation with full CRUD:
-  - Routes: GET /forums (list), POST /forums (create), GET /forums/{id} (view), POST /forums/{id} (update), DELETE /forums/{id}
-  - Database integration with proper joins (forums → users → subjects → classes)
-  - Index page displays all forums with title, subject, class, creator, status, created date, and action buttons
-  - Create/Edit forms with subject and class selection
-  - 5 dummy forums inserted for testing (General Discussion, Study Groups, Assignment Help, Doubt Clearing, Announcements)
-- **Calendar Module**: Complete implementation with full CRUD:
-  - Fixed 500 error by rewriting CalendarController to match app architecture patterns
-  - Created calendar_events table with proper schema (date, time, location, event_type, creator)
-  - Routes: GET /calendar (list), POST /calendar/create (store), GET /calendar/{id} (view), GET /calendar/{id}/edit, POST /calendar/{id}/edit, POST /calendar/{id}/delete
-  - Index page displays all events with title, date, time, location, type, creator
-  - Meaningful create/edit forms with multi-section layout: Event Details, Date & Time, Location
-  - Event types: Event, Holiday, Exam, Meeting, Deadline
-  - 5 dummy events inserted for testing (Annual Sports Day, Science Exhibition, PTM, Final Exams, Prize Distribution)
-- **Holidays Management**: Complete implementation with full CRUD:
-  - Created holidays table with proper schema (name, dates, type, status, creator)
-  - Routes: GET /calendar/holidays (list), POST /calendar/holidays/create (store), GET /calendar/holidays/{id} (view), GET /calendar/holidays/{id}/edit, POST /calendar/holidays/{id}/edit, POST /calendar/holidays/{id}/delete
-  - Index page displays all holidays with name, dates, type, status, creator
-  - Meaningful create/edit forms with multi-section layout: Holiday Details, Duration, Settings
-  - Holiday types: Holiday, Festival, Vacation, Special
-  - 5 dummy holidays inserted for testing (Diwali, Christmas, New Year, Summer Vacation, Teacher Training Day)
+- **HR Module**: Complete implementation with 3 sub-modules (Events, Recruitment, Payroll)
+  - **HR Events**: Full CRUD, 5 dummy events (Onboarding, Team Building, Performance Review, Professional Workshop, Policy Update)
+  - **Recruitment**: Full CRUD for job positions, 5 dummy positions (Senior Teacher, Accountant, HR Manager, Lab Tech, Admin)
+  - **Payroll**: Full CRUD using existing payroll table (basic_salary, allowances, deductions, net_salary), 4+ dummy payroll records
+  - Routes properly ordered (specific before parameterized) to prevent /hr/{id} matching conflicts
+  - All controllers use db()->fetchAll/fetchOne with proper staff/user joins
+  - Multi-section forms: Staff Info, Period/Details, Salary Info, Settings
+  - Tables display with view/edit/delete buttons and inline confirmation dialogs
 
 ## Critical Bug Fixes
 - **auth() Function**: Changed from auth()->user()['id'] to auth()['id'] - auth() returns array from $_SESSION, not object

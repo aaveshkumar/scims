@@ -173,4 +173,121 @@ class HrController
         flash('success', 'Position deleted successfully');
         return redirect('/hr/recruitment');
     }
+
+    public function payroll($request)
+    {
+        $payrolls = db()->fetchAll("SELECT p.*, CONCAT(s.first_name, ' ', s.last_name) as staff_name FROM payroll p LEFT JOIN staff s ON p.staff_id = s.id ORDER BY p.payment_date DESC NULLS LAST");
+        
+        return view('hr/payroll', [
+            'title' => 'Payroll Management',
+            'payrolls' => $payrolls
+        ]);
+    }
+
+    public function createPayroll($request)
+    {
+        if ($request->method() === 'POST') {
+            $authUser = auth();
+            $basic_salary = $request->post('basic_salary') ?? 0;
+            $allowances = $request->post('allowances') ?? 0;
+            $deductions = $request->post('deductions') ?? 0;
+            $gross_salary = $basic_salary + $allowances;
+            $net_salary = $gross_salary - $deductions;
+            
+            $sql = "INSERT INTO payroll (payroll_number, staff_id, month, year, basic_salary, allowances, deductions, gross_salary, net_salary, payment_date, payment_method, status, created_by) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            db()->execute($sql, [
+                'PAYROLL-' . time(),
+                $request->post('staff_id'),
+                $request->post('month'),
+                $request->post('year'),
+                $basic_salary,
+                $allowances,
+                $deductions,
+                $gross_salary,
+                $net_salary,
+                $request->post('payment_date'),
+                $request->post('payment_method'),
+                $request->post('status') ?? 'pending',
+                isset($authUser['id']) ? $authUser['id'] : 1
+            ]);
+            
+            flash('success', 'Payroll created successfully');
+            return redirect('/hr/payroll');
+        }
+        
+        $staff = db()->fetchAll("SELECT id, CONCAT(first_name, ' ', last_name) as name FROM staff ORDER BY first_name");
+        return view('hr/create-payroll', [
+            'title' => 'Create - Payroll',
+            'staff' => $staff
+        ]);
+    }
+
+    public function showPayroll($request, $id)
+    {
+        $payroll = db()->fetchOne("SELECT p.*, CONCAT(s.first_name, ' ', s.last_name) as staff_name FROM payroll p LEFT JOIN staff s ON p.staff_id = s.id WHERE p.id = ?", [$id]);
+        
+        if (!$payroll) {
+            flash('error', 'Payroll record not found');
+            return redirect('/hr/payroll');
+        }
+        
+        return view('hr/show-payroll', [
+            'title' => 'View - Payroll',
+            'payroll' => $payroll
+        ]);
+    }
+
+    public function editPayroll($request, $id)
+    {
+        $payroll = db()->fetchOne("SELECT * FROM payroll WHERE id = ?", [$id]);
+        
+        if (!$payroll) {
+            flash('error', 'Payroll record not found');
+            return redirect('/hr/payroll');
+        }
+        
+        if ($request->method() === 'POST') {
+            $basic_salary = $request->post('basic_salary') ?? 0;
+            $allowances = $request->post('allowances') ?? 0;
+            $deductions = $request->post('deductions') ?? 0;
+            $gross_salary = $basic_salary + $allowances;
+            $net_salary = $gross_salary - $deductions;
+            
+            $sql = "UPDATE payroll SET staff_id = ?, month = ?, year = ?, basic_salary = ?, allowances = ?, deductions = ?, gross_salary = ?, net_salary = ?, payment_date = ?, payment_method = ?, status = ?, updated_at = NOW() WHERE id = ?";
+            
+            db()->execute($sql, [
+                $request->post('staff_id'),
+                $request->post('month'),
+                $request->post('year'),
+                $basic_salary,
+                $allowances,
+                $deductions,
+                $gross_salary,
+                $net_salary,
+                $request->post('payment_date'),
+                $request->post('payment_method'),
+                $request->post('status'),
+                $id
+            ]);
+            
+            flash('success', 'Payroll updated successfully');
+            return redirect('/hr/payroll');
+        }
+        
+        $staff = db()->fetchAll("SELECT id, CONCAT(first_name, ' ', last_name) as name FROM staff ORDER BY first_name");
+        return view('hr/edit-payroll', [
+            'title' => 'Edit - Payroll',
+            'payroll' => $payroll,
+            'staff' => $staff
+        ]);
+    }
+
+    public function deletePayroll($request, $id)
+    {
+        db()->execute("DELETE FROM payroll WHERE id = ?", [$id]);
+        flash('success', 'Payroll record deleted successfully');
+        return redirect('/hr/payroll');
+    }
 }

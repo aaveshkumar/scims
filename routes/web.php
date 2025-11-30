@@ -299,6 +299,15 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/hr/recruitment/{id}/edit', 'HrController@editPosition', ['csrf']);
         $router->post('/hr/recruitment/{id}/delete', 'HrController@deletePosition', ['csrf']);
         
+        // Payroll routes MUST come before /hr/{id} to prevent matching conflict
+        $router->get('/hr/payroll', 'HrController@payroll');
+        $router->get('/hr/payroll/create', 'HrController@createPayroll');
+        $router->post('/hr/payroll/create', 'HrController@createPayroll', ['csrf']);
+        $router->get('/hr/payroll/{id}', 'HrController@showPayroll');
+        $router->get('/hr/payroll/{id}/edit', 'HrController@editPayroll');
+        $router->post('/hr/payroll/{id}/edit', 'HrController@editPayroll', ['csrf']);
+        $router->post('/hr/payroll/{id}/delete', 'HrController@deletePayroll', ['csrf']);
+        
         // Discussion Forums
         $router->get('/forums', 'ForumController@index');
         $router->get('/forums/create', 'ForumController@create');
