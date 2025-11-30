@@ -6,9 +6,10 @@ class Payroll
     
     public static function getAll($filters = [])
     {
-        $sql = "SELECT p.*, s.first_name, s.last_name, s.employee_id
+        $sql = "SELECT p.*, s.employee_id, u.first_name, u.last_name
                 FROM payroll p
                 JOIN staff s ON p.staff_id = s.id
+                JOIN users u ON s.user_id = u.id
                 WHERE 1=1";
         $params = [];
         
@@ -32,16 +33,17 @@ class Payroll
             $params[] = $filters['status'];
         }
         
-        $sql .= " ORDER BY p.year DESC, p.month DESC, s.first_name";
+        $sql .= " ORDER BY p.year DESC, p.month DESC, u.first_name";
         
         return db()->fetchAll($sql, $params);
     }
     
     public static function find($id)
     {
-        $sql = "SELECT p.*, s.first_name, s.last_name, s.employee_id, s.designation
+        $sql = "SELECT p.*, s.employee_id, s.designation, u.first_name, u.last_name
                 FROM payroll p
                 JOIN staff s ON p.staff_id = s.id
+                JOIN users u ON s.user_id = u.id
                 WHERE p.id = ?";
         
         return db()->fetchOne($sql, [$id]);

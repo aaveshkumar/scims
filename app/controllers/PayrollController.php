@@ -12,7 +12,7 @@ class PayrollController
         ];
         
         $payrollRecords = Payroll::getAll($filters);
-        $staff = db()->fetchAll("SELECT id, first_name, last_name, employee_id FROM staff ORDER BY first_name");
+        $staff = db()->fetchAll("SELECT s.id, u.first_name, u.last_name, s.employee_id FROM staff s JOIN users u ON s.user_id = u.id ORDER BY u.first_name");
         $stats = Payroll::getStatistics();
         
         return view('payroll/index', [
@@ -26,7 +26,7 @@ class PayrollController
 
     public function create($request)
     {
-        $staff = db()->fetchAll("SELECT id, first_name, last_name, employee_id, salary FROM staff ORDER BY first_name");
+        $staff = db()->fetchAll("SELECT s.id, u.first_name, u.last_name, s.employee_id, s.salary FROM staff s JOIN users u ON s.user_id = u.id ORDER BY u.first_name");
         
         return view('payroll/create', [
             'title' => 'Generate Payroll',

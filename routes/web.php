@@ -244,6 +244,10 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/payroll', 'PayrollController@index');
         $router->get('/payroll/create', 'PayrollController@create');
         $router->post('/payroll', 'PayrollController@store', ['csrf']);
+        $router->get('/payroll/{id}', 'PayrollController@show');
+        $router->get('/payroll/{id}/edit', 'PayrollController@edit');
+        $router->post('/payroll/{id}', 'PayrollController@update', ['csrf']);
+        $router->post('/payroll/{id}/delete', 'PayrollController@destroy', ['csrf']);
         
         $router->get('/budget', 'BudgetController@index');
         $router->get('/budget/create', 'BudgetController@create');
