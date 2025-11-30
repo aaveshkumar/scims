@@ -32,7 +32,7 @@
                     <label class="form-label fw-bold">
                         <i class="bi bi-pencil-square me-2"></i>Select Exam
                     </label>
-                    <select class="form-select form-select-lg dropdown-select" name="exam_id" id="examSelect" onchange="submitFormWithLoader()" <?= !$selectedClassId ? 'disabled' : '' ?>>
+                    <select class="form-select form-select-lg dropdown-select" name="exam_id" id="examSelect" onchange="submitFormWithLoader()">
                         <option value="">-- Choose an Exam --</option>
                         <?php foreach ($exams as $exam): ?>
                             <option value="<?= $exam['id'] ?>" <?= ($selectedExamId == $exam['id']) ? 'selected' : '' ?>>
@@ -167,6 +167,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const resultsCard = document.getElementById('resultsCard');
     const loadingSpinner = document.getElementById('loadingSpinner');
+    const classSelect = document.getElementById('classSelect');
+    const examSelect = document.getElementById('examSelect');
     
     // Show results if we have selected class and exam
     const hasSelection = <?= ($selectedClassId && $selectedExamId) ? 'true' : 'false' ?>;
@@ -177,12 +179,27 @@ document.addEventListener('DOMContentLoaded', function() {
         resultsCard.style.display = 'block';
         loadingSpinner.style.display = 'none';
     }
+    
+    // Enable/disable exam dropdown based on class selection
+    classSelect.addEventListener('change', function() {
+        if (this.value) {
+            examSelect.disabled = false;
+        } else {
+            examSelect.disabled = true;
+            examSelect.value = '';
+        }
+    });
 });
 
 function submitFormWithLoader() {
     const resultsCard = document.getElementById('resultsCard');
     const loadingSpinner = document.getElementById('loadingSpinner');
     const form = document.getElementById('filterForm');
+    
+    if (!resultsCard || !loadingSpinner || !form) {
+        console.error('Required elements not found');
+        return;
+    }
     
     // Show loader and hide results
     loadingSpinner.style.display = 'block';
@@ -200,15 +217,15 @@ function submitFormWithLoader() {
 }
 
 function printAll() {
-    const classId = <?= $selectedClassId ?>;
-    const examId = <?= $selectedExamId ?>;
+    const classIdValue = '<?= $selectedClassId ?>';
+    const examIdValue = '<?= $selectedExamId ?>';
     
-    if (!classId || !examId) {
+    if (!classIdValue || !examIdValue) {
         alert('Please select both class and exam first');
         return;
     }
     
-    window.location.href = '/report-cards/print-all/' + classId + '/' + examId;
+    window.location.href = '/report-cards/print-all/' + classIdValue + '/' + examIdValue;
 }
 
 function downloadAll() {
@@ -244,6 +261,7 @@ function downloadAll() {
 /* Dropdown select styling */
 .dropdown-select {
     cursor: pointer;
+    appearance: auto;
 }
 
 .dropdown-select:focus {
@@ -254,6 +272,14 @@ function downloadAll() {
 .dropdown-select:disabled {
     background-color: #e9ecef;
     cursor: not-allowed;
+    color: #6c757d;
+    opacity: 1;
+}
+
+.dropdown-select option {
+    background-color: white;
+    color: black;
+    padding: 5px;
 }
 </style>
 
