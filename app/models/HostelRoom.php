@@ -69,11 +69,12 @@ class HostelRoom
     
     public static function update($id, $data)
     {
-        $sql = "UPDATE hostel_rooms SET room_number = ?, room_type = ?, 
+        $sql = "UPDATE hostel_rooms SET hostel_id = ?, room_number = ?, room_type = ?, 
                 capacity = ?, occupied_beds = ?, floor_number = ?, room_fee = ?, 
                 amenities = ?, status = ?, updated_at = NOW() WHERE id = ?";
         
         return db()->execute($sql, [
+            $data['hostel_id'] ?? null,
             $data['room_number'],
             $data['room_type'] ?? null,
             $data['capacity'] ?? 1,
@@ -152,5 +153,17 @@ class HostelRoom
     public static function getRoomTypes()
     {
         return db()->fetchAll("SELECT DISTINCT room_type FROM hostel_rooms WHERE room_type IS NOT NULL ORDER BY room_type");
+    }
+    
+    public static function getStatistics()
+    {
+        return db()->fetchOne("
+            SELECT 
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active,
+                SUM(capacity) as capacity,
+                SUM(occupied_beds) as occupied
+            FROM hostel_rooms
+        ");
     }
 }
