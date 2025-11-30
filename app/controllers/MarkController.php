@@ -69,6 +69,13 @@ class MarkController
         );
 
         $subjects = $this->subjectModel->where('class_id', $student['class_id'])->get();
+        
+        // If no subjects found for this class, fetch all available subjects as fallback
+        if (empty($subjects)) {
+            $subjects = db()->fetchAll(
+                "SELECT * FROM subjects ORDER BY name"
+            );
+        }
 
         $existingMarks = db()->fetchAll(
             "SELECT * FROM marks WHERE exam_id = ? AND student_id = ?",

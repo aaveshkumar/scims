@@ -22,9 +22,13 @@
         <?php if (empty($subjects)): ?>
             <div class="alert alert-warning" role="alert">
                 <i class="bi bi-exclamation-triangle me-2"></i>
-                No subjects found for this student's class. Please add subjects first.
+                No subjects found. Please create subjects first.
             </div>
         <?php else: ?>
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Entering marks for <?= count($subjects) ?> subject(s)</strong>
+        </div>
         <form id="marksForm">
             <input type="hidden" name="exam_id" value="<?= $exam['id'] ?>">
             <input type="hidden" name="student_id" value="<?= $student['id'] ?>">
