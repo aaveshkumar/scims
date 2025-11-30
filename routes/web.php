@@ -281,6 +281,15 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/budget/{id}', 'BudgetController@update', ['csrf']);
         $router->post('/budget/{id}/delete', 'BudgetController@destroy', ['csrf']);
         
+        // HR Management
+        $router->get('/hr/events', 'HrController@events');
+        $router->get('/hr/events/create', 'HrController@createEvent');
+        $router->post('/hr/events/create', 'HrController@createEvent', ['csrf']);
+        $router->get('/hr/events/{id}', 'HrController@showEvent');
+        $router->get('/hr/events/{id}/edit', 'HrController@editEvent');
+        $router->post('/hr/events/{id}/edit', 'HrController@editEvent', ['csrf']);
+        $router->post('/hr/events/{id}/delete', 'HrController@deleteEvent', ['csrf']);
+        
         // Discussion Forums
         $router->get('/forums', 'ForumController@index');
         $router->get('/forums/create', 'ForumController@create');
