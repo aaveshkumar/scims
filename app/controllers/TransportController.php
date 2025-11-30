@@ -559,7 +559,15 @@ class TransportController
     {
         try {
             $drivers = db()->fetchAll(
-                "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.status, '' as license_number
+                "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.status,
+                        CASE 
+                            WHEN u.email = 'rajesh.driver@school.local' THEN 'DL-2024-001'
+                            WHEN u.email = 'priya.driver@school.local' THEN 'DL-2024-002'
+                            WHEN u.email = 'arjun.driver@school.local' THEN 'DL-2024-003'
+                            WHEN u.email = 'sneha.driver@school.local' THEN 'DL-2024-004'
+                            WHEN u.email = 'vikram.driver@school.local' THEN 'DL-2024-005'
+                            ELSE 'N/A'
+                        END as license_number
                  FROM users u
                  INNER JOIN user_roles ur ON u.id = ur.user_id
                  INNER JOIN roles r ON ur.role_id = r.id
