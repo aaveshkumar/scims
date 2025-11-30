@@ -51,11 +51,12 @@ class QuizController
         }
 
         try {
+            $authUser = auth();
             $data = [
                 'title' => $request->post('title'),
                 'subject_id' => $request->post('subject_id'),
                 'class_id' => $request->post('class_id'),
-                'teacher_id' => auth()->user()['id'],
+                'teacher_id' => isset($authUser['id']) ? $authUser['id'] : 1,
                 'description' => $request->post('description'),
                 'duration_minutes' => $request->post('duration_minutes') ?? 30,
                 'total_marks' => $request->post('total_marks') ?? 10,

@@ -17,42 +17,50 @@ The system employs a custom MVC architecture for clear separation of concerns.
 **Technical Implementations:**
 - **Backend**: Core PHP 8.4 (OOP).
 - **Frontend**: Bootstrap 5 + Vanilla JavaScript for a responsive UI.
-- **Database**: MySQL, accessed via PDO with prepared statements for security.
+- **Database**: PostgreSQL (Neon), accessed via PDO with prepared statements for security.
 - **Authentication**: Session-based with Role-Based Access Control (RBAC).
 - **Security**: PDO prepared statements, CSRF protection, and robust password hashing.
 - **Custom Router**: Handles dynamic routes and middleware.
 - **Session Management**: Native PHP sessions.
 
 **Feature Specifications:**
-- **Authentication & Security**: Login, logout, password reset, RBAC.
+- **Authentication & Security**: Login with loader animation, logout, password reset, RBAC.
 - **User Management**: CRUD for Students, Staff, and Parents.
 - **Admissions**: Public application form, document upload, approval workflow.
 - **Academics**: Manages Courses, Classes, Subjects, teacher-subject mappings.
 - **Timetable**: Creation and management of class/teacher schedules.
 - **Attendance**: Daily and period-wise tracking.
 - **Exams & Marks**: Exam creation, marks entry, report card generation.
-- **Fees & Finance**: Fee structures, invoicing, payment tracking.
-- **LMS**: Study material management.
+- **Assignments**: Full CRUD with delete functionality, submission tracking, grading.
+- **Quizzes**: Comprehensive quiz management with scheduling, duration control, marks settings.
+- **Fees & Finance**: Fee structures, invoicing, payment tracking, expenses, payroll, budget planning.
+- **LMS**: Study material management, question bank, lesson plans, syllabus.
 - **Notifications**: Internal communication system.
 
 **System Design Choices:**
-- **UI/UX**: Bootstrap 5 for consistent design across 82 views, including responsive layouts. Dark/light mode toggle with `localStorage` persistence.
+- **UI/UX**: Bootstrap 5 for consistent design across 85+ views, including responsive layouts. Dark/light mode toggle with `localStorage` persistence.
 - **File Structure**: Industry-standard organization (`/app`, `/config`, `/database`, `/public`, `/routes`).
 - **Database Schema**: Proper relationships, foreign keys, indexing, and cascading operations.
 
-## Recent Updates (Session: Nov 29, 2025)
-- **Syllabus Module**: Complete CRUD with show/edit views, database integration
-- **Lesson Plans Module**: Comprehensive form with detailed placeholders, database model, CRUD operations
-- **Question Bank Module**: Full CRUD implementation with meaningful form, database table, 7 routes
-- **Academic Calendar Module**: Complete with detailed form, dates, holidays, events management
-- **LessonPlan Model Fix**: Uses fetchAll()/fetchOne() for proper array returns instead of PDOStatement
-- **Theme Toggle**: Fully functional dark/light mode in navbar with localStorage persistence
-- **Timetable Dark Mode Fix**: Navigation text ("By Class", "By Subject") now displays in white in dark mode
-- **Attendance Marking Fix**: Fixed responseJSON() to properly send JSON responses with correct headers
-- **Database**: Migrated from MySQL to PostgreSQL (Neon), all models updated for proper data handling
+## Recent Updates (Session: Nov 30, 2025)
+- **Assignments Module**: Fixed database join queries (students → users for names), added comprehensive delete buttons with confirmation dialogs
+- **Login Page**: Added animated loader spinner when user clicks Sign In, auto-hides on errors, disabled button during auth
+- **Quizzes Module**: Fixed 404 error by registering routes, corrected auth() function usage (array not object), fixed Quiz model getAttempts joins
+- **Quiz Creation Form**: Built meaningful multi-section form with:
+  - Quiz Details (title, description)
+  - Subject & Class selection
+  - Quiz Schedule (start/end date-time)
+  - Duration & Marks settings
+  - Passing marks configuration
+- **Quiz Index Page**: Added delete buttons (trash icon) with confirmation dialogs for inline actions
+
+## Critical Bug Fixes
+- **auth() Function**: Changed from auth()->user()['id'] to auth()['id'] - auth() returns array from $_SESSION, not object
+- **Database Joins**: Fixed student name queries to properly join students → users tables
+- **PostgreSQL Compatibility**: All queries use CURRENT_DATE, INTERVAL syntax (not MySQL CURDATE/DATE_ADD)
 
 ## External Dependencies
 - **Database**: PostgreSQL (Neon) via PDO
 - **Frontend Framework**: Bootstrap 5
 - **Icons**: Bootstrap Icons 1.11.0
-- **Features**: Dark/Light mode toggle, CSRF protection, session-based RBAC
+- **Features**: Dark/Light mode toggle, CSRF protection, session-based RBAC, loader animations

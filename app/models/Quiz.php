@@ -108,9 +108,10 @@ class Quiz
     
     public static function getAttempts($quizId)
     {
-        $sql = "SELECT qa.*, s.first_name, s.last_name, s.roll_number
+        $sql = "SELECT qa.*, u.first_name, u.last_name, st.roll_number
                 FROM quiz_attempts qa
-                JOIN students s ON qa.student_id = s.id
+                JOIN students st ON qa.student_id = st.id
+                JOIN users u ON st.user_id = u.id
                 WHERE qa.quiz_id = ?
                 ORDER BY qa.marks_obtained DESC";
         

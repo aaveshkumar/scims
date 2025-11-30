@@ -233,6 +233,14 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/assignments/{id}/delete', 'AssignmentController@destroy', ['csrf']);
         $router->post('/assignments/{id}/grade-submission', 'AssignmentController@gradeSubmission', ['csrf']);
         
+        $router->get('/quizzes', 'QuizController@index');
+        $router->get('/quizzes/create', 'QuizController@create');
+        $router->post('/quizzes', 'QuizController@store', ['csrf']);
+        $router->get('/quizzes/{id}', 'QuizController@show');
+        $router->get('/quizzes/{id}/edit', 'QuizController@edit');
+        $router->post('/quizzes/{id}', 'QuizController@update', ['csrf']);
+        $router->post('/quizzes/{id}/delete', 'QuizController@destroy', ['csrf']);
+        
         // Finance Extensions
         $router->get('/fee-structure', 'FeeStructureController@index');
         $router->get('/fee-structure/create', 'FeeStructureController@create');
