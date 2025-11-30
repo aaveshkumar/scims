@@ -210,11 +210,17 @@ class TransportController
             $stats = ['total_routes' => count($routes)];
             $availableVehicles = db()->fetchAll("SELECT id, vehicle_number FROM vehicles WHERE status = 'active'");
             
-            // Get drivers (users with driver role)
+            // Get drivers and staff from user_roles join
             $drivers = db()->fetchAll(
-                "SELECT id, CONCAT(first_name, ' ', last_name) as name, email FROM users WHERE role = 'driver' OR role = 'staff' ORDER BY first_name"
+                "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email 
+                 FROM users u
+                 INNER JOIN user_roles ur ON u.id = ur.user_id
+                 INNER JOIN roles r ON ur.role_id = r.id
+                 WHERE r.name IN ('driver', 'staff', 'teacher')
+                 ORDER BY u.first_name"
             );
         } catch (Exception $e) {
+            error_log("Transport Routes Error: " . $e->getMessage());
             $routes = [];
             $stats = ['total_routes' => 0];
             $availableVehicles = [];
@@ -237,7 +243,16 @@ class TransportController
     public function createRoute($request)
     {
         $availableVehicles = db()->fetchAll("SELECT id, vehicle_number FROM vehicles WHERE status = 'active' ORDER BY vehicle_number");
-        $drivers = db()->fetchAll("SELECT id, CONCAT(first_name, ' ', last_name) as name, email FROM users WHERE role = 'driver' OR role = 'staff' ORDER BY first_name");
+        
+        // Get drivers and staff from user_roles join
+        $drivers = db()->fetchAll(
+            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email 
+             FROM users u
+             INNER JOIN user_roles ur ON u.id = ur.user_id
+             INNER JOIN roles r ON ur.role_id = r.id
+             WHERE r.name IN ('driver', 'staff', 'teacher')
+             ORDER BY u.first_name"
+        );
         
         return view('transport/create-route', [
             'title' => 'Add New Route',
