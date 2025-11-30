@@ -182,14 +182,21 @@ class TransportController
             'status' => $request->get('status')
         ];
         
-        $routes = Route::getAll($filters);
-        $stats = Route::getStatistics();
-        $availableVehicles = Vehicle::getAvailable();
-        
-        // Get drivers (users with driver role)
-        $drivers = db()->fetchAll(
-            "SELECT id, name, email FROM users WHERE role_name = 'driver' OR role_name = 'staff'"
-        );
+        try {
+            $routes = db()->fetchAll("SELECT * FROM routes ORDER BY created_at DESC");
+            $stats = ['total_routes' => count($routes)];
+            $availableVehicles = db()->fetchAll("SELECT id, vehicle_number FROM vehicles WHERE status = 'active'");
+            
+            // Get drivers (users with driver role)
+            $drivers = db()->fetchAll(
+                "SELECT id, CONCAT(first_name, ' ', last_name) as name, email FROM users WHERE role = 'driver' OR role = 'staff' ORDER BY first_name"
+            );
+        } catch (Exception $e) {
+            $routes = [];
+            $stats = ['total_routes' => 0];
+            $availableVehicles = [];
+            $drivers = [];
+        }
         
         return view('transport/routes', [
             'title' => 'Transport Routes',

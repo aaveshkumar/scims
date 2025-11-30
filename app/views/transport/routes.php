@@ -2,62 +2,83 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-geo-alt me-2"></i>Route Management</h2>
-    <div>
-        <a href="/transport" class="btn btn-secondary me-2">
-            <i class="bi bi-arrow-left me-2"></i>Back
-        </a>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRouteModal">
-            <i class="bi bi-plus-circle me-2"></i>Add Route
-        </button>
+    <a href="/transport/vehicles" class="btn btn-secondary">
+        <i class="bi bi-arrow-left me-2"></i>Back
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h6>Total Routes</h6>
+                <h3><?= $stats['total_routes'] ?? 0 ?></h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h6>Active Vehicles</h6>
+                <h3><?= count($availableVehicles) ?></h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h6>Available Drivers</h6>
+                <h3><?= count($drivers) ?></h3>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Routes List</h5>
+    </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Route Name</th>
-                        <th>Stops</th>
-                        <th>Distance (km)</th>
-                        <th>Fare</th>
-                        <th>Assigned Vehicle</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($routes)): ?>
+        <?php if (empty($routes)): ?>
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                <p>No routes configured yet.</p>
+                <p class="small">Routes are managed through the Route Management system.</p>
+            </div>
+        <?php else: ?>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
-                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                No routes found. Click "Add Route" to get started.
-                            </td>
+                            <th>Route Name</th>
+                            <th>Route Number</th>
+                            <th>Start Point</th>
+                            <th>End Point</th>
+                            <th>Distance</th>
+                            <th>Fare</th>
+                            <th>Status</th>
                         </tr>
-                    <?php else: ?>
+                    </thead>
+                    <tbody>
                         <?php foreach ($routes as $route): ?>
                             <tr>
-                                <td><strong><?= htmlspecialchars($route['route_name']) ?></strong></td>
-                                <td><?= htmlspecialchars($route['stops']) ?></td>
-                                <td><?= htmlspecialchars($route['distance_km'] ?? 'N/A') ?></td>
+                                <td><strong><?= htmlspecialchars($route['route_name'] ?? 'N/A') ?></strong></td>
+                                <td><?= htmlspecialchars($route['route_number'] ?? 'N/A') ?></td>
+                                <td><?= htmlspecialchars($route['start_point'] ?? 'N/A') ?></td>
+                                <td><?= htmlspecialchars($route['end_point'] ?? 'N/A') ?></td>
+                                <td><?= htmlspecialchars($route['distance'] ?? 'N/A') ?></td>
                                 <td>₹<?= number_format($route['fare'] ?? 0, 2) ?></td>
-                                <td><?= htmlspecialchars($route['vehicle_number'] ?? 'Unassigned') ?></td>
                                 <td>
-                                    <span class="badge bg-<?= $route['status'] == 'active' ? 'success' : 'secondary' ?>">
-                                        <?= ucfirst($route['status']) ?>
+                                    <span class="badge bg-<?= ($route['status'] ?? 'active') == 'active' ? 'success' : 'secondary' ?>">
+                                        <?= ucfirst($route['status'] ?? 'active') ?>
                                     </span>
-                                </td>
-                                <td>
-                                    <button class="btn btn-sm btn-info">View</button>
-                                    <button class="btn btn-sm btn-warning">Edit</button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
