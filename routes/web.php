@@ -338,9 +338,16 @@ $router->group(['middleware' => 'auth'], function($router) {
         // Transport Management
         $router->get('/transport', function() { return redirect('/transport/vehicles'); });
         $router->get('/transport/create', function() { return redirect('/transport/vehicles/create'); });
+        
+        // Vehicle routes MUST come before /transport/{id} to prevent matching conflicts
         $router->get('/transport/vehicles', 'TransportController@index');
         $router->get('/transport/vehicles/create', 'TransportController@create');
         $router->post('/transport/vehicles', 'TransportController@store', ['csrf']);
+        $router->get('/transport/vehicles/{id}', 'TransportController@show');
+        $router->get('/transport/vehicles/{id}/edit', 'TransportController@edit');
+        $router->post('/transport/vehicles/{id}', 'TransportController@update', ['csrf']);
+        $router->post('/transport/vehicles/{id}/delete', 'TransportController@destroy', ['csrf']);
+        
         $router->get('/transport/routes', 'TransportController@routes');
         $router->get('/transport/assignments', 'TransportController@assignments');
         
