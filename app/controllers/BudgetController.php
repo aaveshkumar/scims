@@ -17,7 +17,8 @@ class BudgetController
             'title' => 'Budget Planning',
             'budgets' => $budgets,
             'categories' => $categories,
-            'stats' => $stats
+            'stats' => $stats,
+            'request' => $request
         ]);
     }
 
