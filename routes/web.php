@@ -236,6 +236,10 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/expenses', 'ExpenseController@index');
         $router->get('/expenses/create', 'ExpenseController@create');
         $router->post('/expenses', 'ExpenseController@store', ['csrf']);
+        $router->get('/expenses/{id}', 'ExpenseController@show');
+        $router->get('/expenses/{id}/edit', 'ExpenseController@edit');
+        $router->post('/expenses/{id}', 'ExpenseController@update', ['csrf']);
+        $router->post('/expenses/{id}/delete', 'ExpenseController@destroy', ['csrf']);
         
         $router->get('/payroll', 'PayrollController@index');
         $router->get('/payroll/create', 'PayrollController@create');
