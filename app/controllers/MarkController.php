@@ -20,7 +20,13 @@ class MarkController
         $examId = $request->get('exam_id');
         
         if (!$examId) {
-            $exams = $this->examModel->orderBy('start_date', 'DESC')->limit(20)->get();
+            $exams = db()->fetchAll(
+                "SELECT e.*, c.name as class_name
+                 FROM exams e
+                 LEFT JOIN classes c ON e.class_id = c.id
+                 ORDER BY e.start_date DESC
+                 LIMIT 20"
+            );
             return view('marks.select-exam', ['exams' => $exams]);
         }
 

@@ -45,7 +45,7 @@
                                     } ?>">
                                         <?= ucfirst($exam['status']) ?>
                                     </span>
-                                    <?php if ($exam['class_name']): ?>
+                                    <?php if (isset($exam['class_name']) && $exam['class_name']): ?>
                                         <span class="badge bg-info"><?= htmlspecialchars($exam['class_name']) ?></span>
                                     <?php endif; ?>
                                 </p>
