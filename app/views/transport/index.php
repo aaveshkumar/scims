@@ -125,8 +125,8 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="/transport/<?= $vehicle['id'] ?>" class="btn btn-sm btn-info">View</a>
-                                    <a href="/transport/<?= $vehicle['id'] ?>/edit" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="/transport/vehicles/<?= $vehicle['id'] ?>" class="btn btn-sm btn-info">View</a>
+                                    <a href="/transport/vehicles/<?= $vehicle['id'] ?>/edit" class="btn btn-sm btn-warning">Edit</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
