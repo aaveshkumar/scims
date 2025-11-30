@@ -161,10 +161,10 @@ $router->group(['middleware' => 'auth'], function($router) {
 
         $router->get('/invoices', 'InvoiceController@index');
         $router->get('/invoices/create', 'InvoiceController@create');
+        $router->get('/invoices/defaulters', 'InvoiceController@defaulters');
         $router->post('/invoices', 'InvoiceController@store', ['csrf']);
         $router->get('/invoices/{id}', 'InvoiceController@show');
         $router->post('/invoices/{id}/payment', 'InvoiceController@recordPayment', ['csrf']);
-        $router->get('/invoices/defaulters', 'InvoiceController@defaulters');
 
         $router->get('/timetable/create', 'TimetableController@create');
         $router->post('/timetable', 'TimetableController@store', ['csrf']);
