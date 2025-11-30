@@ -2,8 +2,8 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Create New Expense</h1>
-        <p class="text-muted mb-0">Record a new organizational expense</p>
+        <h1 class="h3 mb-0">Edit Expense</h1>
+        <p class="text-muted mb-0">Update expense details</p>
     </div>
     <a href="/expenses" class="btn btn-secondary">
         <i class="bi bi-arrow-left me-2"></i>Back
@@ -12,7 +12,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="/expenses" class="needs-validation">
+        <form method="POST" action="/expenses/<?= $expense['id'] ?>" class="needs-validation">
             <input type="hidden" name="_token" value="<?= csrf() ?>">
 
             <!-- Basic Information -->
@@ -26,14 +26,16 @@
                         <select name="category" class="form-select" required>
                             <option value="">-- Select Category --</option>
                             <?php foreach ($categories as $key => $label): ?>
-                                <option value="<?= htmlspecialchars($key) ?>"><?= htmlspecialchars($label) ?></option>
+                                <option value="<?= htmlspecialchars($key) ?>" <?= $expense['category'] === $key ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($label) ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                         <small class="text-muted">Type of expense</small>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Expense Date *</label>
-                        <input type="date" name="expense_date" class="form-control" value="<?= date('Y-m-d') ?>" required>
+                        <input type="date" name="expense_date" class="form-control" value="<?= $expense['expense_date'] ?>" required>
                         <small class="text-muted">When was this expense incurred?</small>
                     </div>
                 </div>
@@ -47,14 +49,14 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Vendor Name</label>
-                        <input type="text" name="vendor" class="form-control" placeholder="e.g., ABC Supplies Ltd.">
+                        <input type="text" name="vendor" class="form-control" value="<?= htmlspecialchars($expense['vendor'] ?: '') ?>">
                         <small class="text-muted">Name of the vendor or supplier</small>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Amount *</label>
                         <div class="input-group">
                             <span class="input-group-text">₹</span>
-                            <input type="number" name="amount" class="form-control" step="0.01" min="0" required>
+                            <input type="number" name="amount" class="form-control" step="0.01" min="0" value="<?= $expense['amount'] ?>" required>
                         </div>
                         <small class="text-muted">Expense amount in rupees</small>
                     </div>
@@ -72,14 +74,16 @@
                         <select name="payment_method" class="form-select">
                             <option value="">-- Select Method --</option>
                             <?php foreach ($paymentMethods as $key => $label): ?>
-                                <option value="<?= htmlspecialchars($key) ?>"><?= htmlspecialchars($label) ?></option>
+                                <option value="<?= htmlspecialchars($key) ?>" <?= $expense['payment_method'] === $key ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($label) ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                         <small class="text-muted">How was this expense paid?</small>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Invoice Number</label>
-                        <input type="text" name="invoice_number" class="form-control" placeholder="e.g., INV-2024-001">
+                        <input type="text" name="invoice_number" class="form-control" value="<?= htmlspecialchars($expense['invoice_number'] ?: '') ?>">
                         <small class="text-muted">Reference invoice number</small>
                     </div>
                 </div>
@@ -90,7 +94,7 @@
                 <h6 class="text-uppercase text-muted mb-3">
                     <i class="bi bi-file-text me-2"></i>Description
                 </h6>
-                <textarea name="description" class="form-control" rows="4" placeholder="Provide detailed description of the expense..."></textarea>
+                <textarea name="description" class="form-control" rows="4"><?= htmlspecialchars($expense['description'] ?: '') ?></textarea>
                 <small class="text-muted">Any additional notes or details about this expense</small>
             </div>
 
@@ -100,19 +104,19 @@
                     <i class="bi bi-toggles me-2"></i>Status
                 </h6>
                 <select name="status" class="form-select">
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
+                    <option value="pending" <?= $expense['status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
+                    <option value="approved" <?= $expense['status'] === 'approved' ? 'selected' : '' ?>>Approved</option>
+                    <option value="rejected" <?= $expense['status'] === 'rejected' ? 'selected' : '' ?>>Rejected</option>
                 </select>
-                <small class="text-muted">Initial status of this expense</small>
+                <small class="text-muted">Status of this expense</small>
             </div>
 
             <!-- Action Buttons -->
             <div class="d-flex gap-2 mt-5">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle me-2"></i>Create Expense
+                    <i class="bi bi-check-circle me-2"></i>Update Expense
                 </button>
-                <a href="/expenses" class="btn btn-outline-secondary">
+                <a href="/expenses/<?= $expense['id'] ?>" class="btn btn-outline-secondary">
                     <i class="bi bi-x-circle me-2"></i>Cancel
                 </a>
             </div>
