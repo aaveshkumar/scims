@@ -116,7 +116,7 @@
                         <?php foreach ($payrollRecords as $record): ?>
                             <tr>
                                 <td><strong><?= htmlspecialchars($record['staff_name']) ?></strong></td>
-                                <td><?= date('F', mktime(0, 0, 0, $record['month'], 1)) ?> <?= $record['year'] ?></td>
+                                <td><?= htmlspecialchars($record['month']) ?> <?= $record['year'] ?></td>
                                 <td>₹<?= number_format($record['basic_salary'], 2) ?></td>
                                 <td>₹<?= number_format($record['allowances'] ?? 0, 2) ?></td>
                                 <td>₹<?= number_format($record['deductions'] ?? 0, 2) ?></td>
