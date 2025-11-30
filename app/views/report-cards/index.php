@@ -7,6 +7,14 @@
     </div>
 </div>
 
+<!-- Loading Spinner -->
+<div id="loadingSpinner" class="text-center py-5" style="display: none;">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="text-muted mt-3">Loading student report cards...</p>
+</div>
+
 <!-- Filter Section -->
 <div class="card mb-4">
     <div class="card-header">
@@ -19,7 +27,7 @@
                     <label class="form-label fw-bold">
                         <i class="bi bi-building me-2"></i>Select Class
                     </label>
-                    <select class="form-select form-select-lg" name="class_id" onchange="this.form.submit()">
+                    <select class="form-select form-select-lg" name="class_id" onchange="submitFormWithLoader()">
                         <option value="">-- Choose a Class --</option>
                         <?php foreach ($classes as $class): ?>
                             <option value="<?= $class['id'] ?>" <?= ($selectedClassId == $class['id']) ? 'selected' : '' ?>>
@@ -32,7 +40,7 @@
                     <label class="form-label fw-bold">
                         <i class="bi bi-pencil-square me-2"></i>Select Exam
                     </label>
-                    <select class="form-select form-select-lg" name="exam_id" onchange="this.form.submit()" <?= !$selectedClassId ? 'disabled' : '' ?>>
+                    <select class="form-select form-select-lg" name="exam_id" onchange="submitFormWithLoader()" <?= !$selectedClassId ? 'disabled' : '' ?>>
                         <option value="">-- Choose an Exam --</option>
                         <?php foreach ($exams as $exam): ?>
                             <option value="<?= $exam['id'] ?>" <?= ($selectedExamId == $exam['id']) ? 'selected' : '' ?>>
@@ -53,8 +61,8 @@
     </div>
 </div>
 
-<!-- Results Section -->
-<div class="card">
+<!-- Results Section (hidden when loading) -->
+<div class="card" id="resultsCard" style="display: none;" class="fade-in">
     <div class="card-header">
         <h5 class="mb-0">
             <?php if ($selectedClassId && $selectedExamId): ?>
@@ -156,6 +164,36 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const resultsCard = document.getElementById('resultsCard');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    
+    // Show results if we have selected class and exam
+    const hasSelection = <?= ($selectedClassId && $selectedExamId) ? 'true' : 'false' ?>;
+    if (hasSelection) {
+        resultsCard.style.display = 'block';
+        loadingSpinner.style.display = 'none';
+    } else {
+        resultsCard.style.display = 'block';
+        loadingSpinner.style.display = 'none';
+    }
+});
+
+function submitFormWithLoader() {
+    const resultsCard = document.getElementById('resultsCard');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const form = document.querySelector('form');
+    
+    // Show loader and hide results
+    loadingSpinner.style.display = 'block';
+    resultsCard.style.display = 'none';
+    
+    // Submit form after a brief delay for visual feedback
+    setTimeout(() => {
+        form.submit();
+    }, 300);
+}
+
 function printAll() {
     alert('Print functionality for bulk report cards coming soon!');
 }
@@ -164,5 +202,22 @@ function downloadAll() {
     alert('Download functionality for bulk report cards coming soon!');
 }
 </script>
+
+<style>
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+</style>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
