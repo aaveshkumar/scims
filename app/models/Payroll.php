@@ -6,7 +6,8 @@ class Payroll
     
     public static function getAll($filters = [])
     {
-        $sql = "SELECT p.*, s.employee_id, u.first_name, u.last_name
+        $sql = "SELECT p.*, s.employee_id, u.first_name, u.last_name, 
+                CONCAT(u.first_name, ' ', u.last_name) as staff_name
                 FROM payroll p
                 JOIN staff s ON p.staff_id = s.id
                 JOIN users u ON s.user_id = u.id
@@ -131,11 +132,17 @@ class Payroll
     
     public static function getStatistics()
     {
+        $totalResult = db()->fetchOne("SELECT COUNT(*) as count, SUM(net_salary) as total FROM payroll");
+        $pendingResult = db()->fetchOne("SELECT COUNT(*) as count FROM payroll WHERE status = 'pending'");
+        $paidResult = db()->fetchOne("SELECT COUNT(*) as count FROM payroll WHERE status = 'paid'");
+        $thisMonthResult = db()->fetchOne("SELECT SUM(net_salary) as total FROM payroll WHERE month = ?", [date('F')]);
+        
         return [
-            'total_payroll' => db()->fetchOne("SELECT COUNT(*) as count FROM payroll")['count'],
-            'pending' => db()->fetchOne("SELECT COUNT(*) as count FROM payroll WHERE status = 'pending'")['count'],
-            'this_month_total' => db()->fetchOne("SELECT SUM(net_salary) as total FROM payroll WHERE month = ? AND year = ?", [date('F'), date('Y')])['total'] ?? 0,
-            'paid_this_month' => db()->fetchOne("SELECT COUNT(*) as count FROM payroll WHERE status = 'paid' AND month = ? AND year = ?", [date('F'), date('Y')])['count']
+            'total_records' => $totalResult['count'] ?? 0,
+            'total_paid' => $totalResult['total'] ?? 0,
+            'pending_count' => $pendingResult['count'] ?? 0,
+            'paid_count' => $paidResult['count'] ?? 0,
+            'current_month_total' => $thisMonthResult['total'] ?? 0
         ];
     }
 }
