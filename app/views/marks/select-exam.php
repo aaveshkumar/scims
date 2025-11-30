@@ -50,11 +50,8 @@
                                     <?php endif; ?>
                                 </p>
                                 <div class="mt-3">
-                                    <a href="/marks?exam_id=<?= $exam['id'] ?>" class="btn btn-sm btn-primary w-100 mb-2">
-                                        <i class="bi bi-eye me-1"></i> View Marks
-                                    </a>
-                                    <a href="/marks/enter?exam_id=<?= $exam['id'] ?>" class="btn btn-sm btn-success w-100">
-                                        <i class="bi bi-pencil-square me-1"></i> Enter Marks
+                                    <a href="/marks?exam_id=<?= $exam['id'] ?>" class="btn btn-sm btn-primary w-100">
+                                        <i class="bi bi-eye me-1"></i> View/Enter Marks
                                     </a>
                                 </div>
                             </div>

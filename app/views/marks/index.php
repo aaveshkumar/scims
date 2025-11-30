@@ -8,9 +8,9 @@
         <?php endif; ?>
     </div>
     <div>
-        <a href="/marks/enter?exam_id=<?= $exam['id'] ?? '' ?>" class="btn btn-success me-2">
+        <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#selectStudentModal">
             <i class="bi bi-pencil-square me-2"></i>Enter Marks
-        </a>
+        </button>
         <a href="/marks" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-2"></i>Back
         </a>
@@ -79,5 +79,65 @@
         </div>
     </div>
 </div>
+
+<!-- Select Student Modal -->
+<div class="modal fade" id="selectStudentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Student to Enter Marks</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="studentSearch" placeholder="Search student by name or admission number...">
+                </div>
+                <div class="student-list" style="max-height: 400px; overflow-y: auto;">
+                    <?php 
+                    // Fetch all active students
+                    $students = db()->fetchAll(
+                        "SELECT s.id, s.admission_number, u.first_name, u.last_name 
+                         FROM students s
+                         INNER JOIN users u ON s.user_id = u.id
+                         WHERE s.status = 'active'
+                         ORDER BY u.first_name, u.last_name"
+                    );
+                    ?>
+                    <?php if (empty($students)): ?>
+                        <p class="text-muted">No active students found.</p>
+                    <?php else: ?>
+                        <div class="list-group">
+                            <?php foreach ($students as $student): ?>
+                                <a href="/marks/enter?exam_id=<?= $exam['id'] ?>&student_id=<?= $student['id'] ?>" class="list-group-item list-group-item-action student-item">
+                                    <div>
+                                        <strong><?= htmlspecialchars($student['first_name'] . ' ' . $student['last_name']) ?></strong>
+                                        <small class="text-muted d-block"><?= htmlspecialchars($student['admission_number']) ?></small>
+                                    </div>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('studentSearch');
+    const studentItems = document.querySelectorAll('.student-item');
+    
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            const query = this.value.toLowerCase();
+            studentItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+    }
+});
+</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
