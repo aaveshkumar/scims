@@ -47,6 +47,12 @@ The system employs a custom MVC architecture for clear separation of concerns.
 
 ## Recent Updates (Session: Nov 30, 2025)
 
+### Hostel Complaints Module - FIXED ✅
+- **Fixed PostgreSQL FIELD() Function Error**: Changed MySQL `FIELD()` to PostgreSQL `CASE` statements
+  - Lines 44-48: Fixed priority and status ordering in getAll()
+  - Line 146: Fixed priority ordering in getDashboard()
+- **5 Dummy Complaints Added** with realistic data (Maintenance, Cleanliness, Noise, Utilities, Safety)
+
 ### Hostel Visitors Module - COMPLETE ✅
 - **Full CRUD Implementation** (`/hostel/visitors`):
   - Visitors list with search, date range filters

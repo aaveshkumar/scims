@@ -41,8 +41,8 @@ class HostelComplaint
         }
         
         $sql .= " ORDER BY 
-                  FIELD(c.priority, 'high', 'medium', 'low'),
-                  FIELD(c.status, 'pending', 'in_progress', 'resolved'),
+                  CASE c.priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 ELSE 4 END,
+                  CASE c.status WHEN 'pending' THEN 1 WHEN 'in_progress' THEN 2 WHEN 'resolved' THEN 3 ELSE 4 END,
                   c.created_at DESC";
         
         return db()->fetchAll($sql, $params);
@@ -140,7 +140,7 @@ class HostelComplaint
             $params[] = $hostelId;
         }
         
-        $sql .= " ORDER BY FIELD(c.priority, 'high', 'medium', 'low'), c.created_at";
+        $sql .= " ORDER BY CASE c.priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 ELSE 4 END, c.created_at";
         
         return db()->fetchAll($sql, $params);
     }
