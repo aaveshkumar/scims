@@ -15,7 +15,7 @@ class HostelController
         $stats = Hostel::getStatistics();
         
         $wardens = db()->fetchAll(
-            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+            "SELECT id, CONCAT(first_name, ' ', last_name) as name FROM users WHERE role_name IN ('staff', 'admin')"
         );
         
         return view('hostel/index', [
@@ -31,7 +31,7 @@ class HostelController
     public function create($request)
     {
         $wardens = db()->fetchAll(
-            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+            "SELECT id, CONCAT(first_name, ' ', last_name) as name FROM users WHERE role_name IN ('staff', 'admin')"
         );
         
         return view('hostel/create', [
@@ -104,7 +104,7 @@ class HostelController
         }
         
         $wardens = db()->fetchAll(
-            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+            "SELECT id, CONCAT(first_name, ' ', last_name) as name FROM users WHERE role_name IN ('staff', 'admin')"
         );
         
         return view('hostel/edit', [
@@ -312,7 +312,7 @@ class HostelController
         $types = HostelComplaint::getComplaintTypes();
         
         $staff = db()->fetchAll(
-            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+            "SELECT id, CONCAT(first_name, ' ', last_name) as name FROM users WHERE role_name IN ('staff', 'admin')"
         );
         
         return view('hostel/complaints', [
@@ -379,6 +379,138 @@ class HostelController
             return redirect('/hostel/complaints');
         } catch (Exception $e) {
             flash('error', 'Failed to update complaint: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    // Hostel Rooms Management
+    public function roomsIndex($request)
+    {
+        $filters = [
+            'search' => $request->get('search'),
+            'hostel_id' => $request->get('hostel_id'),
+            'status' => $request->get('status')
+        ];
+        
+        $rooms = HostelRoom::getAll($filters);
+        $hostels = Hostel::getAll(['status' => 'active']);
+        $stats = HostelRoom::getStatistics();
+        
+        return view('hostel/rooms/index', [
+            'title' => 'Hostel Rooms',
+            'rooms' => $rooms,
+            'hostels' => $hostels,
+            'stats' => $stats,
+            'filters' => $filters
+        ]);
+    }
+
+    public function createRoom($request)
+    {
+        $hostels = Hostel::getAll(['status' => 'active']);
+        
+        return view('hostel/rooms/create', [
+            'title' => 'Add New Room',
+            'hostels' => $hostels,
+            'roomTypes' => ['single' => 'Single', 'double' => 'Double', 'triple' => 'Triple', 'quad' => 'Quad']
+        ]);
+    }
+
+    public function storeRoom($request)
+    {
+        $rules = [
+            'hostel_id' => 'required',
+            'room_number' => 'required',
+            'room_type' => 'required',
+            'capacity' => 'required|numeric'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'hostel_id' => $request->post('hostel_id'),
+                'room_number' => $request->post('room_number'),
+                'room_type' => $request->post('room_type'),
+                'capacity' => $request->post('capacity'),
+                'floor_number' => $request->post('floor_number') ?? 1,
+                'room_fee' => $request->post('room_fee') ?? 0,
+                'status' => $request->post('status') ?? 'active'
+            ];
+
+            HostelRoom::create($data);
+            flash('success', 'Room added successfully');
+            return redirect('/hostel/rooms');
+        } catch (Exception $e) {
+            flash('error', 'Failed to add room: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    public function editRoom($request, $id)
+    {
+        $room = HostelRoom::find($id);
+        
+        if (!$room) {
+            flash('error', 'Room not found');
+            return redirect('/hostel/rooms');
+        }
+        
+        $hostels = Hostel::getAll(['status' => 'active']);
+        
+        return view('hostel/rooms/edit', [
+            'title' => 'Edit Room',
+            'room' => $room,
+            'hostels' => $hostels,
+            'roomTypes' => ['single' => 'Single', 'double' => 'Double', 'triple' => 'Triple', 'quad' => 'Quad']
+        ]);
+    }
+
+    public function updateRoom($request, $id)
+    {
+        $rules = [
+            'hostel_id' => 'required',
+            'room_number' => 'required',
+            'room_type' => 'required',
+            'capacity' => 'required|numeric'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'hostel_id' => $request->post('hostel_id'),
+                'room_number' => $request->post('room_number'),
+                'room_type' => $request->post('room_type'),
+                'capacity' => $request->post('capacity'),
+                'floor_number' => $request->post('floor_number') ?? 1,
+                'room_fee' => $request->post('room_fee') ?? 0,
+                'status' => $request->post('status')
+            ];
+
+            HostelRoom::update($id, $data);
+            flash('success', 'Room updated successfully');
+            return redirect('/hostel/rooms');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update room: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    public function deleteRoom($request, $id)
+    {
+        try {
+            HostelRoom::delete($id);
+            flash('success', 'Room deleted successfully');
+            return redirect('/hostel/rooms');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete room: ' . $e->getMessage());
             return back();
         }
     }

@@ -374,15 +374,27 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/transport/{id}', 'TransportController@update', ['csrf']);
         $router->post('/transport/{id}/delete', 'TransportController@destroy', ['csrf']);
         
-        // Hostel Management
-        $router->get('/hostel', function() { return redirect('/hostel/rooms'); });
-        $router->get('/hostel/create', function() { return redirect('/hostel/rooms/create'); });
-        $router->get('/hostel/rooms', 'HostelController@index');
-        $router->get('/hostel/rooms/create', 'HostelController@create');
-        $router->post('/hostel/rooms', 'HostelController@store', ['csrf']);
+        // Hostel Management - Rooms
+        $router->get('/hostel/rooms', 'HostelController@roomsIndex');
+        $router->get('/hostel/rooms/create', 'HostelController@createRoom');
+        $router->post('/hostel/rooms', 'HostelController@storeRoom', ['csrf']);
+        $router->get('/hostel/rooms/{id}/edit', 'HostelController@editRoom');
+        $router->post('/hostel/rooms/{id}', 'HostelController@updateRoom', ['csrf']);
+        $router->post('/hostel/rooms/{id}/delete', 'HostelController@deleteRoom', ['csrf']);
+        
+        // Hostel Management - Other
         $router->get('/hostel/residents', 'HostelController@residents');
         $router->get('/hostel/visitors', 'HostelController@visitors');
         $router->get('/hostel/complaints', 'HostelController@complaints');
+        
+        // Hostel Management - Generic (Hostels CRUD)
+        $router->get('/hostel', 'HostelController@index');
+        $router->get('/hostel/create', 'HostelController@create');
+        $router->post('/hostel', 'HostelController@store', ['csrf']);
+        $router->get('/hostel/{id}', 'HostelController@show');
+        $router->get('/hostel/{id}/edit', 'HostelController@edit');
+        $router->post('/hostel/{id}', 'HostelController@update', ['csrf']);
+        $router->post('/hostel/{id}/delete', 'HostelController@destroy', ['csrf']);
         
         // Inventory Management
         $router->get('/inventory', function() { return redirect('/inventory/assets'); });
