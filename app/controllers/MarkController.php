@@ -90,9 +90,17 @@ class MarkController
 
     public function store($request)
     {
-        $examId = $request->post('exam_id');
-        $studentId = $request->post('student_id');
-        $marks = $request->post('marks', []);
+        // Handle JSON requests
+        if ($request->method() === 'POST' && strpos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') !== false) {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $examId = $input['exam_id'] ?? null;
+            $studentId = $input['student_id'] ?? null;
+            $marks = $input['marks'] ?? [];
+        } else {
+            $examId = $request->post('exam_id');
+            $studentId = $request->post('student_id');
+            $marks = $request->post('marks', []);
+        }
 
         if (!$examId || !$studentId) {
             return responseJSON(['success' => false, 'message' => 'Missing required fields'], 400);
