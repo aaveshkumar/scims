@@ -87,9 +87,10 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/calendar', 'CalendarController@index');
         $router->get('/calendar/create', 'CalendarController@create');
         $router->post('/calendar/create', 'CalendarController@create', ['csrf']);
+        $router->get('/calendar/{id}', 'CalendarController@show');
         $router->get('/calendar/{id}/edit', 'CalendarController@edit');
         $router->post('/calendar/{id}/edit', 'CalendarController@edit', ['csrf']);
-        $router->post('/calendar/{id}/delete', 'CalendarController@delete', ['csrf']);
+        $router->post('/calendar/{id}/delete', 'CalendarController@destroy', ['csrf']);
         
         $router->get('/calendar/holidays', 'CalendarController@holidays');
         $router->get('/calendar/holidays/create', 'CalendarController@createHoliday');

@@ -59,6 +59,14 @@ The system employs a custom MVC architecture for clear separation of concerns.
   - Index page displays all forums with title, subject, class, creator, status, created date, and action buttons
   - Create/Edit forms with subject and class selection
   - 5 dummy forums inserted for testing (General Discussion, Study Groups, Assignment Help, Doubt Clearing, Announcements)
+- **Calendar Module**: Complete implementation with full CRUD:
+  - Fixed 500 error by rewriting CalendarController to match app architecture patterns
+  - Created calendar_events table with proper schema (date, time, location, event_type, creator)
+  - Routes: GET /calendar (list), POST /calendar/create (store), GET /calendar/{id} (view), GET /calendar/{id}/edit, POST /calendar/{id}/edit, POST /calendar/{id}/delete
+  - Index page displays all events with title, date, time, location, type, creator
+  - Meaningful create/edit forms with multi-section layout: Event Details, Date & Time, Location
+  - Event types: Event, Holiday, Exam, Meeting, Deadline
+  - 5 dummy events inserted for testing (Annual Sports Day, Science Exhibition, PTM, Final Exams, Prize Distribution)
 
 ## Critical Bug Fixes
 - **auth() Function**: Changed from auth()->user()['id'] to auth()['id'] - auth() returns array from $_SESSION, not object

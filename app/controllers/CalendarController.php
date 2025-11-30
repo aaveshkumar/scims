@@ -1,224 +1,93 @@
 <?php
 
-namespace App\Controllers;
-
-use App\Models\SchoolCalendar;
-use App\Models\Holiday;
-use App\Models\ClassModel;
-
 class CalendarController
 {
-    private $calendarModel;
-    private $holidayModel;
-    private $classModel;
-
-    public function __construct()
+    public function index($request)
     {
-        $this->calendarModel = new SchoolCalendar();
-        $this->holidayModel = new Holiday();
-        $this->classModel = new ClassModel();
-    }
-
-    // Calendar Events Management
-    public function index()
-    {
-        $filters = [
-            'month' => $_GET['month'] ?? date('m'),
-            'year' => $_GET['year'] ?? date('Y'),
-            'event_type' => $_GET['event_type'] ?? '',
-            'class_id' => $_GET['class_id'] ?? ''
-        ];
-
-        $events = $this->calendarModel->getAll($filters);
-        $classes = $this->classModel->getAll();
-        $eventTypes = $this->calendarModel->getEventTypes();
-
-        view('calendar/index', [
-            'events' => $events,
-            'classes' => $classes,
-            'eventTypes' => $eventTypes,
-            'filters' => $filters
+        $events = db()->fetchAll("SELECT ce.*, CONCAT(u.first_name, ' ', u.last_name) as creator_name FROM calendar_events ce LEFT JOIN users u ON ce.created_by = u.id ORDER BY ce.event_date DESC");
+        
+        return view('calendar/index', [
+            'title' => 'Calendar Events',
+            'events' => $events
         ]);
     }
 
-    public function create()
+    public function create($request)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'title' => $_POST['title'],
-                'description' => $_POST['description'] ?? null,
-                'event_date' => $_POST['event_date'],
-                'end_date' => $_POST['end_date'] ?? null,
-                'event_type' => $_POST['event_type'] ?? 'event',
-                'category' => $_POST['category'] ?? null,
-                'color' => $_POST['color'] ?? '#4e73df',
-                'is_holiday' => isset($_POST['is_holiday']) ? 1 : 0,
-                'is_public' => isset($_POST['is_public']) ? 1 : 0,
-                'class_id' => !empty($_POST['class_id']) ? $_POST['class_id'] : null,
-                'department' => $_POST['department'] ?? null,
-                'created_by' => auth()['id']
-            ];
-
-            if ($this->calendarModel->create($data)) {
-                $_SESSION['success'] = 'Calendar event created successfully';
-                redirect('/calendar');
-            } else {
-                $_SESSION['error'] = 'Failed to create calendar event';
-            }
+        if ($request->method() === 'POST') {
+            $authUser = auth();
+            $sql = "INSERT INTO calendar_events (title, description, event_date, start_time, end_time, location, event_type, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+            
+            db()->execute($sql, [
+                $request->post('title'),
+                $request->post('description'),
+                $request->post('event_date'),
+                $request->post('start_time'),
+                $request->post('end_time'),
+                $request->post('location'),
+                $request->post('event_type') ?? 'event',
+                isset($authUser['id']) ? $authUser['id'] : 1
+            ]);
+            
+            flash('success', 'Event created successfully');
+            return redirect('/calendar');
         }
-
-        $classes = $this->classModel->getAll();
-        $eventTypes = $this->calendarModel->getEventTypes();
-
-        view('calendar/create', [
-            'classes' => $classes,
-            'eventTypes' => $eventTypes
-        ]);
+        
+        return view('calendar/create', ['title' => 'Create - Calendar Event']);
     }
 
-    public function edit($id)
+    public function show($request, $id)
     {
-        $event = $this->calendarModel->getById($id);
-
+        $event = db()->fetchOne("SELECT ce.*, CONCAT(u.first_name, ' ', u.last_name) as creator_name FROM calendar_events ce LEFT JOIN users u ON ce.created_by = u.id WHERE ce.id = ?", [$id]);
+        
         if (!$event) {
-            $_SESSION['error'] = 'Event not found';
-            redirect('/calendar');
+            flash('error', 'Event not found');
+            return redirect('/calendar');
         }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'title' => $_POST['title'],
-                'description' => $_POST['description'] ?? null,
-                'event_date' => $_POST['event_date'],
-                'end_date' => $_POST['end_date'] ?? null,
-                'event_type' => $_POST['event_type'] ?? 'event',
-                'category' => $_POST['category'] ?? null,
-                'color' => $_POST['color'] ?? '#4e73df',
-                'is_holiday' => isset($_POST['is_holiday']) ? 1 : 0,
-                'is_public' => isset($_POST['is_public']) ? 1 : 0,
-                'class_id' => !empty($_POST['class_id']) ? $_POST['class_id'] : null,
-                'department' => $_POST['department'] ?? null
-            ];
-
-            if ($this->calendarModel->update($id, $data)) {
-                $_SESSION['success'] = 'Calendar event updated successfully';
-                redirect('/calendar');
-            } else {
-                $_SESSION['error'] = 'Failed to update calendar event';
-            }
-        }
-
-        $classes = $this->classModel->getAll();
-        $eventTypes = $this->calendarModel->getEventTypes();
-
-        view('calendar/edit', [
-            'event' => $event,
-            'classes' => $classes,
-            'eventTypes' => $eventTypes
+        
+        return view('calendar/show', [
+            'title' => 'View - Calendar Event',
+            'event' => $event
         ]);
     }
 
-    public function delete($id)
+    public function edit($request, $id)
     {
-        if ($this->calendarModel->delete($id)) {
-            $_SESSION['success'] = 'Calendar event deleted successfully';
-        } else {
-            $_SESSION['error'] = 'Failed to delete calendar event';
+        $event = db()->fetchOne("SELECT * FROM calendar_events WHERE id = ?", [$id]);
+        
+        if (!$event) {
+            flash('error', 'Event not found');
+            return redirect('/calendar');
         }
-        redirect('/calendar');
-    }
-
-    // Holiday Management
-    public function holidays()
-    {
-        $filters = [
-            'year' => $_GET['year'] ?? date('Y'),
-            'holiday_type' => $_GET['holiday_type'] ?? '',
-            'status' => $_GET['status'] ?? ''
-        ];
-
-        $holidays = $this->holidayModel->getAll($filters);
-        $holidayTypes = $this->holidayModel->getHolidayTypes();
-
-        view('calendar/holidays', [
-            'holidays' => $holidays,
-            'holidayTypes' => $holidayTypes,
-            'filters' => $filters
+        
+        if ($request->method() === 'POST') {
+            $sql = "UPDATE calendar_events SET title = ?, description = ?, event_date = ?, start_time = ?, end_time = ?, location = ?, event_type = ?, updated_at = NOW() WHERE id = ?";
+            
+            db()->execute($sql, [
+                $request->post('title'),
+                $request->post('description'),
+                $request->post('event_date'),
+                $request->post('start_time'),
+                $request->post('end_time'),
+                $request->post('location'),
+                $request->post('event_type'),
+                $id
+            ]);
+            
+            flash('success', 'Event updated successfully');
+            return redirect('/calendar');
+        }
+        
+        return view('calendar/edit', [
+            'title' => 'Edit - Calendar Event',
+            'event' => $event
         ]);
     }
 
-    public function createHoliday()
+    public function destroy($request, $id)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'name' => $_POST['name'],
-                'description' => $_POST['description'] ?? null,
-                'start_date' => $_POST['start_date'],
-                'end_date' => $_POST['end_date'],
-                'holiday_type' => $_POST['holiday_type'] ?? 'school',
-                'is_recurring' => isset($_POST['is_recurring']) ? 1 : 0,
-                'status' => $_POST['status'] ?? 'active',
-                'created_by' => auth()['id']
-            ];
-
-            if ($this->holidayModel->create($data)) {
-                $_SESSION['success'] = 'Holiday created successfully';
-                redirect('/calendar/holidays');
-            } else {
-                $_SESSION['error'] = 'Failed to create holiday';
-            }
-        }
-
-        $holidayTypes = $this->holidayModel->getHolidayTypes();
-
-        view('calendar/create-holiday', [
-            'holidayTypes' => $holidayTypes
-        ]);
-    }
-
-    public function editHoliday($id)
-    {
-        $holiday = $this->holidayModel->getById($id);
-
-        if (!$holiday) {
-            $_SESSION['error'] = 'Holiday not found';
-            redirect('/calendar/holidays');
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'name' => $_POST['name'],
-                'description' => $_POST['description'] ?? null,
-                'start_date' => $_POST['start_date'],
-                'end_date' => $_POST['end_date'],
-                'holiday_type' => $_POST['holiday_type'] ?? 'school',
-                'is_recurring' => isset($_POST['is_recurring']) ? 1 : 0,
-                'status' => $_POST['status'] ?? 'active'
-            ];
-
-            if ($this->holidayModel->update($id, $data)) {
-                $_SESSION['success'] = 'Holiday updated successfully';
-                redirect('/calendar/holidays');
-            } else {
-                $_SESSION['error'] = 'Failed to update holiday';
-            }
-        }
-
-        $holidayTypes = $this->holidayModel->getHolidayTypes();
-
-        view('calendar/edit-holiday', [
-            'holiday' => $holiday,
-            'holidayTypes' => $holidayTypes
-        ]);
-    }
-
-    public function deleteHoliday($id)
-    {
-        if ($this->holidayModel->delete($id)) {
-            $_SESSION['success'] = 'Holiday deleted successfully';
-        } else {
-            $_SESSION['error'] = 'Failed to delete holiday';
-        }
-        redirect('/calendar/holidays');
+        db()->execute("DELETE FROM calendar_events WHERE id = ?", [$id]);
+        flash('success', 'Event deleted successfully');
+        return redirect('/calendar');
     }
 }
