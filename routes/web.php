@@ -252,6 +252,10 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/budget', 'BudgetController@index');
         $router->get('/budget/create', 'BudgetController@create');
         $router->post('/budget', 'BudgetController@store', ['csrf']);
+        $router->get('/budget/{id}', 'BudgetController@show');
+        $router->get('/budget/{id}/edit', 'BudgetController@edit');
+        $router->post('/budget/{id}', 'BudgetController@update', ['csrf']);
+        $router->post('/budget/{id}/delete', 'BudgetController@destroy', ['csrf']);
         
         // Library Management
         $router->get('/library', function() { return redirect('/library/books'); });
