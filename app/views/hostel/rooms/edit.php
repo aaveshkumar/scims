@@ -97,7 +97,7 @@
 
     <!-- Info Panel -->
     <div class="col-lg-4">
-        <div class="card bg-light" style="background-color: #f8f9fa !important;" data-bs-theme="light">
+        <div class="card bg-light room-info-card">
             <div class="card-body">
                 <h6 class="card-title"><i class="bi bi-info-circle me-2"></i>Room Details</h6>
                 <dl class="row mb-0 small">
@@ -106,23 +106,27 @@
                 </dl>
             </div>
         </div>
-        
-        <style>
-            [data-bs-theme="dark"] .card.bg-light {
-                background-color: #2a2a2a !important;
-                color: #e0e0e0;
-            }
-            [data-bs-theme="dark"] .card.bg-light .card-title {
-                color: #ffffff;
-            }
-            [data-bs-theme="dark"] .card.bg-light dt {
-                color: #b0b0b0;
-            }
-            [data-bs-theme="dark"] .card.bg-light dd {
-                color: #e0e0e0;
-            }
-        </style>
     </div>
+    
+    <style>
+        html[data-bs-theme="dark"] .room-info-card {
+            background-color: #2a2a2a !important;
+            color: #e0e0e0 !important;
+            border-color: #404040 !important;
+        }
+        
+        html[data-bs-theme="dark"] .room-info-card .card-title {
+            color: #ffffff !important;
+        }
+        
+        html[data-bs-theme="dark"] .room-info-card dt {
+            color: #b0b0b0 !important;
+        }
+        
+        html[data-bs-theme="dark"] .room-info-card dd {
+            color: #e0e0e0 !important;
+        }
+    </style>
 </div>
 
 <?php include __DIR__ . '/../../layouts/footer.php'; ?>
