@@ -176,7 +176,7 @@ class HrController
 
     public function payroll($request)
     {
-        $payrolls = db()->fetchAll("SELECT p.*, CONCAT(s.first_name, ' ', s.last_name) as staff_name FROM payroll p LEFT JOIN staff s ON p.staff_id = s.id ORDER BY p.payment_date DESC NULLS LAST");
+        $payrolls = db()->fetchAll("SELECT p.*, CONCAT(u.first_name, ' ', u.last_name) as staff_name FROM payroll p LEFT JOIN staff s ON p.staff_id = s.id LEFT JOIN users u ON s.user_id = u.id ORDER BY p.payment_date DESC NULLS LAST");
         
         return view('hr/payroll', [
             'title' => 'Payroll Management',
@@ -217,7 +217,7 @@ class HrController
             return redirect('/hr/payroll');
         }
         
-        $staff = db()->fetchAll("SELECT id, CONCAT(first_name, ' ', last_name) as name FROM staff ORDER BY first_name");
+        $staff = db()->fetchAll("SELECT s.id, CONCAT(u.first_name, ' ', u.last_name) as name FROM staff s LEFT JOIN users u ON s.user_id = u.id ORDER BY u.first_name");
         return view('hr/create-payroll', [
             'title' => 'Create - Payroll',
             'staff' => $staff
@@ -226,7 +226,7 @@ class HrController
 
     public function showPayroll($request, $id)
     {
-        $payroll = db()->fetchOne("SELECT p.*, CONCAT(s.first_name, ' ', s.last_name) as staff_name FROM payroll p LEFT JOIN staff s ON p.staff_id = s.id WHERE p.id = ?", [$id]);
+        $payroll = db()->fetchOne("SELECT p.*, CONCAT(u.first_name, ' ', u.last_name) as staff_name FROM payroll p LEFT JOIN staff s ON p.staff_id = s.id LEFT JOIN users u ON s.user_id = u.id WHERE p.id = ?", [$id]);
         
         if (!$payroll) {
             flash('error', 'Payroll record not found');
@@ -276,7 +276,7 @@ class HrController
             return redirect('/hr/payroll');
         }
         
-        $staff = db()->fetchAll("SELECT id, CONCAT(first_name, ' ', last_name) as name FROM staff ORDER BY first_name");
+        $staff = db()->fetchAll("SELECT s.id, CONCAT(u.first_name, ' ', u.last_name) as name FROM staff s LEFT JOIN users u ON s.user_id = u.id ORDER BY u.first_name");
         return view('hr/edit-payroll', [
             'title' => 'Edit - Payroll',
             'payroll' => $payroll,
