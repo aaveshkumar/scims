@@ -93,10 +93,11 @@ class Assignment
     
     public static function getSubmissions($assignmentId)
     {
-        $sql = "SELECT sub.*, st.first_name, st.last_name, st.roll_number,
-                g.name as graded_by_name
+        $sql = "SELECT sub.*, u.first_name, u.last_name, st.roll_number,
+                CONCAT(g.first_name, ' ', g.last_name) as graded_by_name
                 FROM assignment_submissions sub
                 JOIN students st ON sub.student_id = st.id
+                JOIN users u ON st.user_id = u.id
                 LEFT JOIN users g ON sub.graded_by = g.id
                 WHERE sub.assignment_id = ?
                 ORDER BY sub.submission_date DESC";
