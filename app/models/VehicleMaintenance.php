@@ -108,7 +108,7 @@ class VehicleMaintenance
                 FROM vehicle_maintenance vm
                 JOIN vehicles v ON vm.vehicle_id = v.id
                 WHERE vm.next_maintenance_date IS NOT NULL
-                AND vm.next_maintenance_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL ? DAY)
+                AND vm.next_maintenance_date BETWEEN CURRENT_DATE AND CURRENT_DATE + (? || ' days')::INTERVAL
                 ORDER BY vm.next_maintenance_date ASC";
         
         return db()->fetchAll($sql, [$days]);

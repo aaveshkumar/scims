@@ -108,7 +108,7 @@ class Assignment
     {
         return [
             'total_assignments' => db()->fetchOne("SELECT COUNT(*) as count FROM assignments WHERE status = 'active'")['count'],
-            'due_soon' => db()->fetchOne("SELECT COUNT(*) as count FROM assignments WHERE status = 'active' AND due_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)")['count'],
+            'due_soon' => db()->fetchOne("SELECT COUNT(*) as count FROM assignments WHERE status = 'active' AND due_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'")['count'],
             'total_submissions' => db()->fetchOne("SELECT COUNT(*) as count FROM assignment_submissions")['count'],
             'pending_grading' => db()->fetchOne("SELECT COUNT(*) as count FROM assignment_submissions WHERE status = 'submitted' AND marks_obtained IS NULL")['count']
         ];

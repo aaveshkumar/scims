@@ -107,19 +107,20 @@ class Vehicle
      */
     public static function getExpiringSoon($days = 30)
     {
+        $limit_date = "CURRENT_DATE + (? || ' days')::INTERVAL";
         $sql = "SELECT *, 
                 CASE 
-                    WHEN insurance_expiry <= DATE_ADD(CURDATE(), INTERVAL ? DAY) THEN 'insurance'
-                    WHEN fitness_expiry <= DATE_ADD(CURDATE(), INTERVAL ? DAY) THEN 'fitness'
+                    WHEN insurance_expiry <= $limit_date THEN 'insurance'
+                    WHEN fitness_expiry <= $limit_date THEN 'fitness'
                     ELSE NULL
                 END as expiry_type
                 FROM vehicles 
                 WHERE status = 'active' 
-                AND (insurance_expiry <= DATE_ADD(CURDATE(), INTERVAL ? DAY) 
-                     OR fitness_expiry <= DATE_ADD(CURDATE(), INTERVAL ? DAY))
+                AND (insurance_expiry <= $limit_date 
+                     OR fitness_expiry <= $limit_date)
                 ORDER BY 
-                    LEAST(COALESCE(insurance_expiry, '9999-12-31'), 
-                          COALESCE(fitness_expiry, '9999-12-31')) ASC";
+                    LEAST(COALESCE(insurance_expiry, '9999-12-31'::DATE), 
+                          COALESCE(fitness_expiry, '9999-12-31'::DATE)) ASC";
         
         return db()->fetchAll($sql, [$days, $days, $days, $days]);
     }

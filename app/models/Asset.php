@@ -110,7 +110,7 @@ class Asset
         $sql = "SELECT * FROM assets 
                 WHERE status = 'active' 
                 AND warranty_expiry IS NOT NULL
-                AND warranty_expiry BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL ? DAY)
+                AND warranty_expiry BETWEEN CURRENT_DATE AND CURRENT_DATE + (? || ' days')::INTERVAL
                 ORDER BY warranty_expiry ASC";
         
         return db()->fetchAll($sql, [$days]);

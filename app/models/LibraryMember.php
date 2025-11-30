@@ -158,7 +158,7 @@ class LibraryMember
                 FROM library_members lm
                 JOIN users u ON lm.user_id = u.id
                 WHERE lm.expiry_date IS NOT NULL 
-                AND lm.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+                AND lm.expiry_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'
                 AND lm.status = 'active'
                 ORDER BY lm.expiry_date ASC";
         
@@ -186,7 +186,7 @@ class LibraryMember
     {
         return [
             'total_members' => db()->fetchOne("SELECT COUNT(*) as count FROM library_members WHERE status = 'active'")['count'],
-            'expired_members' => db()->fetchOne("SELECT COUNT(*) as count FROM library_members WHERE expiry_date < CURDATE() AND status = 'active'")['count'],
+            'expired_members' => db()->fetchOne("SELECT COUNT(*) as count FROM library_members WHERE expiry_date < CURRENT_DATE AND status = 'active'")['count'],
             'expiring_soon' => count(self::getExpiringSoon())
         ];
     }
