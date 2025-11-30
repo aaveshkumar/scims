@@ -349,6 +349,13 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/transport/vehicles/{id}/delete', 'TransportController@destroy', ['csrf']);
         
         // Additional routes/assignments MUST come before /transport/{id}
+        $router->get('/transport/drivers', 'TransportController@drivers');
+        $router->get('/transport/drivers/create', 'TransportController@createDriver');
+        $router->post('/transport/drivers/store', 'TransportController@storeDriver', ['csrf']);
+        $router->get('/transport/drivers/{id}/edit', 'TransportController@editDriver');
+        $router->post('/transport/drivers/{id}', 'TransportController@updateDriver', ['csrf']);
+        $router->post('/transport/drivers/{id}/delete', 'TransportController@destroyDriver', ['csrf']);
+        
         $router->get('/transport/routes', 'TransportController@routes');
         $router->get('/transport/routes/create', 'TransportController@createRoute');
         $router->post('/transport/routes/store', 'TransportController@storeRoute', ['csrf']);

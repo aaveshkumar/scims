@@ -483,4 +483,200 @@ class TransportController
             return back();
         }
     }
+
+    /**
+     * Show all drivers
+     */
+    public function drivers($request)
+    {
+        try {
+            $drivers = db()->fetchAll(
+                "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.status, 
+                        COALESCE(s.license_number, '') as license_number
+                 FROM users u
+                 LEFT JOIN staff s ON u.id = s.user_id
+                 INNER JOIN user_roles ur ON u.id = ur.user_id
+                 INNER JOIN roles r ON ur.role_id = r.id
+                 WHERE r.name IN ('driver', 'staff', 'teacher')
+                 ORDER BY u.first_name"
+            );
+        } catch (Exception $e) {
+            $drivers = [];
+        }
+        
+        return view('transport/drivers', [
+            'title' => 'Driver Management',
+            'drivers' => $drivers
+        ]);
+    }
+
+    /**
+     * Show create driver form
+     */
+    public function createDriver($request)
+    {
+        return view('transport/create-driver', [
+            'title' => 'Add New Driver'
+        ]);
+    }
+
+    /**
+     * Store new driver
+     */
+    public function storeDriver($request)
+    {
+        $rules = [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'license_number' => 'required',
+            'password' => 'required|min:6'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            // Create user
+            $userId = db()->query(
+                "INSERT INTO users (email, password, first_name, last_name, phone, status, created_at, updated_at)
+                 VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())",
+                [
+                    $request->post('email'),
+                    password_hash($request->post('password'), PASSWORD_DEFAULT),
+                    $request->post('first_name'),
+                    $request->post('last_name'),
+                    $request->post('phone') ?? '',
+                    $request->post('status') ?? 'active'
+                ]
+            );
+            
+            // Get last inserted ID
+            $result = db()->fetchOne("SELECT lastval() as id");
+            $newUserId = $result['id'];
+
+            // Assign driver role
+            db()->query(
+                "INSERT INTO user_roles (user_id, role_id) VALUES (?, (SELECT id FROM roles WHERE name = 'driver'))",
+                [$newUserId]
+            );
+
+            // Store license info in staff table if needed
+            if ($request->post('license_number')) {
+                db()->query(
+                    "INSERT INTO staff (user_id, license_number, status, created_at, updated_at)
+                     VALUES (?, ?, ?, NOW(), NOW())",
+                    [$newUserId, $request->post('license_number'), $request->post('status') ?? 'active']
+                );
+            }
+
+            flash('success', 'Driver added successfully');
+            return redirect('/transport/drivers');
+        } catch (Exception $e) {
+            flash('error', 'Failed to add driver: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    /**
+     * Show edit driver form
+     */
+    public function editDriver($request, $id)
+    {
+        try {
+            $driver = db()->fetchOne(
+                "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.status,
+                        COALESCE(s.license_number, '') as license_number,
+                        COALESCE(s.license_expiry, '') as license_expiry
+                 FROM users u
+                 LEFT JOIN staff s ON u.id = s.user_id
+                 WHERE u.id = ?",
+                [$id]
+            );
+
+            if (!$driver) {
+                flash('error', 'Driver not found');
+                return redirect('/transport/drivers');
+            }
+        } catch (Exception $e) {
+            flash('error', 'Error loading driver');
+            return redirect('/transport/drivers');
+        }
+
+        return view('transport/edit-driver', [
+            'title' => 'Edit Driver',
+            'driver' => $driver
+        ]);
+    }
+
+    /**
+     * Update driver
+     */
+    public function updateDriver($request, $id)
+    {
+        $rules = [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'license_number' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            db()->query(
+                "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone = ?, status = ?, updated_at = NOW()
+                 WHERE id = ?",
+                [
+                    $request->post('first_name'),
+                    $request->post('last_name'),
+                    $request->post('email'),
+                    $request->post('phone') ?? '',
+                    $request->post('status') ?? 'active',
+                    $id
+                ]
+            );
+
+            // Update staff/license info
+            db()->query(
+                "UPDATE staff SET license_number = ?, license_expiry = ?, status = ?, updated_at = NOW()
+                 WHERE user_id = ?",
+                [
+                    $request->post('license_number'),
+                    $request->post('license_expiry') ?? null,
+                    $request->post('status') ?? 'active',
+                    $id
+                ]
+            );
+
+            flash('success', 'Driver updated successfully');
+            return redirect('/transport/drivers');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update driver: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    /**
+     * Delete driver
+     */
+    public function destroyDriver($request, $id)
+    {
+        try {
+            db()->query("DELETE FROM staff WHERE user_id = ?", [$id]);
+            db()->query("DELETE FROM user_roles WHERE user_id = ?", [$id]);
+            db()->query("DELETE FROM users WHERE id = ?", [$id]);
+            
+            flash('success', 'Driver deleted successfully');
+            return redirect('/transport/drivers');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete driver: ' . $e->getMessage());
+            return back();
+        }
+    }
 }
