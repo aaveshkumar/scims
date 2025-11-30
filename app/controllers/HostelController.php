@@ -325,6 +325,15 @@ class HostelController
         ]);
     }
     
+    public function createVisitor($request)
+    {
+        $residents = HostelResident::getAll(['status' => 'active']);
+        return view('hostel/visitors/create', [
+            'title' => 'Add Visitor',
+            'residents' => $residents
+        ]);
+    }
+
     public function storeVisitor($request)
     {
         $rules = [
@@ -349,7 +358,7 @@ class HostelController
                 'entry_time' => $request->post('entry_time'),
                 'exit_time' => $request->post('exit_time'),
                 'purpose' => $request->post('purpose'),
-                'approved_by' => auth()->user()['id']
+                'approved_by' => auth()['id']
             ];
 
             HostelVisitor::create($data);
@@ -359,6 +368,74 @@ class HostelController
             flash('error', 'Failed to record visitor: ' . $e->getMessage());
             return back();
         }
+    }
+
+    public function editVisitor($request, $id)
+    {
+        $visitor = HostelVisitor::find($id);
+        if (!$visitor) {
+            flash('error', 'Visitor not found');
+            return redirect('/hostel/visitors');
+        }
+
+        $residents = HostelResident::getAll(['status' => 'active']);
+        return view('hostel/visitors/edit', [
+            'title' => 'Edit Visitor',
+            'visitor' => $visitor,
+            'residents' => $residents
+        ]);
+    }
+
+    public function updateVisitor($request, $id)
+    {
+        $visitor = HostelVisitor::find($id);
+        if (!$visitor) {
+            flash('error', 'Visitor not found');
+            return redirect('/hostel/visitors');
+        }
+
+        $rules = [
+            'resident_id' => 'required',
+            'visitor_name' => 'required',
+            'visit_date' => 'required',
+            'entry_time' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'resident_id' => $request->post('resident_id'),
+                'visitor_name' => $request->post('visitor_name'),
+                'visitor_phone' => $request->post('visitor_phone'),
+                'visitor_id_proof' => $request->post('visitor_id_proof'),
+                'visit_date' => $request->post('visit_date'),
+                'entry_time' => $request->post('entry_time'),
+                'exit_time' => $request->post('exit_time'),
+                'purpose' => $request->post('purpose')
+            ];
+
+            HostelVisitor::update($id, $data);
+            flash('success', 'Visitor updated successfully');
+            return redirect('/hostel/visitors');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update visitor: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    public function deleteVisitor($request, $id)
+    {
+        try {
+            HostelVisitor::delete($id);
+            flash('success', 'Visitor deleted successfully');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete visitor: ' . $e->getMessage());
+        }
+        return redirect('/hostel/visitors');
     }
 
     public function complaints($request)

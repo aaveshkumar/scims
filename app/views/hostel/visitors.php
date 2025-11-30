@@ -2,6 +2,9 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-people me-2"></i>Hostel Visitors Management</h2>
+    <a href="/hostel/visitors/create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-2"></i>Add Visitor
+    </a>
 </div>
 
 <!-- Filters -->
@@ -79,6 +82,7 @@
                     <th>Exit Time</th>
                     <th>Purpose</th>
                     <th>ID Proof</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -92,6 +96,19 @@
                         <td><?= $visitor['exit_time'] ? date('H:i', strtotime($visitor['exit_time'])) : '-' ?></td>
                         <td><?= htmlspecialchars($visitor['purpose'] ?? '-') ?></td>
                         <td><?= htmlspecialchars($visitor['visitor_id_proof'] ?? '-') ?></td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="/hostel/visitors/<?= $visitor['id'] ?>/edit" class="btn btn-outline-warning" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form method="POST" action="/hostel/visitors/<?= $visitor['id'] ?>/delete" style="display: inline;">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Delete this visitor?')" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

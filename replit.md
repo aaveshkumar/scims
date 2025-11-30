@@ -47,6 +47,22 @@ The system employs a custom MVC architecture for clear separation of concerns.
 
 ## Recent Updates (Session: Nov 30, 2025)
 
+### Hostel Visitors Module - COMPLETE ✅
+- **Full CRUD Implementation** (`/hostel/visitors`):
+  - Visitors list with search, date range filters
+  - Statistics dashboard (Today Visitors, Active Visitors, This Month, Active Now)
+  - Add visitor form with multi-section layout (Visitor Info, Resident & Purpose, Visit Schedule)
+  - Edit visitor form with form pre-population
+  - Delete with inline confirmation
+  - Action buttons (Edit/Delete) for each visitor record
+  - Add Visitor button in header for quick access
+- **5 Dummy Visitors** already assigned to different residents
+- **Fixed PostgreSQL Date Functions**:
+  - `CURDATE()` → `CURRENT_DATE`
+  - `MONTH(visit_date) = MONTH(CURDATE())` → `DATE_TRUNC('month', visit_date) = DATE_TRUNC('month', CURRENT_DATE)`
+  - Updated getStatistics() method with null coalescing for safety
+- **Dark Mode CSS**: All forms styled for dark mode compatibility
+
 ### Hostel Residents Module - COMPLETE ✅
 - **Full CRUD Implementation** (`/hostel/residents`):
   - Residents list with search, hostel filter, status filter
@@ -70,12 +86,32 @@ The system employs a custom MVC architecture for clear separation of concerns.
   - Learning (Materials)
 - Role-based display: Admins see all, others see limited options
 
+### Complete Visitor CRUD Routes & Controller ✅
+- **Routes Added** (routes/web.php):
+  - `GET /hostel/visitors/create` → createVisitor form
+  - `POST /hostel/visitors` → storeVisitor
+  - `GET /hostel/visitors/{id}/edit` → editVisitor form
+  - `POST /hostel/visitors/{id}` → updateVisitor
+  - `POST /hostel/visitors/{id}/delete` → deleteVisitor
+- **Controller Methods Added** (app/controllers/HostelController.php):
+  - createVisitor() - displays create form with active residents dropdown
+  - storeVisitor() - validates and creates visitor record (fixed auth()['id'] access)
+  - editVisitor() - displays edit form with pre-populated data
+  - updateVisitor() - validates and updates visitor record
+  - deleteVisitor() - removes visitor with confirmation
+- **Views Created**:
+  - `/app/views/hostel/visitors/create.php` - multi-section add form
+  - `/app/views/hostel/visitors/edit.php` - multi-section edit form
+  - Updated `/app/views/hostel/visitors.php` - list with actions and Add button
+
 ### Critical SQL Query Fixes ✅
-- **HostelVisitor Model**: Fixed 3 queries (getAll, find, getActiveVisitors)
+- **HostelVisitor Model**: Fixed 3 queries (getAll, find, getActiveVisitors) + getStatistics()
   - Changed from `s.first_name` to `u_s.first_name` (via students→users join)
-  - Fixed PostgreSQL date: `CURDATE()` → `CURRENT_DATE`
-- **HostelComplaint Model**: Fixed 2 queries (getAll, find)
+  - Fixed PostgreSQL date: `CURDATE()` → `CURRENT_DATE`, `MONTH/YEAR()` → `DATE_TRUNC()`
+  - Added null safety with `?? 0` in getStatistics()
+- **HostelComplaint Model**: Fixed 2 queries (getAll, find) + resolve()
   - Same students→users join pattern for name retrieval
+  - Fixed PostgreSQL date: `CURDATE()` → `CURRENT_DATE`
 - **Query Pattern**: Added alias renaming (u_s for student user, u_a for assigned user)
 
 ### Transport Module - COMPLETE ✅

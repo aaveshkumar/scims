@@ -390,8 +390,15 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/hostel/residents/{id}', 'HostelController@updateResident', ['csrf']);
         $router->post('/hostel/residents/{id}/delete', 'HostelController@deleteResident', ['csrf']);
         
-        // Hostel Management - Other
+        // Hostel Management - Visitors
         $router->get('/hostel/visitors', 'HostelController@visitors');
+        $router->get('/hostel/visitors/create', 'HostelController@createVisitor');
+        $router->post('/hostel/visitors', 'HostelController@storeVisitor', ['csrf']);
+        $router->get('/hostel/visitors/{id}/edit', 'HostelController@editVisitor');
+        $router->post('/hostel/visitors/{id}', 'HostelController@updateVisitor', ['csrf']);
+        $router->post('/hostel/visitors/{id}/delete', 'HostelController@deleteVisitor', ['csrf']);
+        
+        // Hostel Management - Complaints
         $router->get('/hostel/complaints', 'HostelController@complaints');
         
         // Hostel Management - Generic (Hostels CRUD)
