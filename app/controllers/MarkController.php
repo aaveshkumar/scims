@@ -36,19 +36,27 @@ class MarkController
             return redirect('/marks');
         }
 
-        $marks = db()->fetchAll(
-            "SELECT m.*, s.admission_number, u.first_name, u.last_name,
-                    sub.name as subject_name
-             FROM marks m
-             INNER JOIN students s ON m.student_id = s.id
+        // Get all students with their mark counts and average marks
+        $students = db()->fetchAll(
+            "SELECT DISTINCT 
+                s.id,
+                s.admission_number,
+                u.first_name,
+                u.last_name,
+                c.name as class_name,
+                COUNT(DISTINCT m.id) as marks_count,
+                ROUND(AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100), 2) as avg_percentage
+             FROM students s
              INNER JOIN users u ON s.user_id = u.id
-             INNER JOIN subjects sub ON m.subject_id = sub.id
-             WHERE m.exam_id = ?
+             LEFT JOIN classes c ON s.class_id = c.id
+             LEFT JOIN marks m ON m.student_id = s.id AND m.exam_id = ?
+             WHERE s.status = 'active'
+             GROUP BY s.id, s.admission_number, u.first_name, u.last_name, c.name
              ORDER BY u.last_name, u.first_name",
             [$examId]
         );
 
-        return view('marks.index', ['exam' => $exam, 'marks' => $marks]);
+        return view('marks.index', ['exam' => $exam, 'students' => $students]);
     }
 
     public function enter($request)

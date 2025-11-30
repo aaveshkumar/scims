@@ -19,7 +19,8 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Marks List</h5>
+        <h5 class="mb-0">Student Marks Status</h5>
+        <small class="text-muted d-block mt-1">View and manage marks for all students</small>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -28,48 +29,56 @@
                     <tr>
                         <th>Admission #</th>
                         <th>Student Name</th>
-                        <th>Subject</th>
-                        <th>Marks Obtained</th>
-                        <th>Total Marks</th>
-                        <th>Percentage</th>
-                        <th>Grade</th>
+                        <th>Class</th>
+                        <th>Subjects</th>
+                        <th>Avg %</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (empty($marks)): ?>
+                    <?php if (empty($students)): ?>
                         <tr>
-                            <td colspan="8" class="text-center py-4 text-muted">No marks entered yet</td>
+                            <td colspan="7" class="text-center py-4 text-muted">No active students found</td>
                         </tr>
                     <?php else: ?>
-                        <?php foreach ($marks as $mark): ?>
+                        <?php foreach ($students as $student): ?>
                             <tr>
-                                <td><?= htmlspecialchars($mark['admission_number']) ?></td>
-                                <td><?= htmlspecialchars($mark['first_name'] . ' ' . $mark['last_name']) ?></td>
-                                <td><?= htmlspecialchars($mark['subject_name']) ?></td>
-                                <td><?= $mark['marks_obtained'] ?></td>
-                                <td><?= $mark['total_marks'] ?></td>
+                                <td><strong><?= htmlspecialchars($student['admission_number']) ?></strong></td>
+                                <td><?= htmlspecialchars($student['first_name'] . ' ' . $student['last_name']) ?></td>
+                                <td><?= htmlspecialchars($student['class_name'] ?? 'N/A') ?></td>
                                 <td>
-                                    <?php 
-                                    $percentage = ($mark['total_marks'] > 0) ? round(($mark['marks_obtained'] / $mark['total_marks']) * 100, 2) : 0;
-                                    ?>
-                                    <?= $percentage ?>%
-                                </td>
-                                <td>
-                                    <span class="badge bg-<?= match($mark['grade']) {
-                                        'A+', 'A' => 'success',
-                                        'B+', 'B' => 'primary',
-                                        'C+', 'C' => 'info',
-                                        'D' => 'warning',
-                                        default => 'danger'
-                                    } ?>">
-                                        <?= htmlspecialchars($mark['grade']) ?>
+                                    <span class="badge bg-<?= ($student['marks_count'] > 0) ? 'success' : 'secondary' ?>">
+                                        <?= (int)$student['marks_count'] ?> subject(s)
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="/marks/report-card/<?= $mark['student_id'] ?>/<?= $mark['exam_id'] ?>" class="btn btn-sm btn-info">
-                                        <i class="bi bi-file-earmark-text"></i> Report
+                                    <?php if ($student['marks_count'] > 0): ?>
+                                        <strong><?= htmlspecialchars($student['avg_percentage'] ?? '0') ?>%</strong>
+                                    <?php else: ?>
+                                        <span class="text-muted">-</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if ($student['marks_count'] > 0): ?>
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>Completed
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="badge bg-warning">
+                                            <i class="bi bi-clock me-1"></i>Pending
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <a href="/marks/enter?exam_id=<?= $exam['id'] ?>&student_id=<?= $student['id'] ?>" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-pencil-square me-1"></i><?= ($student['marks_count'] > 0) ? 'Edit' : 'Enter' ?>
                                     </a>
+                                    <?php if ($student['marks_count'] > 0): ?>
+                                        <a href="/marks/report-card/<?= $student['id'] ?>/<?= $exam['id'] ?>" class="btn btn-sm btn-info">
+                                            <i class="bi bi-file-earmark-text me-1"></i>Report
+                                        </a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
