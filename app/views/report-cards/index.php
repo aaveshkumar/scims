@@ -7,27 +7,19 @@
     </div>
 </div>
 
-<!-- Loading Spinner -->
-<div id="loadingSpinner" class="text-center py-5" style="display: none;">
-    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-    <p class="text-muted mt-3">Loading student report cards...</p>
-</div>
-
 <!-- Filter Section -->
-<div class="card mb-4">
+<div class="card mb-4" style="position: relative; z-index: 10;">
     <div class="card-header">
         <h5 class="mb-0">Generate Report Cards</h5>
     </div>
     <div class="card-body">
-        <form method="get" action="/report-cards">
+        <form method="get" action="/report-cards" id="filterForm">
             <div class="row mb-3">
                 <div class="col-md-5">
                     <label class="form-label fw-bold">
                         <i class="bi bi-building me-2"></i>Select Class
                     </label>
-                    <select class="form-select form-select-lg" name="class_id" onchange="submitFormWithLoader()">
+                    <select class="form-select form-select-lg" name="class_id" id="classSelect" onchange="submitFormWithLoader()" style="position: relative; z-index: 1000;">
                         <option value="">-- Choose a Class --</option>
                         <?php foreach ($classes as $class): ?>
                             <option value="<?= $class['id'] ?>" <?= ($selectedClassId == $class['id']) ? 'selected' : '' ?>>
@@ -40,7 +32,7 @@
                     <label class="form-label fw-bold">
                         <i class="bi bi-pencil-square me-2"></i>Select Exam
                     </label>
-                    <select class="form-select form-select-lg" name="exam_id" onchange="submitFormWithLoader()" <?= !$selectedClassId ? 'disabled' : '' ?>>
+                    <select class="form-select form-select-lg" name="exam_id" id="examSelect" onchange="submitFormWithLoader()" <?= !$selectedClassId ? 'disabled' : '' ?> style="position: relative; z-index: 1000;">
                         <option value="">-- Choose an Exam --</option>
                         <?php foreach ($exams as $exam): ?>
                             <option value="<?= $exam['id'] ?>" <?= ($selectedExamId == $exam['id']) ? 'selected' : '' ?>>
@@ -59,6 +51,14 @@
             </div>
         </form>
     </div>
+</div>
+
+<!-- Loading Spinner (appears below filter) -->
+<div id="loadingSpinner" class="text-center py-5 mb-4" style="display: none;">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="text-muted mt-3">Loading student report cards...</p>
 </div>
 
 <!-- Results Section (hidden when loading) -->
@@ -182,11 +182,16 @@ document.addEventListener('DOMContentLoaded', function() {
 function submitFormWithLoader() {
     const resultsCard = document.getElementById('resultsCard');
     const loadingSpinner = document.getElementById('loadingSpinner');
-    const form = document.querySelector('form');
+    const form = document.getElementById('filterForm');
     
     // Show loader and hide results
     loadingSpinner.style.display = 'block';
     resultsCard.style.display = 'none';
+    
+    // Scroll to loader
+    setTimeout(() => {
+        loadingSpinner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
     
     // Submit form after a brief delay for visual feedback
     setTimeout(() => {
@@ -225,6 +230,21 @@ function downloadAll() {
 
 .fade-in {
     animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Ensure dropdowns are always on top */
+.form-select {
+    position: relative !important;
+    z-index: 1000 !important;
+}
+
+.form-select:focus {
+    z-index: 1001 !important;
+}
+
+/* Dropdown list should be above everything */
+select {
+    z-index: 1000 !important;
 }
 </style>
 
