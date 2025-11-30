@@ -400,6 +400,11 @@ $router->group(['middleware' => 'auth'], function($router) {
         
         // Hostel Management - Complaints
         $router->get('/hostel/complaints', 'HostelController@complaints');
+        $router->get('/hostel/complaints/create', 'HostelController@createComplaint');
+        $router->post('/hostel/complaints', 'HostelController@storeComplaint', ['csrf']);
+        $router->get('/hostel/complaints/{id}/edit', 'HostelController@editComplaint');
+        $router->post('/hostel/complaints/{id}', 'HostelController@updateComplaint', ['csrf']);
+        $router->post('/hostel/complaints/{id}/delete', 'HostelController@deleteComplaint', ['csrf']);
         
         // Hostel Management - Generic (Hostels CRUD)
         $router->get('/hostel', 'HostelController@index');

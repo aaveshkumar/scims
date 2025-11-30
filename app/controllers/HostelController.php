@@ -454,7 +454,10 @@ class HostelController
         $types = HostelComplaint::getComplaintTypes();
         
         $staff = db()->fetchAll(
-            "SELECT id, CONCAT(first_name, ' ', last_name) as name FROM users WHERE role_name IN ('staff', 'admin')"
+            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name 
+             FROM users u
+             JOIN staff s ON u.id = s.user_id
+             ORDER BY u.first_name"
         );
         
         return view('hostel/complaints', [
@@ -467,6 +470,102 @@ class HostelController
             'staff' => $staff,
             'filters' => $filters
         ]);
+    }
+
+    public function createComplaint($request)
+    {
+        $hostels = Hostel::getAll(['status' => 'active']);
+        $residents = HostelResident::getAll(['status' => 'active']);
+        $types = HostelComplaint::getComplaintTypes();
+        $staff = db()->fetchAll(
+            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name 
+             FROM users u JOIN staff s ON u.id = s.user_id ORDER BY u.first_name"
+        );
+        
+        return view('hostel/complaints/create', [
+            'title' => 'Add Complaint',
+            'hostels' => $hostels,
+            'residents' => $residents,
+            'types' => $types,
+            'staff' => $staff
+        ]);
+    }
+
+    public function editComplaint($request, $id)
+    {
+        $complaint = HostelComplaint::find($id);
+        if (!$complaint) {
+            flash('error', 'Complaint not found');
+            return redirect('/hostel/complaints');
+        }
+
+        $hostels = Hostel::getAll(['status' => 'active']);
+        $residents = HostelResident::getAll(['status' => 'active']);
+        $types = HostelComplaint::getComplaintTypes();
+        $staff = db()->fetchAll(
+            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name 
+             FROM users u JOIN staff s ON u.id = s.user_id ORDER BY u.first_name"
+        );
+        
+        return view('hostel/complaints/edit', [
+            'title' => 'Edit Complaint',
+            'complaint' => $complaint,
+            'hostels' => $hostels,
+            'residents' => $residents,
+            'types' => $types,
+            'staff' => $staff
+        ]);
+    }
+
+    public function updateComplaint($request, $id)
+    {
+        $complaint = HostelComplaint::find($id);
+        if (!$complaint) {
+            flash('error', 'Complaint not found');
+            return redirect('/hostel/complaints');
+        }
+
+        $rules = [
+            'resident_id' => 'required',
+            'hostel_id' => 'required',
+            'description' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'resident_id' => $request->post('resident_id'),
+                'hostel_id' => $request->post('hostel_id'),
+                'complaint_type' => $request->post('complaint_type'),
+                'description' => $request->post('description'),
+                'priority' => $request->post('priority'),
+                'status' => $request->post('status'),
+                'assigned_to' => $request->post('assigned_to'),
+                'remarks' => $request->post('remarks')
+            ];
+
+            HostelComplaint::update($id, $data);
+            flash('success', 'Complaint updated successfully');
+            return redirect('/hostel/complaints');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update complaint: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    public function deleteComplaint($request, $id)
+    {
+        try {
+            HostelComplaint::delete($id);
+            flash('success', 'Complaint deleted successfully');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete complaint: ' . $e->getMessage());
+        }
+        return redirect('/hostel/complaints');
     }
     
     public function storeComplaint($request)
@@ -499,28 +598,6 @@ class HostelController
             return redirect('/hostel/complaints');
         } catch (Exception $e) {
             flash('error', 'Failed to register complaint: ' . $e->getMessage());
-            return back();
-        }
-    }
-    
-    public function updateComplaint($request, $id)
-    {
-        try {
-            $data = [
-                'complaint_type' => $request->post('complaint_type'),
-                'description' => $request->post('description'),
-                'priority' => $request->post('priority'),
-                'status' => $request->post('status'),
-                'assigned_to' => $request->post('assigned_to'),
-                'resolved_date' => $request->post('resolved_date'),
-                'remarks' => $request->post('remarks')
-            ];
-
-            HostelComplaint::update($id, $data);
-            flash('success', 'Complaint updated successfully');
-            return redirect('/hostel/complaints');
-        } catch (Exception $e) {
-            flash('error', 'Failed to update complaint: ' . $e->getMessage());
             return back();
         }
     }
