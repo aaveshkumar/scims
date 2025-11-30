@@ -62,7 +62,7 @@
 </div>
 
 <!-- Results Section (hidden when loading) -->
-<div class="card" id="resultsCard" style="display: none;" class="fade-in">
+<div class="card fade-in" id="resultsCard" style="display: none;">
     <div class="card-header">
         <h5 class="mb-0">
             <?php if ($selectedClassId && $selectedExamId): ?>
