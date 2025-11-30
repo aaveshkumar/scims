@@ -212,7 +212,7 @@ class TransportController
             
             // Get drivers and staff from user_roles join
             $drivers = db()->fetchAll(
-                "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email 
+                "SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email, u.first_name
                  FROM users u
                  INNER JOIN user_roles ur ON u.id = ur.user_id
                  INNER JOIN roles r ON ur.role_id = r.id
@@ -246,7 +246,7 @@ class TransportController
         
         // Get drivers and staff from user_roles join
         $drivers = db()->fetchAll(
-            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email 
+            "SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email, u.first_name
              FROM users u
              INNER JOIN user_roles ur ON u.id = ur.user_id
              INNER JOIN roles r ON ur.role_id = r.id
