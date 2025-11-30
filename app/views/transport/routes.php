@@ -2,9 +2,14 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-geo-alt me-2"></i>Route Management</h2>
-    <a href="/transport/vehicles" class="btn btn-secondary">
-        <i class="bi bi-arrow-left me-2"></i>Back
-    </a>
+    <div>
+        <a href="/transport/routes/create" class="btn btn-primary me-2">
+            <i class="bi bi-plus-circle me-2"></i>Add Route
+        </a>
+        <a href="/transport/vehicles" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Back
+        </a>
+    </div>
 </div>
 
 <div class="row mb-4">
@@ -57,6 +62,7 @@
                             <th>Distance</th>
                             <th>Fare</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,12 +72,22 @@
                                 <td><?= htmlspecialchars($route['route_number'] ?? 'N/A') ?></td>
                                 <td><?= htmlspecialchars($route['start_point'] ?? 'N/A') ?></td>
                                 <td><?= htmlspecialchars($route['end_point'] ?? 'N/A') ?></td>
-                                <td><?= htmlspecialchars($route['distance'] ?? 'N/A') ?></td>
+                                <td><?= htmlspecialchars($route['distance'] ?? 'N/A') ?> km</td>
                                 <td>₹<?= number_format($route['fare'] ?? 0, 2) ?></td>
                                 <td>
                                     <span class="badge bg-<?= ($route['status'] ?? 'active') == 'active' ? 'success' : 'secondary' ?>">
                                         <?= ucfirst($route['status'] ?? 'active') ?>
                                     </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-outline-info btn-sm" title="View">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-warning btn-sm" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

@@ -209,6 +209,21 @@ class TransportController
     }
     
     /**
+     * Show create route form
+     */
+    public function createRoute($request)
+    {
+        $availableVehicles = db()->fetchAll("SELECT id, vehicle_number FROM vehicles WHERE status = 'active' ORDER BY vehicle_number");
+        $drivers = db()->fetchAll("SELECT id, CONCAT(first_name, ' ', last_name) as name, email FROM users WHERE role = 'driver' OR role = 'staff' ORDER BY first_name");
+        
+        return view('transport/create-route', [
+            'title' => 'Add New Route',
+            'availableVehicles' => $availableVehicles,
+            'drivers' => $drivers
+        ]);
+    }
+    
+    /**
      * Store new route
      */
     public function storeRoute($request)

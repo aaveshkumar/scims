@@ -350,6 +350,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         
         // Additional routes/assignments MUST come before /transport/{id}
         $router->get('/transport/routes', 'TransportController@routes');
+        $router->get('/transport/routes/create', 'TransportController@createRoute');
+        $router->post('/transport/routes/store', 'TransportController@storeRoute', ['csrf']);
         $router->get('/transport/assignments', 'TransportController@assignments');
         
         // Generic transport/{id} route for backward compatibility
