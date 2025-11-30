@@ -140,9 +140,9 @@ class HostelVisitor
     public static function getStatistics()
     {
         return [
-            'today_visitors' => db()->fetchOne("SELECT COUNT(*) as count FROM hostel_visitors WHERE visit_date = CURDATE()")['count'],
+            'today_visitors' => db()->fetchOne("SELECT COUNT(*) as count FROM hostel_visitors WHERE visit_date = CURRENT_DATE")['count'] ?? 0,
             'active_visitors' => count(self::getActiveVisitors()),
-            'this_month' => db()->fetchOne("SELECT COUNT(*) as count FROM hostel_visitors WHERE MONTH(visit_date) = MONTH(CURDATE()) AND YEAR(visit_date) = YEAR(CURDATE())")['count']
+            'this_month' => db()->fetchOne("SELECT COUNT(*) as count FROM hostel_visitors WHERE DATE_TRUNC('month', visit_date) = DATE_TRUNC('month', CURRENT_DATE)")['count'] ?? 0
         ];
     }
 }

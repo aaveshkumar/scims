@@ -112,7 +112,7 @@ class HostelComplaint
     public static function resolve($id, $remarks = null)
     {
         return db()->execute(
-            "UPDATE hostel_complaints SET status = 'resolved', resolved_date = CURDATE(), 
+            "UPDATE hostel_complaints SET status = 'resolved', resolved_date = CURRENT_DATE, 
              remarks = ?, updated_at = NOW() WHERE id = ?",
             [$remarks, $id]
         );
