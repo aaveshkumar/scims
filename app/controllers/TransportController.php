@@ -601,6 +601,13 @@ class TransportController
             return back();
         }
 
+        // Check if email already exists
+        $existingUser = db()->fetchOne("SELECT id FROM users WHERE email = ?", [$request->post('email')]);
+        if ($existingUser) {
+            flash('error', 'A user with this email already exists');
+            return back();
+        }
+
         try {
             // Create user
             $userId = db()->query(
