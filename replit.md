@@ -79,6 +79,7 @@ The system employs a custom MVC architecture for clear separation of concerns.
 - **auth() Function**: Changed from auth()->user()['id'] to auth()['id'] - auth() returns array from $_SESSION, not object
 - **Database Joins**: Fixed student name queries to properly join students → users tables
 - **PostgreSQL Compatibility**: All queries use CURRENT_DATE, INTERVAL syntax (not MySQL CURDATE/DATE_ADD)
+- **Route Ordering**: Specific routes like `/calendar/holidays` MUST come BEFORE parameterized routes like `/calendar/{id}` to prevent matching conflicts
 
 ## External Dependencies
 - **Database**: PostgreSQL (Neon) via PDO

@@ -87,11 +87,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/calendar', 'CalendarController@index');
         $router->get('/calendar/create', 'CalendarController@create');
         $router->post('/calendar/create', 'CalendarController@create', ['csrf']);
-        $router->get('/calendar/{id}', 'CalendarController@show');
-        $router->get('/calendar/{id}/edit', 'CalendarController@edit');
-        $router->post('/calendar/{id}/edit', 'CalendarController@edit', ['csrf']);
-        $router->post('/calendar/{id}/delete', 'CalendarController@destroy', ['csrf']);
         
+        // Holidays routes MUST come before /calendar/{id} to prevent matching conflict
         $router->get('/calendar/holidays', 'CalendarController@holidays');
         $router->get('/calendar/holidays/create', 'CalendarController@createHoliday');
         $router->post('/calendar/holidays/create', 'CalendarController@createHoliday', ['csrf']);
@@ -99,6 +96,12 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/calendar/holidays/{id}/edit', 'CalendarController@editHoliday');
         $router->post('/calendar/holidays/{id}/edit', 'CalendarController@editHoliday', ['csrf']);
         $router->post('/calendar/holidays/{id}/delete', 'CalendarController@deleteHoliday', ['csrf']);
+        
+        // Calendar events routes with parameterized IDs (after specific holiday routes)
+        $router->get('/calendar/{id}', 'CalendarController@show');
+        $router->get('/calendar/{id}/edit', 'CalendarController@edit');
+        $router->post('/calendar/{id}/edit', 'CalendarController@edit', ['csrf']);
+        $router->post('/calendar/{id}/delete', 'CalendarController@destroy', ['csrf']);
 
         $router->get('/students', 'StudentController@index');
         $router->get('/students/create', 'StudentController@create');
