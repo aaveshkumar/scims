@@ -554,10 +554,8 @@ class TransportController
     {
         try {
             $drivers = db()->fetchAll(
-                "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.status, 
-                        COALESCE(s.license_number, '') as license_number
+                "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.status, '' as license_number
                  FROM users u
-                 LEFT JOIN staff s ON u.id = s.user_id
                  INNER JOIN user_roles ur ON u.id = ur.user_id
                  INNER JOIN roles r ON ur.role_id = r.id
                  WHERE r.name IN ('driver', 'staff', 'teacher')
@@ -567,11 +565,11 @@ class TransportController
             // If no drivers exist, create dummy drivers
             if (empty($drivers)) {
                 $dummyDrivers = [
-                    ['first_name' => 'Rajesh', 'last_name' => 'Kumar', 'email' => 'rajesh.driver@school.local', 'license_number' => 'DL-2024-001', 'phone' => '98765-43210'],
-                    ['first_name' => 'Priya', 'last_name' => 'Singh', 'email' => 'priya.driver@school.local', 'license_number' => 'DL-2024-002', 'phone' => '98765-43211'],
-                    ['first_name' => 'Arjun', 'last_name' => 'Patel', 'email' => 'arjun.driver@school.local', 'license_number' => 'DL-2024-003', 'phone' => '98765-43212'],
-                    ['first_name' => 'Sneha', 'last_name' => 'Sharma', 'email' => 'sneha.driver@school.local', 'license_number' => 'DL-2024-004', 'phone' => '98765-43213'],
-                    ['first_name' => 'Vikram', 'last_name' => 'Desai', 'email' => 'vikram.driver@school.local', 'license_number' => 'DL-2024-005', 'phone' => '98765-43214'],
+                    ['first_name' => 'Rajesh', 'last_name' => 'Kumar', 'email' => 'rajesh.driver@school.local', 'phone' => '98765-43210'],
+                    ['first_name' => 'Priya', 'last_name' => 'Singh', 'email' => 'priya.driver@school.local', 'phone' => '98765-43211'],
+                    ['first_name' => 'Arjun', 'last_name' => 'Patel', 'email' => 'arjun.driver@school.local', 'phone' => '98765-43212'],
+                    ['first_name' => 'Sneha', 'last_name' => 'Sharma', 'email' => 'sneha.driver@school.local', 'phone' => '98765-43213'],
+                    ['first_name' => 'Vikram', 'last_name' => 'Desai', 'email' => 'vikram.driver@school.local', 'phone' => '98765-43214'],
                 ];
                 
                 $driverRole = db()->fetchOne("SELECT id FROM roles WHERE name = 'driver'");
@@ -595,21 +593,12 @@ class TransportController
                             [$userId, $driverRole['id']]
                         );
                     }
-                    
-                    // Create staff record with license info
-                    db()->query(
-                        "INSERT INTO staff (user_id, license_number, status, created_at, updated_at)
-                         VALUES (?, ?, 'active', NOW(), NOW())",
-                        [$userId, $driver['license_number']]
-                    );
                 }
                 
                 // Fetch drivers again after creating dummy data
                 $drivers = db()->fetchAll(
-                    "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.status, 
-                            COALESCE(s.license_number, '') as license_number
+                    "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.status, '' as license_number
                      FROM users u
-                     LEFT JOIN staff s ON u.id = s.user_id
                      INNER JOIN user_roles ur ON u.id = ur.user_id
                      INNER JOIN roles r ON ur.role_id = r.id
                      WHERE r.name IN ('driver', 'staff', 'teacher')
@@ -687,15 +676,6 @@ class TransportController
                 db()->query(
                     "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)",
                     [$newUserId, $driverRole['id']]
-                );
-            }
-
-            // Store license info in staff table if needed
-            if ($request->post('license_number')) {
-                db()->query(
-                    "INSERT INTO staff (user_id, license_number, status, created_at, updated_at)
-                     VALUES (?, ?, ?, NOW(), NOW())",
-                    [$newUserId, $request->post('license_number'), $request->post('status') ?? 'active']
                 );
             }
 
