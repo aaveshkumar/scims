@@ -71,9 +71,12 @@
                                         <a href="/transport/drivers/<?= $driver['id'] ?>/edit" class="btn btn-outline-warning btn-sm" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete(<?= $driver['id'] ?>)" title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                        <form method="POST" action="/transport/drivers/<?= $driver['id'] ?>/delete" style="display: inline;">
+                                            <?= csrf_field() ?>
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this driver?')" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -85,17 +88,5 @@
     </div>
 </div>
 
-<form id="deleteForm" method="POST" style="display: none;">
-    <?= csrf_field() ?>
-</form>
-
-<script>
-function confirmDelete(driverId) {
-    if (confirm('Are you sure you want to delete this driver?')) {
-        document.getElementById('deleteForm').action = '/transport/drivers/' + driverId + '/delete';
-        document.getElementById('deleteForm').submit();
-    }
-}
-</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

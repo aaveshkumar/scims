@@ -102,9 +102,12 @@
                                         <a href="/transport/routes/<?= $route['id'] ?>/edit" class="btn btn-outline-warning btn-sm" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDeleteRoute(<?= $route['id'] ?>)" title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                        <form method="POST" action="/transport/routes/<?= $route['id'] ?>/delete" style="display: inline;">
+                                            <?= csrf_field() ?>
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this route?')" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -116,17 +119,5 @@
     </div>
 </div>
 
-<form id="deleteForm" method="POST" style="display: none;">
-    <?= csrf_field() ?>
-</form>
-
-<script>
-function confirmDeleteRoute(routeId) {
-    if (confirm('Are you sure you want to delete this route?')) {
-        document.getElementById('deleteForm').action = '/transport/routes/' + routeId + '/delete';
-        document.getElementById('deleteForm').submit();
-    }
-}
-</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
