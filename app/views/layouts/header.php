@@ -192,10 +192,20 @@
             color: #a8b1bd !important;
         }
         [data-bs-theme="dark"] .nav-link {
-            color: #a8b1bd !important;
+            color: #e9ecef !important;
         }
         [data-bs-theme="dark"] .nav-link:hover {
+            color: #fff !important;
+        }
+        [data-bs-theme="dark"] .nav-tabs .nav-link {
             color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .nav-tabs .nav-link:hover {
+            color: #fff !important;
+        }
+        [data-bs-theme="dark"] .nav-tabs .nav-link.active {
+            color: #fff !important;
+            border-bottom-color: #5a8dee;
         }
         [data-bs-theme="dark"] h1,
         [data-bs-theme="dark"] h2,
