@@ -165,6 +165,57 @@ document.getElementById('paymentForm')?.addEventListener('submit', function(e) {
     .btn, #paymentForm, nav, .sidebar { display: none !important; }
     .card { border: none !important; box-shadow: none !important; }
 }
+
+/* Dark mode text color fixes */
+[data-bs-theme="dark"] .bg-light {
+    background-color: #f8f9fa !important;
+    color: #000 !important;
+}
+
+[data-bs-theme="dark"] .bg-light,
+[data-bs-theme="dark"] .bg-light * {
+    color: #000 !important;
+}
+
+[data-bs-theme="dark"] .table-light {
+    background-color: #f8f9fa !important;
+    color: #000 !important;
+}
+
+[data-bs-theme="dark"] .table-light th,
+[data-bs-theme="dark"] .table-light td {
+    color: #000 !important;
+}
+
+[data-bs-theme="dark"] .card {
+    color: inherit;
+}
+
+[data-bs-theme="dark"] .card-body h4,
+[data-bs-theme="dark"] .card-body h5,
+[data-bs-theme="dark"] .card-body h6,
+[data-bs-theme="dark"] .card-body p,
+[data-bs-theme="dark"] .card-body label,
+[data-bs-theme="dark"] .card-body strong {
+    color: #e0e0e0;
+}
+
+[data-bs-theme="dark"] .bg-light .form-label,
+[data-bs-theme="dark"] .bg-light .form-control {
+    color: #000 !important;
+    background-color: #fff !important;
+}
+
+[data-bs-theme="dark"] .bg-light .form-select {
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+[data-bs-theme="dark"] .table tbody td,
+[data-bs-theme="dark"] .table tbody th {
+    color: #e0e0e0;
+    border-color: #495057;
+}
 </style>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
