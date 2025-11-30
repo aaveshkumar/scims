@@ -699,11 +699,8 @@ class TransportController
     {
         try {
             $driver = db()->fetchOne(
-                "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.status,
-                        COALESCE(s.license_number, '') as license_number,
-                        COALESCE(s.license_expiry, '') as license_expiry
+                "SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.status
                  FROM users u
-                 LEFT JOIN staff s ON u.id = s.user_id
                  WHERE u.id = ?",
                 [$id]
             );
@@ -712,8 +709,12 @@ class TransportController
                 flash('error', 'Driver not found');
                 return redirect('/transport/drivers');
             }
+            
+            // Add default empty values for license fields
+            $driver['license_number'] = '';
+            $driver['license_expiry'] = '';
         } catch (Exception $e) {
-            flash('error', 'Error loading driver');
+            flash('error', 'Error loading driver: ' . $e->getMessage());
             return redirect('/transport/drivers');
         }
 
@@ -731,8 +732,7 @@ class TransportController
         $rules = [
             'first_name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|email',
-            'license_number' => 'required'
+            'email' => 'required|email'
         ];
 
         if (!validate($request->post(), $rules)) {

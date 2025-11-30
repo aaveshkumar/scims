@@ -47,12 +47,12 @@
                 </h6>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">License Number *</label>
-                        <input type="text" name="license_number" class="form-control" value="<?= htmlspecialchars($driver['license_number'] ?? '') ?>" required>
+                        <label class="form-label fw-bold">License Number</label>
+                        <input type="text" name="license_number" class="form-control" value="<?= htmlspecialchars($driver['license_number'] ?? '') ?>" placeholder="Enter license number">
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">License Expiry Date</label>
-                        <input type="date" name="license_expiry" class="form-control" value="<?= htmlspecialchars($driver['license_expiry'] ?? '') ?>">
+                        <input type="date" name="license_expiry" class="form-control" value="<?= htmlspecialchars($driver['license_expiry'] ?? '') ?>" placeholder="Select expiry date">
                     </div>
                 </div>
             </div>
