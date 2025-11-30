@@ -81,11 +81,14 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-outline-info btn-sm" title="View">
+                                        <a href="/transport/routes/<?= $route['id'] ?>" class="btn btn-outline-info btn-sm" title="View">
                                             <i class="bi bi-eye"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-outline-warning btn-sm" title="Edit">
+                                        </a>
+                                        <a href="/transport/routes/<?= $route['id'] ?>/edit" class="btn btn-outline-warning btn-sm" title="Edit">
                                             <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDeleteRoute(<?= $route['id'] ?>)" title="Delete">
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -97,5 +100,18 @@
         <?php endif; ?>
     </div>
 </div>
+
+<form id="deleteForm" method="POST" style="display: none;">
+    <?= csrf_field() ?>
+</form>
+
+<script>
+function confirmDeleteRoute(routeId) {
+    if (confirm('Are you sure you want to delete this route?')) {
+        document.getElementById('deleteForm').action = '/transport/routes/' + routeId + '/delete';
+        document.getElementById('deleteForm').submit();
+    }
+}
+</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

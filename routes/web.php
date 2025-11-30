@@ -352,6 +352,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/transport/drivers', 'TransportController@drivers');
         $router->get('/transport/drivers/create', 'TransportController@createDriver');
         $router->post('/transport/drivers/store', 'TransportController@storeDriver', ['csrf']);
+        $router->get('/transport/drivers/payroll', 'TransportController@payroll');
+        $router->post('/transport/drivers/payroll/submit', 'TransportController@submitPayroll', ['csrf']);
         $router->get('/transport/drivers/{id}/edit', 'TransportController@editDriver');
         $router->post('/transport/drivers/{id}', 'TransportController@updateDriver', ['csrf']);
         $router->post('/transport/drivers/{id}/delete', 'TransportController@destroyDriver', ['csrf']);
@@ -359,6 +361,11 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/transport/routes', 'TransportController@routes');
         $router->get('/transport/routes/create', 'TransportController@createRoute');
         $router->post('/transport/routes/store', 'TransportController@storeRoute', ['csrf']);
+        $router->get('/transport/routes/{id}', 'TransportController@showRoute');
+        $router->get('/transport/routes/{id}/edit', 'TransportController@editRoute');
+        $router->post('/transport/routes/{id}', 'TransportController@updateRoute', ['csrf']);
+        $router->post('/transport/routes/{id}/delete', 'TransportController@destroyRoute', ['csrf']);
+        
         $router->get('/transport/assignments', 'TransportController@assignments');
         
         // Generic transport/{id} route for backward compatibility

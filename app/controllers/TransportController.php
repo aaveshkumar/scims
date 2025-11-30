@@ -262,6 +262,106 @@ class TransportController
     }
     
     /**
+     * Show route details
+     */
+    public function showRoute($request, $id)
+    {
+        try {
+            $route = db()->fetchOne("SELECT * FROM routes WHERE id = ?", [$id]);
+            
+            if (!$route) {
+                flash('error', 'Route not found');
+                return redirect('/transport/routes');
+            }
+        } catch (Exception $e) {
+            flash('error', 'Error loading route');
+            return redirect('/transport/routes');
+        }
+        
+        return view('transport/show-route', [
+            'title' => 'Route Details',
+            'route' => $route
+        ]);
+    }
+
+    /**
+     * Show edit route form
+     */
+    public function editRoute($request, $id)
+    {
+        try {
+            $route = db()->fetchOne("SELECT * FROM routes WHERE id = ?", [$id]);
+            
+            if (!$route) {
+                flash('error', 'Route not found');
+                return redirect('/transport/routes');
+            }
+        } catch (Exception $e) {
+            flash('error', 'Error loading route');
+            return redirect('/transport/routes');
+        }
+        
+        return view('transport/edit-route', [
+            'title' => 'Edit Route',
+            'route' => $route
+        ]);
+    }
+
+    /**
+     * Update route
+     */
+    public function updateRoute($request, $id)
+    {
+        $rules = [
+            'route_name' => 'required',
+            'route_number' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            db()->query(
+                "UPDATE routes SET route_name = ?, route_number = ?, start_point = ?, end_point = ?, distance = ?, fare = ?, status = ?, updated_at = NOW() WHERE id = ?",
+                [
+                    $request->post('route_name'),
+                    $request->post('route_number'),
+                    $request->post('start_point'),
+                    $request->post('end_point'),
+                    $request->post('distance') ?? 0,
+                    $request->post('fare') ?? 0,
+                    $request->post('status') ?? 'active',
+                    $id
+                ]
+            );
+            
+            flash('success', 'Route updated successfully');
+            return redirect('/transport/routes');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update route: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    /**
+     * Delete route
+     */
+    public function destroyRoute($request, $id)
+    {
+        try {
+            db()->query("DELETE FROM routes WHERE id = ?", [$id]);
+            
+            flash('success', 'Route deleted successfully');
+            return redirect('/transport/routes');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete route: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    /**
      * Store new route
      */
     public function storeRoute($request)
@@ -676,6 +776,65 @@ class TransportController
             return redirect('/transport/drivers');
         } catch (Exception $e) {
             flash('error', 'Failed to delete driver: ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    /**
+     * Show driver payroll
+     */
+    public function payroll($request)
+    {
+        try {
+            $drivers = db()->fetchAll(
+                "SELECT u.id, u.first_name, u.last_name, u.email
+                 FROM users u
+                 INNER JOIN user_roles ur ON u.id = ur.user_id
+                 INNER JOIN roles r ON ur.role_id = r.id
+                 WHERE r.name = 'driver'
+                 ORDER BY u.first_name"
+            );
+        } catch (Exception $e) {
+            $drivers = [];
+        }
+        
+        return view('transport/payroll', [
+            'title' => 'Driver Payroll',
+            'drivers' => $drivers
+        ]);
+    }
+
+    /**
+     * Submit payroll
+     */
+    public function submitPayroll($request)
+    {
+        try {
+            $basic_salaries = $request->post('basic_salary') ?? [];
+            $allowances = $request->post('allowances') ?? [];
+            $deductions = $request->post('deductions') ?? [];
+            $payment_dates = $request->post('payment_date') ?? [];
+            $statuses = $request->post('status') ?? [];
+
+            foreach ($basic_salaries as $driver_id => $basic_salary) {
+                $allowance = $allowances[$driver_id] ?? 0;
+                $deduction = $deductions[$driver_id] ?? 0;
+                $gross_salary = $basic_salary + $allowance;
+                $net_salary = $gross_salary - $deduction;
+                $payment_date = $payment_dates[$driver_id] ?? date('Y-m-d');
+                $status = $statuses[$driver_id] ?? 'pending';
+
+                db()->query(
+                    "INSERT INTO payroll (user_id, basic_salary, allowances, deductions, gross_salary, net_salary, payment_date, payment_method, status, created_at, updated_at)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())",
+                    [$driver_id, $basic_salary, $allowance, $deduction, $gross_salary, $net_salary, $payment_date, 'bank_transfer', $status]
+                );
+            }
+            
+            flash('success', 'Payroll processed successfully');
+            return redirect('/transport/drivers');
+        } catch (Exception $e) {
+            flash('error', 'Failed to process payroll: ' . $e->getMessage());
             return back();
         }
     }

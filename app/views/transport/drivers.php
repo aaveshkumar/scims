@@ -6,8 +6,11 @@
         <a href="/transport/drivers/create" class="btn btn-primary me-2">
             <i class="bi bi-plus-circle me-2"></i>Add Driver
         </a>
-        <a href="/transport/vehicles" class="btn btn-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Back
+        <a href="/transport/drivers/payroll" class="btn btn-success me-2">
+            <i class="bi bi-cash-coin me-2"></i>Pay Drivers
+        </a>
+        <a href="/transport/routes" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Routes
         </a>
     </div>
 </div>
