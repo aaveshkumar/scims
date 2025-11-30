@@ -53,6 +53,12 @@ The system employs a custom MVC architecture for clear separation of concerns.
   - Duration & Marks settings
   - Passing marks configuration
 - **Quiz Index Page**: Added delete buttons (trash icon) with confirmation dialogs for inline actions
+- **Forums Module**: Complete implementation with full CRUD:
+  - Routes: GET /forums (list), POST /forums (create), GET /forums/{id} (view), POST /forums/{id} (update), DELETE /forums/{id}
+  - Database integration with proper joins (forums → users → subjects → classes)
+  - Index page displays all forums with title, subject, class, creator, status, created date, and action buttons
+  - Create/Edit forms with subject and class selection
+  - 5 dummy forums inserted for testing (General Discussion, Study Groups, Assignment Help, Doubt Clearing, Announcements)
 
 ## Critical Bug Fixes
 - **auth() Function**: Changed from auth()->user()['id'] to auth()['id'] - auth() returns array from $_SESSION, not object

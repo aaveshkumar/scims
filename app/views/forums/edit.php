@@ -12,7 +12,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="/forums/<?= $id ?>" class="needs-validation">
+        <form method="POST" action="/forums/<?= $forum['id'] ?>" class="needs-validation">
             <input type="hidden" name="_token" value="<?= csrf() ?>">
             
             <!-- Forum Details -->
@@ -22,12 +22,12 @@
                 </h6>
                 <div class="mb-3">
                     <label class="form-label fw-bold">Title *</label>
-                    <input type="text" name="title" class="form-control" placeholder="e.g., General Discussion" required>
+                    <input type="text" name="title" class="form-control" value="<?= htmlspecialchars($forum['title']) ?>" required>
                     <small class="text-muted">Clear, descriptive title for the forum</small>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">Description</label>
-                    <textarea name="description" class="form-control" rows="3" placeholder="What is this forum for?"></textarea>
+                    <textarea name="description" class="form-control" rows="3"><?= htmlspecialchars($forum['description'] ?? '') ?></textarea>
                     <small class="text-muted">Brief overview of the forum's purpose</small>
                 </div>
             </div>
@@ -42,12 +42,22 @@
                         <label class="form-label fw-bold">Subject (Optional)</label>
                         <select name="subject_id" class="form-select">
                             <option value="">-- Select Subject --</option>
+                            <?php foreach ($subjects as $subject): ?>
+                                <option value="<?= $subject['id'] ?>" <?= $forum['subject_id'] == $subject['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($subject['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Class (Optional)</label>
                         <select name="class_id" class="form-select">
                             <option value="">-- Select Class --</option>
+                            <?php foreach ($classes as $class): ?>
+                                <option value="<?= $class['id'] ?>" <?= $forum['class_id'] == $class['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($class['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
@@ -61,8 +71,8 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Status</label>
                     <select name="status" class="form-select">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="active" <?= $forum['status'] === 'active' ? 'selected' : '' ?>>Active</option>
+                        <option value="inactive" <?= $forum['status'] === 'inactive' ? 'selected' : '' ?>>Inactive</option>
                     </select>
                 </div>
             </div>
