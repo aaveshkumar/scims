@@ -4,30 +4,60 @@ class ReportCardController
 {
     public function index($request)
     {
-        return view('report-cards/index', ['title' => 'Report Cards']);
-    }
-
-    public function generate($request)
-    {
-        $classId = $request->post('class_id');
-        $examId = $request->post('exam_id');
+        $classId = $request->get('class_id');
+        $examId = $request->get('exam_id');
         
-        flash('success', 'Report cards generated successfully');
-        return redirect('/report-cards');
-    }
-
-    public function download($request, $studentId, $examId)
-    {
-        flash('success', 'Report card download initiated');
-        return back();
-    }
-
-    public function print($request, $studentId, $examId)
-    {
-        return view('report-cards/print', [
-            'title' => 'Print Report Card',
-            'studentId' => $studentId,
-            'examId' => $examId
+        // Fetch all classes
+        $classes = db()->fetchAll(
+            "SELECT id, name FROM classes ORDER BY name"
+        );
+        
+        // Fetch all exams
+        $exams = db()->fetchAll(
+            "SELECT id, name, code, academic_year FROM exams ORDER BY start_date DESC LIMIT 20"
+        );
+        
+        $reportCards = [];
+        
+        // If both class and exam are selected, fetch report cards
+        if ($classId && $examId) {
+            $reportCards = db()->fetchAll(
+                "SELECT 
+                    s.id as student_id,
+                    s.admission_number,
+                    u.first_name,
+                    u.last_name,
+                    c.name as class_name,
+                    e.name as exam_name,
+                    COUNT(DISTINCT m.id) as marks_count,
+                    ROUND(AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100), 2) as percentage,
+                    CASE 
+                        WHEN AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100) >= 90 THEN 'A+'
+                        WHEN AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100) >= 80 THEN 'A'
+                        WHEN AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100) >= 70 THEN 'B+'
+                        WHEN AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100) >= 60 THEN 'B'
+                        WHEN AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100) >= 50 THEN 'C'
+                        WHEN AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100) >= 40 THEN 'D'
+                        ELSE 'F'
+                    END as grade
+                 FROM students s
+                 INNER JOIN users u ON s.user_id = u.id
+                 LEFT JOIN classes c ON s.class_id = c.id
+                 LEFT JOIN exams e ON e.id = ?
+                 LEFT JOIN marks m ON m.student_id = s.id AND m.exam_id = ?
+                 WHERE s.status = 'active' AND s.class_id = ?
+                 GROUP BY s.id, s.admission_number, u.first_name, u.last_name, c.name, e.name
+                 ORDER BY u.last_name, u.first_name",
+                [$examId, $examId, $classId]
+            );
+        }
+        
+        return view('report-cards/index', [
+            'classes' => $classes,
+            'exams' => $exams,
+            'reportCards' => $reportCards,
+            'selectedClassId' => $classId,
+            'selectedExamId' => $examId
         ]);
     }
 }

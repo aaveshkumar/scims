@@ -306,9 +306,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         });
         
         
-        $router->get('/report-cards', function() {
-            return view('placeholder', ['title' => 'Report Cards', 'module' => 'Report Cards']);
-        });
+        $router->get('/report-cards', 'ReportCardController@index');
         
         $router->get('/fees', function() {
             return view('placeholder', ['title' => 'Fee Structure', 'module' => 'Fee Structure Management']);
