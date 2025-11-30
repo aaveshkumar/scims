@@ -184,6 +184,29 @@ class TransportController
         
         try {
             $routes = db()->fetchAll("SELECT * FROM routes ORDER BY created_at DESC");
+            
+            // If no routes exist, create dummy routes
+            if (empty($routes)) {
+                $dummyRoutes = [
+                    ['route_name' => 'Main City Route', 'route_number' => 'RT-001', 'start_point' => 'City Center', 'end_point' => 'Railway Station', 'distance' => 15.5, 'fare' => 50],
+                    ['route_name' => 'Suburb Express', 'route_number' => 'RT-002', 'start_point' => 'Central Hub', 'end_point' => 'North Suburb', 'distance' => 22.3, 'fare' => 75],
+                    ['route_name' => 'Airport Shuttle', 'route_number' => 'RT-003', 'start_point' => 'Downtown', 'end_point' => 'Airport Terminal', 'distance' => 35.8, 'fare' => 150],
+                    ['route_name' => 'Local Feeder Route', 'route_number' => 'RT-004', 'start_point' => 'Market Square', 'end_point' => 'Bus Depot', 'distance' => 8.2, 'fare' => 30],
+                    ['route_name' => 'Industrial Zone', 'route_number' => 'RT-005', 'start_point' => 'City Center', 'end_point' => 'Industrial Estate', 'distance' => 18.5, 'fare' => 60],
+                ];
+                
+                foreach ($dummyRoutes as $route) {
+                    db()->query(
+                        "INSERT INTO routes (route_name, route_number, start_point, end_point, distance, fare, status, created_at, updated_at) 
+                         VALUES (?, ?, ?, ?, ?, ?, 'active', NOW(), NOW())",
+                        [$route['route_name'], $route['route_number'], $route['start_point'], $route['end_point'], $route['distance'], $route['fare']]
+                    );
+                }
+                
+                // Fetch routes again after creating dummy data
+                $routes = db()->fetchAll("SELECT * FROM routes ORDER BY created_at DESC");
+            }
+            
             $stats = ['total_routes' => count($routes)];
             $availableVehicles = db()->fetchAll("SELECT id, vehicle_number FROM vehicles WHERE status = 'active'");
             
