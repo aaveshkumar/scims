@@ -196,7 +196,16 @@ document.getElementById('paymentForm')?.addEventListener('submit', function(e) {
     color: #e9ecef !important;
 }
 
-[data-bs-theme="dark"] .table-light th {
+[data-bs-theme="dark"] .table-light th,
+[data-bs-theme="dark"] .table-light td {
+    background-color: #3a3f47 !important;
+    color: #e9ecef !important;
+}
+
+[data-bs-theme="dark"] tfoot.table-light,
+[data-bs-theme="dark"] tfoot.table-light tr,
+[data-bs-theme="dark"] tfoot.table-light th {
+    background-color: #3a3f47 !important;
     color: #e9ecef !important;
 }
 
