@@ -170,23 +170,88 @@ class HostelController
         $hostels = Hostel::getAll(['status' => 'active']);
         $stats = HostelResident::getStatistics();
         
-        $studentsWithoutHostel = db()->fetchAll(
-            "SELECT s.id, s.first_name, s.last_name, s.roll_number, s.class 
-             FROM students s 
-             LEFT JOIN hostel_residents r ON s.id = r.student_id AND r.status = 'active' 
-             WHERE r.id IS NULL 
-             ORDER BY s.first_name, s.last_name
-             LIMIT 100"
-        );
-        
         return view('hostel/residents', [
             'title' => 'Hostel Residents',
             'residents' => $residents,
             'hostels' => $hostels,
             'stats' => $stats,
-            'studentsWithoutHostel' => $studentsWithoutHostel,
             'filters' => $filters
         ]);
+    }
+    
+    public function createResident($request)
+    {
+        $hostels = Hostel::getAll(['status' => 'active']);
+        $studentsWithoutHostel = db()->fetchAll(
+            "SELECT s.id, u.first_name, u.last_name, s.roll_number
+             FROM students s 
+             JOIN users u ON s.user_id = u.id
+             LEFT JOIN hostel_residents r ON s.id = r.student_id AND r.status = 'active' 
+             WHERE r.id IS NULL 
+             ORDER BY u.first_name, u.last_name
+             LIMIT 100"
+        );
+        $availableRooms = HostelRoom::getAvailableRooms();
+        
+        return view('hostel/residents/create', [
+            'title' => 'Add Resident',
+            'hostels' => $hostels,
+            'studentsWithoutHostel' => $studentsWithoutHostel,
+            'availableRooms' => $availableRooms
+        ]);
+    }
+    
+    public function editResident($request, $id)
+    {
+        $resident = HostelResident::find($id);
+        if (!$resident) {
+            flash('error', 'Resident not found');
+            return redirect('/hostel/residents');
+        }
+        
+        $hostels = Hostel::getAll(['status' => 'active']);
+        $availableRooms = HostelRoom::getAvailableRooms();
+        
+        return view('hostel/residents/edit', [
+            'title' => 'Edit Resident',
+            'resident' => $resident,
+            'hostels' => $hostels,
+            'availableRooms' => $availableRooms
+        ]);
+    }
+    
+    public function updateResident($request, $id)
+    {
+        try {
+            $data = [
+                'hostel_id' => $request->post('hostel_id'),
+                'room_id' => $request->post('room_id'),
+                'admission_date' => $request->post('admission_date'),
+                'checkout_date' => $request->post('checkout_date'),
+                'guardian_contact' => $request->post('guardian_contact'),
+                'emergency_contact' => $request->post('emergency_contact'),
+                'status' => $request->post('status')
+            ];
+
+            HostelResident::update($id, $data);
+            flash('success', 'Resident updated successfully');
+            return redirect('/hostel/residents');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update resident: ' . $e->getMessage());
+            return back();
+        }
+    }
+    
+    public function deleteResident($request, $id)
+    {
+        try {
+            HostelResident::delete($id);
+            flash('success', 'Resident removed successfully');
+            return redirect('/hostel/residents');
+        } catch (Exception $e) {
+            flash('error', 'Failed to remove resident: ' . $e->getMessage());
+            return back();
+        }
     }
     
     public function storeResident($request)

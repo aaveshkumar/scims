@@ -6,10 +6,11 @@ class HostelResident
     
     public static function getAll($filters = [])
     {
-        $sql = "SELECT r.*, s.first_name, s.last_name, s.roll_number, s.class,
+        $sql = "SELECT r.*, u.first_name, u.last_name, s.roll_number,
                 h.name as hostel_name, hr.room_number
                 FROM hostel_residents r
                 JOIN students s ON r.student_id = s.id
+                JOIN users u ON s.user_id = u.id
                 JOIN hostels h ON r.hostel_id = h.id
                 JOIN hostel_rooms hr ON r.room_id = hr.id
                 WHERE 1=1";
@@ -26,24 +27,25 @@ class HostelResident
         }
         
         if (!empty($filters['search'])) {
-            $sql .= " AND (s.first_name LIKE ? OR s.last_name LIKE ? OR s.roll_number LIKE ?)";
+            $sql .= " AND (u.first_name LIKE ? OR u.last_name LIKE ? OR s.roll_number LIKE ?)";
             $search = "%{$filters['search']}%";
             $params[] = $search;
             $params[] = $search;
             $params[] = $search;
         }
         
-        $sql .= " ORDER BY h.name, hr.room_number, s.first_name, s.last_name";
+        $sql .= " ORDER BY h.name, hr.room_number, u.first_name, u.last_name";
         
         return db()->fetchAll($sql, $params);
     }
     
     public static function find($id)
     {
-        $sql = "SELECT r.*, s.first_name, s.last_name, s.roll_number, s.class, s.phone,
+        $sql = "SELECT r.*, u.first_name, u.last_name, s.roll_number,
                 h.name as hostel_name, hr.room_number, hr.room_type
                 FROM hostel_residents r
                 JOIN students s ON r.student_id = s.id
+                JOIN users u ON s.user_id = u.id
                 JOIN hostels h ON r.hostel_id = h.id
                 JOIN hostel_rooms hr ON r.room_id = hr.id
                 WHERE r.id = ?";
@@ -153,9 +155,14 @@ class HostelResident
     
     public static function getStatistics()
     {
-        return [
-            'total_residents' => db()->fetchOne("SELECT COUNT(*) as count FROM hostel_residents WHERE status = 'active'")['count'],
-            'students_without_hostel' => db()->fetchOne("SELECT COUNT(*) as count FROM students s LEFT JOIN hostel_residents r ON s.id = r.student_id AND r.status = 'active' WHERE r.id IS NULL")['count']
-        ];
+        $result = db()->fetchOne("
+            SELECT 
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active,
+                SUM(CASE WHEN status = 'inactive' THEN 1 ELSE 0 END) as inactive,
+                ROUND(AVG(EXTRACT(DAY FROM (COALESCE(checkout_date, CURRENT_DATE) - admission_date))))::INT as avg_stay
+            FROM hostel_residents
+        ");
+        return $result ?? ['total' => 0, 'active' => 0, 'inactive' => 0, 'avg_stay' => 0];
     }
 }
