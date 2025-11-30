@@ -620,11 +620,15 @@ class TransportController
             $result = db()->fetchOne("SELECT lastval() as id");
             $newUserId = $result['id'];
 
-            // Assign driver role
-            db()->query(
-                "INSERT INTO user_roles (user_id, role_id) VALUES (?, (SELECT id FROM roles WHERE name = 'driver'))",
-                [$newUserId]
-            );
+            // Get driver role ID
+            $driverRole = db()->fetchOne("SELECT id FROM roles WHERE name = 'driver'");
+            if ($driverRole) {
+                // Assign driver role
+                db()->query(
+                    "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)",
+                    [$newUserId, $driverRole['id']]
+                );
+            }
 
             // Store license info in staff table if needed
             if ($request->post('license_number')) {
