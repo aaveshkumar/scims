@@ -113,7 +113,7 @@
 
     <!-- Help Panel -->
     <div class="col-lg-4">
-        <div class="card bg-light">
+        <div class="card bg-light" style="background-color: inherit !important;">
             <div class="card-body">
                 <h6 class="card-title"><i class="bi bi-info-circle me-2"></i>Resident Information</h6>
                 <ul class="small text-muted">
@@ -126,6 +126,18 @@
             </div>
         </div>
     </div>
+    
+    <style>
+        html[data-bs-theme="dark"] .bg-light {
+            background-color: #1e1e1e !important;
+            border-color: #333 !important;
+        }
+        
+        html[data-bs-theme="dark"] .card {
+            background-color: #2d2d2d !important;
+            border-color: #444 !important;
+        }
+    </style>
 </div>
 
 <script>
