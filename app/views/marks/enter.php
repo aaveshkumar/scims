@@ -95,82 +95,110 @@
 
 <?php if (!empty($subjects)): ?>
 <script>
-document.getElementById('marksForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+    const marksForm = document.getElementById('marksForm');
     
-    const formData = new FormData(this);
-    const csrfToken = formData.get('_token');
-    const data = {
-        exam_id: formData.get('exam_id'),
-        student_id: formData.get('student_id'),
-        _token: csrfToken,
-        marks: {}
-    };
+    if (!marksForm) {
+        console.error('Marks form not found!');
+        return;
+    }
+    
+    marksForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const csrfToken = formData.get('_token');
+        const data = {
+            exam_id: formData.get('exam_id'),
+            student_id: formData.get('student_id'),
+            _token: csrfToken,
+            marks: {}
+        };
 
-    formData.forEach((value, key) => {
-        const match = key.match(/marks\[(\d+)\]\[(.+)\]/);
-        if (match) {
-            const subjectId = match[1];
-            const field = match[2];
-            if (!data.marks[subjectId]) {
-                data.marks[subjectId] = {};
+        // Parse marks from form data
+        formData.forEach((value, key) => {
+            const match = key.match(/marks\[(\d+)\]\[(.+)\]/);
+            if (match) {
+                const subjectId = match[1];
+                const field = match[2];
+                if (!data.marks[subjectId]) {
+                    data.marks[subjectId] = {};
+                }
+                data.marks[subjectId][field] = value;
             }
-            data.marks[subjectId][field] = value;
-        }
-    });
+        });
 
-    // Show loading state
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Saving...';
+        // Check if any marks were entered
+        const hasMarks = Object.keys(data.marks).length > 0;
+        if (!hasMarks) {
+            showError('Please enter marks for at least one subject');
+            return;
+        }
 
-    fetch('/marks/store', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': csrfToken
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        // Show loading state
+        const submitBtn = document.querySelector('#marksForm button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Saving...';
         }
-        return response.json();
-    })
-    .then(result => {
-        if (result.success) {
-            // Show success message
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-success alert-dismissible fade show';
-            alert.innerHTML = `
-                <i class="bi bi-check-circle me-2"></i>
-                <strong>Success!</strong> Marks saved successfully!
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            document.body.insertBefore(alert, document.body.firstChild);
-            
-            // Redirect after 1.5 seconds
-            setTimeout(() => {
-                window.location.href = '/marks?exam_id=<?= $exam['id'] ?>';
-            }, 1500);
-        } else {
-            showError(result.message || 'Failed to save marks');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showError('An error occurred while saving marks: ' + error.message);
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
+
+        console.log('Sending marks data:', data);
+
+        fetch('/marks/store', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log('Result:', result);
+            if (result.success) {
+                // Show success message
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-success alert-dismissible fade show mt-3';
+                alert.innerHTML = `
+                    <i class="bi bi-check-circle me-2"></i>
+                    <strong>Success!</strong> Marks saved successfully!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.insertBefore(alert, document.body.firstChild);
+                
+                // Redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '/marks?exam_id=<?= $exam['id'] ?>';
+                }, 2000);
+            } else {
+                showError(result.message || 'Failed to save marks');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-save me-2"></i>Save Marks';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            showError('An error occurred: ' + error.message);
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-save me-2"></i>Save Marks';
+            }
+        });
     });
 });
 
 function showError(message) {
     const alert = document.createElement('div');
-    alert.className = 'alert alert-danger alert-dismissible fade show';
+    alert.className = 'alert alert-danger alert-dismissible fade show mt-3';
     alert.innerHTML = `
         <i class="bi bi-exclamation-triangle me-2"></i>
         <strong>Error!</strong> ${message}
