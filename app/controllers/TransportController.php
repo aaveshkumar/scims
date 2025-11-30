@@ -397,43 +397,6 @@ class TransportController
             return back();
         }
     }
-    
-    /**
-     * Update route
-     */
-    public function updateRoute($request, $id)
-    {
-        $rules = [
-            'route_name' => 'required',
-            'route_number' => 'required'
-        ];
-
-        if (!validate($request->post(), $rules)) {
-            flash('error', 'Please fill all required fields');
-            return back();
-        }
-
-        try {
-            $data = [
-                'route_name' => $request->post('route_name'),
-                'route_number' => $request->post('route_number'),
-                'start_point' => $request->post('start_point'),
-                'end_point' => $request->post('end_point'),
-                'distance' => $request->post('distance'),
-                'fare' => $request->post('fare'),
-                'vehicle_id' => $request->post('vehicle_id'),
-                'driver_id' => $request->post('driver_id'),
-                'status' => $request->post('status')
-            ];
-
-            Route::update($id, $data);
-            flash('success', 'Route updated successfully');
-            return redirect('/transport/routes');
-        } catch (Exception $e) {
-            flash('error', 'Failed to update route: ' . $e->getMessage());
-            return back();
-        }
-    }
 
     /**
      * Show route assignments
