@@ -49,6 +49,9 @@ class PayrollController
         }
 
         try {
+            $authUser = auth();
+            $userId = isset($authUser['id']) ? $authUser['id'] : 1;
+            
             $data = [
                 'staff_id' => $request->post('staff_id'),
                 'month' => $request->post('month'),
@@ -60,7 +63,7 @@ class PayrollController
                 'payment_method' => $request->post('payment_method'),
                 'status' => 'pending',
                 'remarks' => $request->post('remarks'),
-                'created_by' => auth()->user()['id']
+                'created_by' => $userId
             ];
 
             Payroll::create($data);
