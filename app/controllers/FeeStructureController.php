@@ -42,6 +42,7 @@ class FeeStructureController
     {
         $rules = [
             'name' => 'required',
+            'fee_type' => 'required',
             'academic_year' => 'required',
             'amount' => 'required|numeric'
         ];
@@ -54,16 +55,19 @@ class FeeStructureController
         try {
             $data = [
                 'name' => $request->post('name'),
-                'class_id' => $request->post('class_id'),
+                'class_id' => $request->post('class_id') ?: null,
+                'course_id' => null,
                 'academic_year' => $request->post('academic_year'),
-                'amount' => $request->post('amount'),
-                'due_date' => $request->post('due_date'),
-                'fine_per_day' => $request->post('fine_per_day') ?? 0,
-                'description' => $request->post('description'),
-                'status' => 'active'
+                'semester' => $request->post('semester') ?: null,
+                'fee_type' => $request->post('fee_type'),
+                'amount' => (float) $request->post('amount'),
+                'due_date' => $request->post('due_date') ?: null,
+                'status' => $request->post('status') ? 'active' : 'inactive'
             ];
 
-            FeeTemplate::create($data);
+            $feeStructure = new FeeStructure();
+            $feeStructure->create($data);
+            
             flash('success', 'Fee structure created successfully');
             return redirect('/fee-structure');
         } catch (Exception $e) {
