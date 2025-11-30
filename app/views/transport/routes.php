@@ -6,11 +6,26 @@
         <a href="/transport/routes/create" class="btn btn-primary me-2">
             <i class="bi bi-plus-circle me-2"></i>Add Route
         </a>
-        <a href="/transport/vehicles" class="btn btn-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Back
-        </a>
     </div>
 </div>
+
+<ul class="nav nav-tabs mb-4" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" href="/transport/vehicles">
+            <i class="bi bi-truck me-2"></i>Vehicles
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" href="/transport/drivers">
+            <i class="bi bi-people me-2"></i>Drivers
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" href="/transport/routes">
+            <i class="bi bi-geo-alt me-2"></i>Routes
+        </a>
+    </li>
+</ul>
 
 <div class="row mb-4">
     <div class="col-md-3">

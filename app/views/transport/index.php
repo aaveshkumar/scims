@@ -1,11 +1,29 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-truck me-2"></i>Vehicle Management</h2>
+    <h2><i class="bi bi-truck me-2"></i>Transport Management</h2>
     <a href="/transport/create" class="btn btn-primary">
         <i class="bi bi-plus-circle me-2"></i>Add New Vehicle
     </a>
 </div>
+
+<ul class="nav nav-tabs mb-4" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" href="/transport/vehicles">
+            <i class="bi bi-truck me-2"></i>Vehicles
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" href="/transport/drivers">
+            <i class="bi bi-people me-2"></i>Drivers
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" href="/transport/routes">
+            <i class="bi bi-geo-alt me-2"></i>Routes
+        </a>
+    </li>
+</ul>
 
 <div class="row mb-4">
     <div class="col-md-3">
