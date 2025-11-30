@@ -14,44 +14,31 @@
     </div>
 </div>
 
-<!-- Class Selection Card -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">Select Class</h5>
-        <small class="text-muted d-block mt-1">Choose a class to view and manage marks</small>
-    </div>
-    <div class="card-body">
-        <?php if (empty($classes)): ?>
-            <div class="alert alert-warning" role="alert">
-                <i class="bi bi-exclamation-triangle me-2"></i>
-                No classes found
-            </div>
-        <?php else: ?>
-            <div class="row">
-                <?php foreach ($classes as $class): ?>
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <a href="/marks?exam_id=<?= $exam['id'] ?>&class_id=<?= $class['id'] ?>" 
-                           class="card text-decoration-none h-100 <?= ($selectedClassId == $class['id']) ? 'border-primary shadow' : 'border-light' ?>"
-                           style="cursor: pointer; transition: all 0.3s ease;">
-                            <div class="card-body text-center">
-                                <h6 class="card-title mb-2"><?= htmlspecialchars($class['name']) ?></h6>
-                                <div class="display-6 text-primary mb-2"><?= (int)$class['student_count'] ?></div>
-                                <small class="text-muted">Students</small>
-                                <?php if ($selectedClassId == $class['id']): ?>
-                                    <div class="mt-3">
-                                        <span class="badge bg-primary">
-                                            <i class="bi bi-check-circle me-1"></i>Selected
-                                        </span>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </a>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+<!-- Class Selection Dropdown -->
+<div class="mb-4">
+    <label class="form-label fw-bold">
+        <i class="bi bi-building me-2"></i>Select Class
+    </label>
+    <div class="input-group">
+        <select class="form-select form-select-lg" id="classSelect" onchange="selectClass()">
+            <option value="">-- Choose a Class --</option>
+            <?php foreach ($classes as $class): ?>
+                <option value="<?= $class['id'] ?>" <?= ($selectedClassId == $class['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($class['name']) ?> (<?= (int)$class['student_count'] ?> students)
+                </option>
+            <?php endforeach; ?>
+        </select>
     </div>
 </div>
+
+<script>
+function selectClass() {
+    const classId = document.getElementById('classSelect').value;
+    if (classId) {
+        window.location.href = '/marks?exam_id=<?= $exam['id'] ?>&class_id=' + classId;
+    }
+}
+</script>
 
 <!-- Students List Card -->
 <?php if ($selectedClassId): ?>
