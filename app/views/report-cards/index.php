@@ -8,18 +8,18 @@
 </div>
 
 <!-- Filter Section -->
-<div class="card mb-4" style="position: relative; z-index: 10; overflow: visible;">
+<div class="card mb-4 filter-card">
     <div class="card-header">
         <h5 class="mb-0">Generate Report Cards</h5>
     </div>
-    <div class="card-body" style="overflow: visible;">
+    <div class="card-body">
         <form method="get" action="/report-cards" id="filterForm">
-            <div class="row mb-3" style="overflow: visible;">
-                <div class="col-md-5" style="position: relative; z-index: 100; overflow: visible;">
+            <div class="row g-3">
+                <div class="col-lg-5">
                     <label class="form-label fw-bold">
                         <i class="bi bi-building me-2"></i>Select Class
                     </label>
-                    <select class="form-select form-select-lg" name="class_id" id="classSelect" onchange="submitFormWithLoader()" style="position: relative; z-index: 1002;">
+                    <select class="form-select form-select-lg dropdown-select" name="class_id" id="classSelect" onchange="submitFormWithLoader()">
                         <option value="">-- Choose a Class --</option>
                         <?php foreach ($classes as $class): ?>
                             <option value="<?= $class['id'] ?>" <?= ($selectedClassId == $class['id']) ? 'selected' : '' ?>>
@@ -28,11 +28,11 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-md-5" style="position: relative; z-index: 101; overflow: visible;">
+                <div class="col-lg-5">
                     <label class="form-label fw-bold">
                         <i class="bi bi-pencil-square me-2"></i>Select Exam
                     </label>
-                    <select class="form-select form-select-lg" name="exam_id" id="examSelect" onchange="submitFormWithLoader()" <?= !$selectedClassId ? 'disabled' : '' ?> style="position: relative; z-index: 1003;">
+                    <select class="form-select form-select-lg dropdown-select" name="exam_id" id="examSelect" onchange="submitFormWithLoader()" <?= !$selectedClassId ? 'disabled' : '' ?>>
                         <option value="">-- Choose an Exam --</option>
                         <?php foreach ($exams as $exam): ?>
                             <option value="<?= $exam['id'] ?>" <?= ($selectedExamId == $exam['id']) ? 'selected' : '' ?>>
@@ -41,7 +41,7 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-md-2 d-flex align-items-end" style="position: relative; z-index: 50;">
+                <div class="col-lg-2 d-flex align-items-end">
                     <?php if ($selectedClassId && $selectedExamId): ?>
                         <a href="/report-cards" class="btn btn-secondary btn-sm w-100">
                             <i class="bi bi-x-circle me-1"></i>Clear
@@ -232,35 +232,26 @@ function downloadAll() {
     animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Ensure dropdowns are always on top */
-.form-select {
-    position: relative !important;
+/* Filter card styling */
+.filter-card {
+    overflow: visible;
 }
 
-.form-select:focus {
-    outline: none;
+.filter-card .card-body {
+    overflow: visible;
+}
+
+/* Dropdown select styling */
+.dropdown-select {
+    cursor: pointer;
+}
+
+.dropdown-select:focus {
+    border-color: #0d6efd;
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-/* Remove overflow from parent containers */
-.card-body {
-    overflow: visible !important;
-}
-
-.row {
-    overflow: visible !important;
-}
-
-.col-md-5 {
-    overflow: visible !important;
-}
-
-/* Dropdown list should be above everything */
-select {
-    z-index: 1000 !important;
-}
-
-select:disabled {
+.dropdown-select:disabled {
     background-color: #e9ecef;
     cursor: not-allowed;
 }
