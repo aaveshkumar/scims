@@ -195,7 +195,15 @@ function submitFormWithLoader() {
 }
 
 function printAll() {
-    alert('Print functionality for bulk report cards coming soon!');
+    const classId = <?= $selectedClassId ?>;
+    const examId = <?= $selectedExamId ?>;
+    
+    if (!classId || !examId) {
+        alert('Please select both class and exam first');
+        return;
+    }
+    
+    window.location.href = '/report-cards/print-all/' + classId + '/' + examId;
 }
 
 function downloadAll() {

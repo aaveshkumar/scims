@@ -60,4 +60,59 @@ class ReportCardController
             'selectedExamId' => $examId
         ]);
     }
+
+    public function printAll($request, $classId, $examId)
+    {
+        $class = db()->fetchOne("SELECT * FROM classes WHERE id = ?", [$classId]);
+        $exam = db()->fetchOne("SELECT * FROM exams WHERE id = ?", [$examId]);
+
+        if (!$class || !$exam) {
+            flash('error', 'Class or exam not found');
+            return redirect('/report-cards');
+        }
+
+        // Fetch all students with their marks and report card data
+        $students = db()->fetchAll(
+            "SELECT 
+                s.id as student_id,
+                s.admission_number,
+                u.first_name,
+                u.last_name,
+                c.name as class_name
+             FROM students s
+             INNER JOIN users u ON s.user_id = u.id
+             LEFT JOIN classes c ON s.class_id = c.id
+             WHERE s.status = 'active' AND s.class_id = ?
+             ORDER BY u.last_name, u.first_name",
+            [$classId]
+        );
+
+        // Fetch marks for all students in this exam
+        $allMarks = db()->fetchAll(
+            "SELECT m.*, s.name as subject_name
+             FROM marks m
+             INNER JOIN subjects s ON m.subject_id = s.id
+             WHERE m.exam_id = ? AND m.student_id IN (
+                SELECT s.id FROM students s WHERE s.class_id = ? AND s.status = 'active'
+             )
+             ORDER BY m.student_id, s.name",
+            [$examId, $classId]
+        );
+
+        // Group marks by student
+        $marksByStudent = [];
+        foreach ($allMarks as $mark) {
+            if (!isset($marksByStudent[$mark['student_id']])) {
+                $marksByStudent[$mark['student_id']] = [];
+            }
+            $marksByStudent[$mark['student_id']][] = $mark;
+        }
+
+        return view('report-cards/print-all', [
+            'class' => $class,
+            'exam' => $exam,
+            'students' => $students,
+            'marksByStudent' => $marksByStudent
+        ]);
+    }
 }

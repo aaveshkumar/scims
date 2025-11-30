@@ -307,6 +307,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         
         
         $router->get('/report-cards', 'ReportCardController@index');
+        $router->get('/report-cards/print-all/{classId}/{examId}', 'ReportCardController@printAll');
         
         $router->get('/fees', function() {
             return view('placeholder', ['title' => 'Fee Structure', 'module' => 'Fee Structure Management']);
