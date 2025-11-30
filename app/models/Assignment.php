@@ -7,11 +7,11 @@ class Assignment
     public static function getAll($filters = [])
     {
         $sql = "SELECT a.*, s.name as subject_name, c.name as class_name,
-                t.name as teacher_name
+                CONCAT(u.first_name, ' ', u.last_name) as teacher_name
                 FROM assignments a
                 JOIN subjects s ON a.subject_id = s.id
                 JOIN classes c ON a.class_id = c.id
-                JOIN users t ON a.teacher_id = t.id
+                JOIN users u ON a.teacher_id = u.id
                 WHERE 1=1";
         $params = [];
         
@@ -38,11 +38,11 @@ class Assignment
     public static function find($id)
     {
         $sql = "SELECT a.*, s.name as subject_name, c.name as class_name,
-                t.name as teacher_name
+                CONCAT(u.first_name, ' ', u.last_name) as teacher_name
                 FROM assignments a
                 JOIN subjects s ON a.subject_id = s.id
                 JOIN classes c ON a.class_id = c.id
-                JOIN users t ON a.teacher_id = t.id
+                JOIN users u ON a.teacher_id = u.id
                 WHERE a.id = ?";
         
         return db()->fetchOne($sql, [$id]);

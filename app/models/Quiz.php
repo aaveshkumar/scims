@@ -7,11 +7,11 @@ class Quiz
     public static function getAll($filters = [])
     {
         $sql = "SELECT q.*, s.name as subject_name, c.name as class_name,
-                t.name as teacher_name
+                CONCAT(u.first_name, ' ', u.last_name) as teacher_name
                 FROM quizzes q
                 JOIN subjects s ON q.subject_id = s.id
                 JOIN classes c ON q.class_id = c.id
-                JOIN users t ON q.teacher_id = t.id
+                JOIN users u ON q.teacher_id = u.id
                 WHERE 1=1";
         $params = [];
         
@@ -38,11 +38,11 @@ class Quiz
     public static function find($id)
     {
         $sql = "SELECT q.*, s.name as subject_name, c.name as class_name,
-                t.name as teacher_name
+                CONCAT(u.first_name, ' ', u.last_name) as teacher_name
                 FROM quizzes q
                 JOIN subjects s ON q.subject_id = s.id
                 JOIN classes c ON q.class_id = c.id
-                JOIN users t ON q.teacher_id = t.id
+                JOIN users u ON q.teacher_id = u.id
                 WHERE q.id = ?";
         
         return db()->fetchOne($sql, [$id]);
