@@ -18,6 +18,7 @@ class MarkController
     public function index($request)
     {
         $examId = $request->get('exam_id');
+        $classId = $request->get('class_id');
         
         if (!$examId) {
             $exams = db()->fetchAll(
@@ -36,27 +37,43 @@ class MarkController
             return redirect('/marks');
         }
 
-        // Get all students with their mark counts and average marks
-        $students = db()->fetchAll(
+        // Get all classes with student count
+        $classes = db()->fetchAll(
             "SELECT DISTINCT 
-                s.id,
-                s.admission_number,
-                u.first_name,
-                u.last_name,
-                c.name as class_name,
-                COUNT(DISTINCT m.id) as marks_count,
-                ROUND(AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100), 2) as avg_percentage
-             FROM students s
-             INNER JOIN users u ON s.user_id = u.id
-             LEFT JOIN classes c ON s.class_id = c.id
-             LEFT JOIN marks m ON m.student_id = s.id AND m.exam_id = ?
-             WHERE s.status = 'active'
-             GROUP BY s.id, s.admission_number, u.first_name, u.last_name, c.name
-             ORDER BY u.last_name, u.first_name",
-            [$examId]
+                c.id,
+                c.name,
+                COUNT(DISTINCT s.id) as student_count
+             FROM classes c
+             LEFT JOIN students s ON c.id = s.class_id AND s.status = 'active'
+             GROUP BY c.id, c.name
+             ORDER BY c.name"
         );
 
-        return view('marks.index', ['exam' => $exam, 'students' => $students]);
+        $students = [];
+        
+        // If a class is selected, get students from that class
+        if ($classId) {
+            $students = db()->fetchAll(
+                "SELECT DISTINCT 
+                    s.id,
+                    s.admission_number,
+                    u.first_name,
+                    u.last_name,
+                    c.name as class_name,
+                    COUNT(DISTINCT m.id) as marks_count,
+                    ROUND(AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100), 2) as avg_percentage
+                 FROM students s
+                 INNER JOIN users u ON s.user_id = u.id
+                 LEFT JOIN classes c ON s.class_id = c.id
+                 LEFT JOIN marks m ON m.student_id = s.id AND m.exam_id = ?
+                 WHERE s.status = 'active' AND s.class_id = ?
+                 GROUP BY s.id, s.admission_number, u.first_name, u.last_name, c.name
+                 ORDER BY u.last_name, u.first_name",
+                [$examId, $classId]
+            );
+        }
+
+        return view('marks.index', ['exam' => $exam, 'classes' => $classes, 'students' => $students, 'selectedClassId' => $classId]);
     }
 
     public function enter($request)

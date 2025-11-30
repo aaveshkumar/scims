@@ -8,15 +8,53 @@
         <?php endif; ?>
     </div>
     <div>
-        <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#selectStudentModal">
-            <i class="bi bi-pencil-square me-2"></i>Enter Marks
-        </button>
         <a href="/marks" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-2"></i>Back
         </a>
     </div>
 </div>
 
+<!-- Class Selection Card -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Select Class</h5>
+        <small class="text-muted d-block mt-1">Choose a class to view and manage marks</small>
+    </div>
+    <div class="card-body">
+        <?php if (empty($classes)): ?>
+            <div class="alert alert-warning" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                No classes found
+            </div>
+        <?php else: ?>
+            <div class="row">
+                <?php foreach ($classes as $class): ?>
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <a href="/marks?exam_id=<?= $exam['id'] ?>&class_id=<?= $class['id'] ?>" 
+                           class="card text-decoration-none h-100 <?= ($selectedClassId == $class['id']) ? 'border-primary shadow' : 'border-light' ?>"
+                           style="cursor: pointer; transition: all 0.3s ease;">
+                            <div class="card-body text-center">
+                                <h6 class="card-title mb-2"><?= htmlspecialchars($class['name']) ?></h6>
+                                <div class="display-6 text-primary mb-2"><?= (int)$class['student_count'] ?></div>
+                                <small class="text-muted">Students</small>
+                                <?php if ($selectedClassId == $class['id']): ?>
+                                    <div class="mt-3">
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-check-circle me-1"></i>Selected
+                                        </span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- Students List Card -->
+<?php if ($selectedClassId): ?>
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">Student Marks Status</h5>
@@ -39,7 +77,7 @@
                 <tbody>
                     <?php if (empty($students)): ?>
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">No active students found</td>
+                            <td colspan="7" class="text-center py-4 text-muted">No students in this class</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($students as $student): ?>
@@ -88,6 +126,7 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <!-- Select Student Modal -->
 <div class="modal fade" id="selectStudentModal" tabindex="-1">
