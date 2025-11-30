@@ -166,55 +166,89 @@ document.getElementById('paymentForm')?.addEventListener('submit', function(e) {
     .card { border: none !important; box-shadow: none !important; }
 }
 
-/* Dark mode text color fixes */
-[data-bs-theme="dark"] .bg-light {
-    background-color: #f8f9fa !important;
-    color: #000 !important;
+/* Dark mode fixes */
+[data-bs-theme="dark"] .card-body h4,
+[data-bs-theme="dark"] .card-body h5,
+[data-bs-theme="dark"] .card-body h6 {
+    color: #e9ecef;
 }
 
-[data-bs-theme="dark"] .bg-light,
-[data-bs-theme="dark"] .bg-light * {
-    color: #000 !important;
+[data-bs-theme="dark"] .card-body p,
+[data-bs-theme="dark"] .card-body strong {
+    color: #e9ecef;
+}
+
+[data-bs-theme="dark"] .table {
+    color: #e9ecef;
+}
+
+[data-bs-theme="dark"] .table-bordered {
+    border-color: #495057;
+}
+
+[data-bs-theme="dark"] .table-bordered th,
+[data-bs-theme="dark"] .table-bordered td {
+    border-color: #495057;
 }
 
 [data-bs-theme="dark"] .table-light {
-    background-color: #f8f9fa !important;
-    color: #000 !important;
+    background-color: #3a3f47 !important;
+    color: #e9ecef !important;
 }
 
-[data-bs-theme="dark"] .table-light th,
-[data-bs-theme="dark"] .table-light td {
-    color: #000 !important;
+[data-bs-theme="dark"] .table-light th {
+    color: #e9ecef !important;
 }
 
-[data-bs-theme="dark"] .card {
-    color: inherit;
+/* Payment form card styling */
+[data-bs-theme="dark"] .card.bg-light {
+    background-color: #3a3f47 !important;
+    color: #e9ecef !important;
 }
 
-[data-bs-theme="dark"] .card-body h4,
-[data-bs-theme="dark"] .card-body h5,
-[data-bs-theme="dark"] .card-body h6,
-[data-bs-theme="dark"] .card-body p,
-[data-bs-theme="dark"] .card-body label,
-[data-bs-theme="dark"] .card-body strong {
-    color: #e0e0e0;
+[data-bs-theme="dark"] .card.bg-light .form-label {
+    color: #e9ecef;
 }
 
-[data-bs-theme="dark"] .bg-light .form-label,
-[data-bs-theme="dark"] .bg-light .form-control {
-    color: #000 !important;
-    background-color: #fff !important;
-}
-
-[data-bs-theme="dark"] .bg-light .form-select {
-    background-color: #fff !important;
-    color: #000 !important;
-}
-
-[data-bs-theme="dark"] .table tbody td,
-[data-bs-theme="dark"] .table tbody th {
-    color: #e0e0e0;
+[data-bs-theme="dark"] .card.bg-light .form-control,
+[data-bs-theme="dark"] .card.bg-light .form-select {
+    background-color: #2d3238;
+    color: #e9ecef;
     border-color: #495057;
+}
+
+[data-bs-theme="dark"] .card.bg-light .form-control:focus,
+[data-bs-theme="dark"] .card.bg-light .form-select:focus {
+    background-color: #2d3238;
+    color: #e9ecef;
+    border-color: #5a8dee;
+    box-shadow: 0 0 0 0.25rem rgba(90, 141, 238, 0.25);
+}
+
+[data-bs-theme="dark"] .card.bg-light .form-control::placeholder {
+    color: #a8b1bd;
+}
+
+/* Badge styling */
+[data-bs-theme="dark"] .badge {
+    color: #fff;
+}
+
+/* Text classes */
+[data-bs-theme="dark"] .text-muted {
+    color: #a8b1bd !important;
+}
+
+[data-bs-theme="dark"] .text-success {
+    color: #28c76f !important;
+}
+
+[data-bs-theme="dark"] .text-danger {
+    color: #ea5455 !important;
+}
+
+[data-bs-theme="dark"] .text-end {
+    color: inherit;
 }
 </style>
 
