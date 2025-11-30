@@ -290,6 +290,15 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/hr/events/{id}/edit', 'HrController@editEvent', ['csrf']);
         $router->post('/hr/events/{id}/delete', 'HrController@deleteEvent', ['csrf']);
         
+        // Recruitment routes MUST come before /hr/{id} to prevent matching conflict
+        $router->get('/hr/recruitment', 'HrController@recruitment');
+        $router->get('/hr/recruitment/create', 'HrController@createPosition');
+        $router->post('/hr/recruitment/create', 'HrController@createPosition', ['csrf']);
+        $router->get('/hr/recruitment/{id}', 'HrController@showPosition');
+        $router->get('/hr/recruitment/{id}/edit', 'HrController@editPosition');
+        $router->post('/hr/recruitment/{id}/edit', 'HrController@editPosition', ['csrf']);
+        $router->post('/hr/recruitment/{id}/delete', 'HrController@deletePosition', ['csrf']);
+        
         // Discussion Forums
         $router->get('/forums', 'ForumController@index');
         $router->get('/forums/create', 'ForumController@create');

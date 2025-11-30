@@ -86,4 +86,91 @@ class HrController
         flash('success', 'HR Event deleted successfully');
         return redirect('/hr/events');
     }
+
+    public function recruitment($request)
+    {
+        $positions = db()->fetchAll("SELECT rp.*, CONCAT(u.first_name, ' ', u.last_name) as created_by_name FROM recruitment_positions rp LEFT JOIN users u ON rp.created_by = u.id ORDER BY rp.created_at DESC");
+        
+        return view('hr/recruitment', [
+            'title' => 'Recruitment Positions',
+            'positions' => $positions
+        ]);
+    }
+
+    public function createPosition($request)
+    {
+        if ($request->method() === 'POST') {
+            $authUser = auth();
+            $sql = "INSERT INTO recruitment_positions (title, department, description, requirements, number_of_positions, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+            
+            db()->execute($sql, [
+                $request->post('title'),
+                $request->post('department'),
+                $request->post('description'),
+                $request->post('requirements'),
+                $request->post('number_of_positions') ?? 1,
+                $request->post('status') ?? 'open',
+                isset($authUser['id']) ? $authUser['id'] : 1
+            ]);
+            
+            flash('success', 'Position created successfully');
+            return redirect('/hr/recruitment');
+        }
+        
+        return view('hr/create-position', ['title' => 'Create - Recruitment Position']);
+    }
+
+    public function showPosition($request, $id)
+    {
+        $position = db()->fetchOne("SELECT rp.*, CONCAT(u.first_name, ' ', u.last_name) as created_by_name FROM recruitment_positions rp LEFT JOIN users u ON rp.created_by = u.id WHERE rp.id = ?", [$id]);
+        
+        if (!$position) {
+            flash('error', 'Position not found');
+            return redirect('/hr/recruitment');
+        }
+        
+        return view('hr/show-position', [
+            'title' => 'View - Recruitment Position',
+            'position' => $position
+        ]);
+    }
+
+    public function editPosition($request, $id)
+    {
+        $position = db()->fetchOne("SELECT * FROM recruitment_positions WHERE id = ?", [$id]);
+        
+        if (!$position) {
+            flash('error', 'Position not found');
+            return redirect('/hr/recruitment');
+        }
+        
+        if ($request->method() === 'POST') {
+            $sql = "UPDATE recruitment_positions SET title = ?, department = ?, description = ?, requirements = ?, number_of_positions = ?, status = ?, updated_at = NOW() WHERE id = ?";
+            
+            db()->execute($sql, [
+                $request->post('title'),
+                $request->post('department'),
+                $request->post('description'),
+                $request->post('requirements'),
+                $request->post('number_of_positions'),
+                $request->post('status'),
+                $id
+            ]);
+            
+            flash('success', 'Position updated successfully');
+            return redirect('/hr/recruitment');
+        }
+        
+        return view('hr/edit-position', [
+            'title' => 'Edit - Recruitment Position',
+            'position' => $position
+        ]);
+    }
+
+    public function deletePosition($request, $id)
+    {
+        db()->execute("DELETE FROM recruitment_positions WHERE id = ?", [$id]);
+        flash('success', 'Position deleted successfully');
+        return redirect('/hr/recruitment');
+    }
 }
