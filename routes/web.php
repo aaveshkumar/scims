@@ -348,8 +348,15 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/transport/vehicles/{id}', 'TransportController@update', ['csrf']);
         $router->post('/transport/vehicles/{id}/delete', 'TransportController@destroy', ['csrf']);
         
+        // Additional routes/assignments MUST come before /transport/{id}
         $router->get('/transport/routes', 'TransportController@routes');
         $router->get('/transport/assignments', 'TransportController@assignments');
+        
+        // Generic transport/{id} route for backward compatibility
+        $router->get('/transport/{id}', 'TransportController@show');
+        $router->get('/transport/{id}/edit', 'TransportController@edit');
+        $router->post('/transport/{id}', 'TransportController@update', ['csrf']);
+        $router->post('/transport/{id}/delete', 'TransportController@destroy', ['csrf']);
         
         // Hostel Management
         $router->get('/hostel', function() { return redirect('/hostel/rooms'); });
