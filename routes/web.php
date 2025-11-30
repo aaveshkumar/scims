@@ -95,6 +95,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/calendar/holidays', 'CalendarController@holidays');
         $router->get('/calendar/holidays/create', 'CalendarController@createHoliday');
         $router->post('/calendar/holidays/create', 'CalendarController@createHoliday', ['csrf']);
+        $router->get('/calendar/holidays/{id}', 'CalendarController@showHoliday');
         $router->get('/calendar/holidays/{id}/edit', 'CalendarController@editHoliday');
         $router->post('/calendar/holidays/{id}/edit', 'CalendarController@editHoliday', ['csrf']);
         $router->post('/calendar/holidays/{id}/delete', 'CalendarController@deleteHoliday', ['csrf']);

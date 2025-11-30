@@ -90,4 +90,91 @@ class CalendarController
         flash('success', 'Event deleted successfully');
         return redirect('/calendar');
     }
+
+    public function holidays($request)
+    {
+        $holidays = db()->fetchAll("SELECT h.*, CONCAT(u.first_name, ' ', u.last_name) as creator_name FROM holidays h LEFT JOIN users u ON h.created_by = u.id ORDER BY h.start_date DESC");
+        
+        return view('calendar/holidays', [
+            'title' => 'Holidays',
+            'holidays' => $holidays
+        ]);
+    }
+
+    public function createHoliday($request)
+    {
+        if ($request->method() === 'POST') {
+            $authUser = auth();
+            $sql = "INSERT INTO holidays (name, description, start_date, end_date, holiday_type, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+            
+            db()->execute($sql, [
+                $request->post('name'),
+                $request->post('description'),
+                $request->post('start_date'),
+                $request->post('end_date'),
+                $request->post('holiday_type') ?? 'holiday',
+                $request->post('status') ?? 'active',
+                isset($authUser['id']) ? $authUser['id'] : 1
+            ]);
+            
+            flash('success', 'Holiday created successfully');
+            return redirect('/calendar/holidays');
+        }
+        
+        return view('calendar/create-holiday', ['title' => 'Create - Holiday']);
+    }
+
+    public function showHoliday($request, $id)
+    {
+        $holiday = db()->fetchOne("SELECT h.*, CONCAT(u.first_name, ' ', u.last_name) as creator_name FROM holidays h LEFT JOIN users u ON h.created_by = u.id WHERE h.id = ?", [$id]);
+        
+        if (!$holiday) {
+            flash('error', 'Holiday not found');
+            return redirect('/calendar/holidays');
+        }
+        
+        return view('calendar/show-holiday', [
+            'title' => 'View - Holiday',
+            'holiday' => $holiday
+        ]);
+    }
+
+    public function editHoliday($request, $id)
+    {
+        $holiday = db()->fetchOne("SELECT * FROM holidays WHERE id = ?", [$id]);
+        
+        if (!$holiday) {
+            flash('error', 'Holiday not found');
+            return redirect('/calendar/holidays');
+        }
+        
+        if ($request->method() === 'POST') {
+            $sql = "UPDATE holidays SET name = ?, description = ?, start_date = ?, end_date = ?, holiday_type = ?, status = ?, updated_at = NOW() WHERE id = ?";
+            
+            db()->execute($sql, [
+                $request->post('name'),
+                $request->post('description'),
+                $request->post('start_date'),
+                $request->post('end_date'),
+                $request->post('holiday_type'),
+                $request->post('status'),
+                $id
+            ]);
+            
+            flash('success', 'Holiday updated successfully');
+            return redirect('/calendar/holidays');
+        }
+        
+        return view('calendar/edit-holiday', [
+            'title' => 'Edit - Holiday',
+            'holiday' => $holiday
+        ]);
+    }
+
+    public function deleteHoliday($request, $id)
+    {
+        db()->execute("DELETE FROM holidays WHERE id = ?", [$id]);
+        flash('success', 'Holiday deleted successfully');
+        return redirect('/calendar/holidays');
+    }
 }

@@ -67,6 +67,13 @@ The system employs a custom MVC architecture for clear separation of concerns.
   - Meaningful create/edit forms with multi-section layout: Event Details, Date & Time, Location
   - Event types: Event, Holiday, Exam, Meeting, Deadline
   - 5 dummy events inserted for testing (Annual Sports Day, Science Exhibition, PTM, Final Exams, Prize Distribution)
+- **Holidays Management**: Complete implementation with full CRUD:
+  - Created holidays table with proper schema (name, dates, type, status, creator)
+  - Routes: GET /calendar/holidays (list), POST /calendar/holidays/create (store), GET /calendar/holidays/{id} (view), GET /calendar/holidays/{id}/edit, POST /calendar/holidays/{id}/edit, POST /calendar/holidays/{id}/delete
+  - Index page displays all holidays with name, dates, type, status, creator
+  - Meaningful create/edit forms with multi-section layout: Holiday Details, Duration, Settings
+  - Holiday types: Holiday, Festival, Vacation, Special
+  - 5 dummy holidays inserted for testing (Diwali, Christmas, New Year, Summer Vacation, Teacher Training Day)
 
 ## Critical Bug Fixes
 - **auth() Function**: Changed from auth()->user()['id'] to auth()['id'] - auth() returns array from $_SESSION, not object
