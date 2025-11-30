@@ -276,6 +276,15 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/budget/{id}', 'BudgetController@update', ['csrf']);
         $router->post('/budget/{id}/delete', 'BudgetController@destroy', ['csrf']);
         
+        // Discussion Forums
+        $router->get('/forums', 'ForumController@index');
+        $router->get('/forums/create', 'ForumController@create');
+        $router->post('/forums', 'ForumController@store', ['csrf']);
+        $router->get('/forums/{id}', 'ForumController@show');
+        $router->get('/forums/{id}/edit', 'ForumController@edit');
+        $router->post('/forums/{id}', 'ForumController@update', ['csrf']);
+        $router->post('/forums/{id}/delete', 'ForumController@destroy', ['csrf']);
+        
         // Library Management
         $router->get('/library', function() { return redirect('/library/books'); });
         $router->get('/library/create', function() { return redirect('/library/books/create'); });

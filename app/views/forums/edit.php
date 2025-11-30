@@ -2,8 +2,8 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Create New Forum</h1>
-        <p class="text-muted mb-0">Create a discussion forum for student collaboration</p>
+        <h1 class="h3 mb-0">Edit Forum</h1>
+        <p class="text-muted mb-0">Update forum details</p>
     </div>
     <a href="/forums" class="btn btn-secondary">
         <i class="bi bi-arrow-left me-2"></i>Back
@@ -12,7 +12,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="/forums" class="needs-validation">
+        <form method="POST" action="/forums/<?= $id ?>" class="needs-validation">
             <input type="hidden" name="_token" value="<?= csrf() ?>">
             
             <!-- Forum Details -->
@@ -42,22 +42,12 @@
                         <label class="form-label fw-bold">Subject (Optional)</label>
                         <select name="subject_id" class="form-select">
                             <option value="">-- Select Subject --</option>
-                            <?php foreach ($subjects ?? [] as $subject): ?>
-                                <option value="<?= $subject['id'] ?>">
-                                    <?= htmlspecialchars($subject['name']) ?>
-                                </option>
-                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Class (Optional)</label>
                         <select name="class_id" class="form-select">
                             <option value="">-- Select Class --</option>
-                            <?php foreach ($classes ?? [] as $class): ?>
-                                <option value="<?= $class['id'] ?>">
-                                    <?= htmlspecialchars($class['name']) ?>
-                                </option>
-                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
@@ -79,7 +69,7 @@
             
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle me-2"></i>Create Forum
+                    <i class="bi bi-check-circle me-2"></i>Update Forum
                 </button>
                 <a href="/forums" class="btn btn-outline-secondary">
                     <i class="bi bi-x-circle me-2"></i>Cancel
