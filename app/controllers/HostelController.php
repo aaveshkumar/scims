@@ -454,7 +454,7 @@ class HostelController
         $types = HostelComplaint::getComplaintTypes();
         
         $staff = db()->fetchAll(
-            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name 
+            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.first_name
              FROM users u
              JOIN staff s ON u.id = s.user_id
              ORDER BY u.first_name"
@@ -478,7 +478,7 @@ class HostelController
         $residents = HostelResident::getAll(['status' => 'active']);
         $types = HostelComplaint::getComplaintTypes();
         $staff = db()->fetchAll(
-            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name 
+            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.first_name
              FROM users u JOIN staff s ON u.id = s.user_id ORDER BY u.first_name"
         );
         
@@ -503,7 +503,7 @@ class HostelController
         $residents = HostelResident::getAll(['status' => 'active']);
         $types = HostelComplaint::getComplaintTypes();
         $staff = db()->fetchAll(
-            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name 
+            "SELECT DISTINCT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.first_name
              FROM users u JOIN staff s ON u.id = s.user_id ORDER BY u.first_name"
         );
         
