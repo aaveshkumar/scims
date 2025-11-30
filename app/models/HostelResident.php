@@ -160,7 +160,7 @@ class HostelResident
                 COUNT(*) as total,
                 SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active,
                 SUM(CASE WHEN status = 'inactive' THEN 1 ELSE 0 END) as inactive,
-                ROUND(AVG(EXTRACT(DAY FROM (COALESCE(checkout_date, CURRENT_DATE) - admission_date))))::INT as avg_stay
+                ROUND(AVG((COALESCE(checkout_date, CURRENT_DATE) - admission_date)))::INT as avg_stay
             FROM hostel_residents
         ");
         return $result ?? ['total' => 0, 'active' => 0, 'inactive' => 0, 'avg_stay' => 0];
