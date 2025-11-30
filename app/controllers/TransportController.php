@@ -82,22 +82,27 @@ class TransportController
      */
     public function show($request, $id)
     {
-        $vehicle = Vehicle::find($id);
-        
-        if (!$vehicle) {
-            flash('error', 'Vehicle not found');
+        try {
+            $vehicle = db()->fetchOne("SELECT * FROM vehicles WHERE id = ?", [$id]);
+            
+            if (!$vehicle) {
+                flash('error', 'Vehicle not found');
+                return redirect('/transport/vehicles');
+            }
+            
+            $maintenanceHistory = db()->fetchAll("SELECT * FROM vehicle_maintenance WHERE vehicle_id = ? ORDER BY maintenance_date DESC", [$id]);
+            $totalCost = db()->fetchOne("SELECT COALESCE(SUM(cost), 0) as total FROM vehicle_maintenance WHERE vehicle_id = ?", [$id]);
+            
+            return view('transport/show', [
+                'title' => 'Vehicle Details',
+                'vehicle' => $vehicle,
+                'maintenanceHistory' => $maintenanceHistory,
+                'totalCost' => $totalCost['total'] ?? 0
+            ]);
+        } catch (Exception $e) {
+            flash('error', 'Error loading vehicle');
             return redirect('/transport/vehicles');
         }
-        
-        $maintenanceHistory = VehicleMaintenance::getVehicleHistory($id);
-        $totalCost = VehicleMaintenance::getTotalCost($id);
-        
-        return view('transport/show', [
-            'title' => 'Vehicle Details',
-            'vehicle' => $vehicle,
-            'maintenanceHistory' => $maintenanceHistory,
-            'totalCost' => $totalCost
-        ]);
     }
 
     /**
@@ -744,18 +749,6 @@ class TransportController
                     $request->post('last_name'),
                     $request->post('email'),
                     $request->post('phone') ?? '',
-                    $request->post('status') ?? 'active',
-                    $id
-                ]
-            );
-
-            // Update staff/license info
-            db()->query(
-                "UPDATE staff SET license_number = ?, license_expiry = ?, status = ?, updated_at = NOW()
-                 WHERE user_id = ?",
-                [
-                    $request->post('license_number'),
-                    $request->post('license_expiry') ?? null,
                     $request->post('status') ?? 'active',
                     $id
                 ]

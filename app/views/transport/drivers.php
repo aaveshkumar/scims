@@ -65,6 +65,9 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
+                                        <a href="/transport/drivers/<?= $driver['id'] ?>/edit" class="btn btn-outline-info btn-sm" title="View">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
                                         <a href="/transport/drivers/<?= $driver['id'] ?>/edit" class="btn btn-outline-warning btn-sm" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
