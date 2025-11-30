@@ -10,12 +10,47 @@ class FeeStructureController
             'status' => $request->get('status')
         ];
         
-        $feeTemplates = FeeTemplate::getAll($filters);
+        // Fetch from fees_structures table
+        $sql = "SELECT fs.*, c.name as class_name
+                FROM fees_structures fs
+                LEFT JOIN classes c ON fs.class_id = c.id
+                WHERE 1=1";
+        $params = [];
+        
+        if (!empty($filters['class_id'])) {
+            $sql .= " AND fs.class_id = ?";
+            $params[] = $filters['class_id'];
+        }
+        
+        if (!empty($filters['academic_year'])) {
+            $sql .= " AND fs.academic_year = ?";
+            $params[] = $filters['academic_year'];
+        }
+        
+        if (!empty($filters['status'])) {
+            $sql .= " AND fs.status = ?";
+            $params[] = $filters['status'];
+        }
+        
+        $sql .= " ORDER BY fs.academic_year DESC, c.name";
+        
+        $feeTemplates = db()->fetchAll($sql, $params);
+        
         $classes = db()->fetchAll("SELECT id, name FROM classes ORDER BY name");
-        $stats = FeeTemplate::getStatistics();
+        
+        // Get statistics from fees_structures
+        $totalCount = db()->fetchOne("SELECT COUNT(*) as count FROM fees_structures")['count'];
+        $activeCount = db()->fetchOne("SELECT COUNT(*) as count FROM fees_structures WHERE status = 'active'")['count'];
+        $totalAmount = db()->fetchOne("SELECT COALESCE(SUM(amount), 0) as total FROM fees_structures WHERE status = 'active'")['total'];
+        
+        $stats = [
+            'total_templates' => $totalCount,
+            'active_templates' => $activeCount,
+            'total_amount' => $totalAmount
+        ];
         
         $academicYears = db()->fetchAll(
-            "SELECT DISTINCT academic_year FROM fee_structure_templates ORDER BY academic_year DESC"
+            "SELECT DISTINCT academic_year FROM fees_structures ORDER BY academic_year DESC"
         );
         
         return view('fee_structure/index', [
