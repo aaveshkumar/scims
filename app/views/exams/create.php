@@ -31,11 +31,11 @@
                     <label class="form-label">Exam Type *</label>
                     <select name="exam_type" class="form-select" required>
                         <option value="">Select Type</option>
-                        <option value="mid_term">Mid Term</option>
+                        <option value="midterm">Mid Term</option>
                         <option value="final">Final</option>
-                        <option value="quarterly">Quarterly</option>
-                        <option value="half_yearly">Half Yearly</option>
-                        <option value="annual">Annual</option>
+                        <option value="quiz">Quiz</option>
+                        <option value="assignment">Assignment</option>
+                        <option value="practical">Practical</option>
                     </select>
                 </div>
                 <div class="col-md-4 mb-3">

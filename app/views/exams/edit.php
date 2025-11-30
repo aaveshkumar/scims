@@ -30,11 +30,11 @@
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Exam Type *</label>
                     <select name="exam_type" class="form-select" required>
-                        <option value="mid_term" <?= $exam['exam_type'] === 'mid_term' ? 'selected' : '' ?>>Mid Term</option>
+                        <option value="midterm" <?= $exam['exam_type'] === 'midterm' ? 'selected' : '' ?>>Mid Term</option>
                         <option value="final" <?= $exam['exam_type'] === 'final' ? 'selected' : '' ?>>Final</option>
-                        <option value="quarterly" <?= $exam['exam_type'] === 'quarterly' ? 'selected' : '' ?>>Quarterly</option>
-                        <option value="half_yearly" <?= $exam['exam_type'] === 'half_yearly' ? 'selected' : '' ?>>Half Yearly</option>
-                        <option value="annual" <?= $exam['exam_type'] === 'annual' ? 'selected' : '' ?>>Annual</option>
+                        <option value="quiz" <?= $exam['exam_type'] === 'quiz' ? 'selected' : '' ?>>Quiz</option>
+                        <option value="assignment" <?= $exam['exam_type'] === 'assignment' ? 'selected' : '' ?>>Assignment</option>
+                        <option value="practical" <?= $exam['exam_type'] === 'practical' ? 'selected' : '' ?>>Practical</option>
                     </select>
                 </div>
                 <div class="col-md-4 mb-3">
