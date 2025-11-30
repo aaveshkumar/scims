@@ -149,42 +149,176 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Quick Actions</h5>
+        <h5 class="mb-0"><i class="bi bi-lightning-fill text-warning me-2"></i>Quick Actions</h5>
     </div>
     <div class="card-body">
+        <?php if (hasRole('admin')): ?>
+        <!-- User Management -->
+        <div class="mb-4">
+            <h6 class="text-muted mb-3"><i class="bi bi-people me-2"></i>User Management</h6>
+            <div class="row">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/students/create" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="bi bi-person-plus"></i><br><small>Add Student</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/students" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="bi bi-people"></i><br><small>View Students</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/staff/create" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="bi bi-person-badge"></i><br><small>New Staff</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/staff" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="bi bi-people-fill"></i><br><small>View Staff</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academics -->
+        <div class="mb-4">
+            <h6 class="text-muted mb-3"><i class="bi bi-book me-2"></i>Academics</h6>
+            <div class="row">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/attendance" class="btn btn-sm btn-outline-info w-100">
+                        <i class="bi bi-calendar-check"></i><br><small>Attendance</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/marks" class="btn btn-sm btn-outline-info w-100">
+                        <i class="bi bi-award"></i><br><small>Enter Marks</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/exams/create" class="btn btn-sm btn-outline-info w-100">
+                        <i class="bi bi-clipboard-check"></i><br><small>New Exam</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/courses/create" class="btn btn-sm btn-outline-info w-100">
+                        <i class="bi bi-book"></i><br><small>New Course</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/subjects/create" class="btn btn-sm btn-outline-info w-100">
+                        <i class="bi bi-journal-bookmark"></i><br><small>New Subject</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Finance -->
+        <div class="mb-4">
+            <h6 class="text-muted mb-3"><i class="bi bi-cash-coin me-2"></i>Finance</h6>
+            <div class="row">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/invoices/create" class="btn btn-sm btn-outline-success w-100">
+                        <i class="bi bi-receipt"></i><br><small>Create Invoice</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/invoices" class="btn btn-sm btn-outline-success w-100">
+                        <i class="bi bi-receipt-cutoff"></i><br><small>View Invoices</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admissions & Hostel -->
+        <div class="mb-4">
+            <h6 class="text-muted mb-3"><i class="bi bi-house me-2"></i>Admissions & Hostel</h6>
+            <div class="row">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/admissions/create" class="btn btn-sm btn-outline-warning w-100">
+                        <i class="bi bi-file-earmark-text"></i><br><small>New Admission</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/admissions" class="btn btn-sm btn-outline-warning w-100">
+                        <i class="bi bi-inbox"></i><br><small>View Applications</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/hostel/residents/create" class="btn btn-sm btn-outline-warning w-100">
+                        <i class="bi bi-house"></i><br><small>Add Resident</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/hostel/residents" class="btn btn-sm btn-outline-warning w-100">
+                        <i class="bi bi-house-fill"></i><br><small>View Residents</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transport & HR -->
+        <div class="mb-4">
+            <h6 class="text-muted mb-3"><i class="bi bi-truck me-2"></i>Transport & HR</h6>
+            <div class="row">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/transport/vehicles" class="btn btn-sm btn-outline-danger w-100">
+                        <i class="bi bi-truck"></i><br><small>Vehicles</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/transport/drivers" class="btn btn-sm btn-outline-danger w-100">
+                        <i class="bi bi-person-badge"></i><br><small>Drivers</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/hr/events" class="btn btn-sm btn-outline-danger w-100">
+                        <i class="bi bi-calendar-event"></i><br><small>HR Events</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/hr/recruitment" class="btn btn-sm btn-outline-danger w-100">
+                        <i class="bi bi-briefcase"></i><br><small>Recruitment</small>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/hr/payroll" class="btn btn-sm btn-outline-danger w-100">
+                        <i class="bi bi-cash"></i><br><small>Payroll</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning -->
+        <div class="mb-0">
+            <h6 class="text-muted mb-3"><i class="bi bi-book-fill me-2"></i>Learning</h6>
+            <div class="row">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a href="/materials" class="btn btn-sm btn-outline-secondary w-100">
+                        <i class="bi bi-file-earmark-pdf"></i><br><small>Materials</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <?php else: ?>
+        <!-- Non-admin Quick Actions -->
         <div class="row">
-            <?php if (hasRole('admin')): ?>
-            <div class="col-md-3 mb-3">
-                <a href="/students/create" class="btn btn-outline-primary w-100">
-                    <i class="bi bi-person-plus"></i><br>Add Student
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                <a href="/attendance" class="btn btn-sm btn-outline-info w-100">
+                    <i class="bi bi-calendar-check"></i><br><small>Attendance</small>
                 </a>
             </div>
-            <div class="col-md-3 mb-3">
-                <a href="/admissions" class="btn btn-outline-success w-100">
-                    <i class="bi bi-file-earmark-text"></i><br>Admissions
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                <a href="/marks" class="btn btn-sm btn-outline-warning w-100">
+                    <i class="bi bi-award"></i><br><small>Marks</small>
                 </a>
             </div>
-            <?php endif; ?>
-            
-            <?php if (hasRole('teacher') || hasRole('admin')): ?>
-            <div class="col-md-3 mb-3">
-                <a href="/attendance" class="btn btn-outline-info w-100">
-                    <i class="bi bi-calendar-check"></i><br>Mark Attendance
-                </a>
-            </div>
-            <div class="col-md-3 mb-3">
-                <a href="/marks" class="btn btn-outline-warning w-100">
-                    <i class="bi bi-award"></i><br>Enter Marks
-                </a>
-            </div>
-            <?php endif; ?>
-            
-            <div class="col-md-3 mb-3">
-                <a href="/materials" class="btn btn-outline-secondary w-100">
-                    <i class="bi bi-file-earmark-pdf"></i><br>Materials
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                <a href="/materials" class="btn btn-sm btn-outline-secondary w-100">
+                    <i class="bi bi-file-earmark-pdf"></i><br><small>Materials</small>
                 </a>
             </div>
         </div>
+        <?php endif; ?>
     </div>
 </div>
 

@@ -32,37 +32,17 @@
                 <a class="nav-link dropdown-toggle" href="#" id="quickActionsDropdown" role="button" data-bs-toggle="dropdown">
                     <i class="bi bi-lightning-fill text-warning"></i> Quick Actions
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end shadow" style="min-width: 260px;">
-                    <li><h6 class="dropdown-header">User Management</h6></li>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li><h6 class="dropdown-header">Create New</h6></li>
                     <li><a class="dropdown-item" href="/students/create"><i class="bi bi-person-plus me-2"></i> New Student</a></li>
                     <li><a class="dropdown-item" href="/staff/create"><i class="bi bi-person-badge me-2"></i> New Staff</a></li>
-                    <li><a class="dropdown-item" href="/students"><i class="bi bi-people me-2"></i> View Students</a></li>
-                    <li><a class="dropdown-item" href="/staff"><i class="bi bi-people-fill me-2"></i> View Staff</a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><h6 class="dropdown-header">Academics</h6></li>
                     <li><a class="dropdown-item" href="/courses/create"><i class="bi bi-book me-2"></i> New Course</a></li>
                     <li><a class="dropdown-item" href="/classes/create"><i class="bi bi-building me-2"></i> New Class</a></li>
                     <li><a class="dropdown-item" href="/subjects/create"><i class="bi bi-journal-bookmark me-2"></i> New Subject</a></li>
-                    <li><a class="dropdown-item" href="/exams/create"><i class="bi bi-clipboard-check me-2"></i> New Exam</a></li>
-                    <li><a class="dropdown-item" href="/attendance"><i class="bi bi-calendar-check me-2"></i> Mark Attendance</a></li>
-                    
                     <li><hr class="dropdown-divider"></li>
-                    <li><h6 class="dropdown-header">Finance</h6></li>
                     <li><a class="dropdown-item" href="/invoices/create"><i class="bi bi-receipt me-2"></i> Create Invoice</a></li>
-                    <li><a class="dropdown-item" href="/invoices"><i class="bi bi-cash-coin me-2"></i> View Invoices</a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><h6 class="dropdown-header">Admissions & Hostel</h6></li>
                     <li><a class="dropdown-item" href="/admissions/create"><i class="bi bi-file-earmark-text me-2"></i> New Admission</a></li>
-                    <li><a class="dropdown-item" href="/hostel/residents/create"><i class="bi bi-house me-2"></i> Add Resident</a></li>
-                    <li><a class="dropdown-item" href="/hostel/residents"><i class="bi bi-house-fill me-2"></i> View Residents</a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><h6 class="dropdown-header">Transport & HR</h6></li>
-                    <li><a class="dropdown-item" href="/transport/vehicles"><i class="bi bi-truck me-2"></i> Manage Vehicles</a></li>
-                    <li><a class="dropdown-item" href="/hr/events"><i class="bi bi-calendar-event me-2"></i> HR Events</a></li>
-                    <li><a class="dropdown-item" href="/hr/recruitment"><i class="bi bi-briefcase me-2"></i> Recruitment</a></li>
+                    <li><a class="dropdown-item" href="/exams/create"><i class="bi bi-clipboard-check me-2"></i> New Exam</a></li>
                 </ul>
             </li>
             <?php endif; ?>
