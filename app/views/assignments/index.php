@@ -120,8 +120,20 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="/assignments/<?= $assignment['id'] ?>" class="btn btn-sm btn-info">View</a>
-                                    <a href="/assignments/<?= $assignment['id'] ?>/edit" class="btn btn-sm btn-warning">Edit</a>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="/assignments/<?= $assignment['id'] ?>" class="btn btn-outline-primary" title="View">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="/assignments/<?= $assignment['id'] ?>/edit" class="btn btn-outline-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form method="POST" action="/assignments/<?= $assignment['id'] ?>/delete" style="display: inline;" onsubmit="return confirm('Delete this assignment?');">
+                                            <input type="hidden" name="_token" value="<?= csrf() ?>">
+                                            <button type="submit" class="btn btn-outline-danger" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

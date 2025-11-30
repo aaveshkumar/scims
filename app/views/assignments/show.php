@@ -9,6 +9,12 @@
         <a href="/assignments/<?= $assignment['id'] ?>/edit" class="btn btn-warning me-2">
             <i class="bi bi-pencil me-2"></i>Edit
         </a>
+        <form method="POST" action="/assignments/<?= $assignment['id'] ?>/delete" style="display: inline;" onsubmit="return confirm('Delete this assignment? This action cannot be undone.');">
+            <input type="hidden" name="_token" value="<?= csrf() ?>">
+            <button type="submit" class="btn btn-danger me-2">
+                <i class="bi bi-trash me-2"></i>Delete
+            </button>
+        </form>
         <a href="/assignments" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-2"></i>Back
         </a>

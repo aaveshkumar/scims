@@ -17,6 +17,23 @@
             border-radius: 1rem;
             box-shadow: 0 1rem 3rem rgba(0,0,0,0.175);
         }
+        .spinner-container {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .spinner-container.show {
+            display: block;
+        }
+        .spinner-border {
+            width: 2rem;
+            height: 2rem;
+            margin-right: 10px;
+        }
+        .btn-loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -41,14 +58,14 @@
                             <?php unset($_SESSION['flash']); ?>
                         <?php endif; ?>
 
-                        <form method="POST" action="/login">
+                        <form method="POST" action="/login" id="loginForm">
                             <input type="hidden" name="_token" value="<?= csrf() ?>">
                             
                             <div class="mb-3">
                                 <label class="form-label">Email Address</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" name="email" class="form-control" placeholder="Enter email" required>
+                                    <input type="email" name="email" class="form-control" placeholder="Enter email" required autocomplete="email">
                                 </div>
                             </div>
 
@@ -56,7 +73,7 @@
                                 <label class="form-label">Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                    <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+                                    <input type="password" name="password" class="form-control" placeholder="Enter password" required autocomplete="current-password">
                                 </div>
                             </div>
 
@@ -65,7 +82,12 @@
                                 <label class="form-check-label" for="remember">Remember me</label>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
+                            <div class="spinner-container" id="loaderContainer">
+                                <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                <span class="ms-2">Authenticating...</span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2 mb-3" id="submitBtn">
                                 <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
                             </button>
                         </form>
@@ -82,5 +104,31 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const loader = document.getElementById('loaderContainer');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Show loader
+            loader.classList.add('show');
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.classList.add('btn-loading');
+        });
+
+        // If there's an error message, hide the loader after page load
+        window.addEventListener('load', function() {
+            const errorAlert = document.querySelector('.alert-danger');
+            if (errorAlert) {
+                const loader = document.getElementById('loaderContainer');
+                const submitBtn = document.getElementById('submitBtn');
+                loader.classList.remove('show');
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('btn-loading');
+            }
+        });
+    </script>
 </body>
 </html>
