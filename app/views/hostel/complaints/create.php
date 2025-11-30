@@ -1,5 +1,17 @@
 <?php include __DIR__ . '/../../layouts/header.php'; ?>
 
+<style>
+    html[data-bs-theme="dark"] .card-header.bg-light {
+        background-color: var(--bs-gray-800) !important;
+        color: var(--bs-body-color) !important;
+        border-color: var(--bs-border-color) !important;
+    }
+    
+    html[data-bs-theme="dark"] .card-header.bg-light h6 {
+        color: var(--bs-body-color) !important;
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-plus-circle me-2"></i>Register New Complaint</h2>
     <a href="/hostel/complaints" class="btn btn-secondary">
