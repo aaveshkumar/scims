@@ -7,16 +7,17 @@ class HostelVisitor
     public static function getAll($filters = [])
     {
         $sql = "SELECT v.*, 
-                s.first_name as student_first_name, s.last_name as student_last_name, 
+                u_s.first_name as student_first_name, u_s.last_name as student_last_name, 
                 s.roll_number,
                 h.name as hostel_name, hr.room_number,
-                CONCAT(u.first_name, ' ', u.last_name) as approved_by_name
+                CONCAT(u_a.first_name, ' ', u_a.last_name) as approved_by_name
                 FROM hostel_visitors v
                 JOIN hostel_residents r ON v.resident_id = r.id
                 JOIN students s ON r.student_id = s.id
+                JOIN users u_s ON s.user_id = u_s.id
                 JOIN hostels h ON r.hostel_id = h.id
                 JOIN hostel_rooms hr ON r.room_id = hr.id
-                LEFT JOIN users u ON v.approved_by = u.id
+                LEFT JOIN users u_a ON v.approved_by = u_a.id
                 WHERE 1=1";
         $params = [];
         
@@ -36,7 +37,7 @@ class HostelVisitor
         }
         
         if (!empty($filters['search'])) {
-            $sql .= " AND (v.visitor_name LIKE ? OR s.first_name LIKE ? OR s.last_name LIKE ?)";
+            $sql .= " AND (v.visitor_name LIKE ? OR u_s.first_name LIKE ? OR u_s.last_name LIKE ?)";
             $search = "%{$filters['search']}%";
             $params[] = $search;
             $params[] = $search;
@@ -51,16 +52,17 @@ class HostelVisitor
     public static function find($id)
     {
         $sql = "SELECT v.*, 
-                s.first_name as student_first_name, s.last_name as student_last_name, 
-                s.roll_number, s.phone as student_phone,
+                u_s.first_name as student_first_name, u_s.last_name as student_last_name, 
+                s.roll_number, u_s.phone as student_phone,
                 h.name as hostel_name, hr.room_number,
-                CONCAT(u.first_name, ' ', u.last_name) as approved_by_name
+                CONCAT(u_a.first_name, ' ', u_a.last_name) as approved_by_name
                 FROM hostel_visitors v
                 JOIN hostel_residents r ON v.resident_id = r.id
                 JOIN students s ON r.student_id = s.id
+                JOIN users u_s ON s.user_id = u_s.id
                 JOIN hostels h ON r.hostel_id = h.id
                 JOIN hostel_rooms hr ON r.room_id = hr.id
-                LEFT JOIN users u ON v.approved_by = u.id
+                LEFT JOIN users u_a ON v.approved_by = u_a.id
                 WHERE v.id = ?";
         
         return db()->fetchOne($sql, [$id]);
@@ -121,14 +123,15 @@ class HostelVisitor
     public static function getActiveVisitors()
     {
         $sql = "SELECT v.*, 
-                s.first_name as student_first_name, s.last_name as student_last_name,
+                u_s.first_name as student_first_name, u_s.last_name as student_last_name,
                 h.name as hostel_name, hr.room_number
                 FROM hostel_visitors v
                 JOIN hostel_residents r ON v.resident_id = r.id
                 JOIN students s ON r.student_id = s.id
+                JOIN users u_s ON s.user_id = u_s.id
                 JOIN hostels h ON r.hostel_id = h.id
                 JOIN hostel_rooms hr ON r.room_id = hr.id
-                WHERE v.visit_date = CURDATE() AND v.exit_time IS NULL
+                WHERE v.visit_date = CURRENT_DATE AND v.exit_time IS NULL
                 ORDER BY v.entry_time DESC";
         
         return db()->fetchAll($sql);

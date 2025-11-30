@@ -47,6 +47,37 @@ The system employs a custom MVC architecture for clear separation of concerns.
 
 ## Recent Updates (Session: Nov 30, 2025)
 
+### Hostel Residents Module - COMPLETE ✅
+- **Full CRUD Implementation** (`/hostel/residents`):
+  - Residents list with search, hostel filter, status filter
+  - Statistics dashboard (Total, Active, Inactive, Avg Stay duration)
+  - Add resident form with multi-section layout (Student, Room, Dates, Contact)
+  - Edit resident form with form pre-population
+  - Delete with inline confirmation
+- **9 Dummy Residents** already assigned to rooms across 5 hostels
+- **5 New Students** created for additional resident assignments
+- **Fixed Database Queries**: Changed to properly join students → users for name retrieval
+- **Dynamic Room Selection**: Hostel dropdown triggers room filtering via JavaScript
+- **Dark Mode CSS**: All forms styled for dark mode compatibility
+
+### Dashboard Quick Actions - EXPANDED ✅
+- Reorganized into **6 organized categories** with **26 quick action buttons**:
+  - User Management (Add/View Students, Add/View Staff)
+  - Academics (Attendance, Marks, Exams, Courses, Subjects)
+  - Finance (Create/View Invoices)
+  - Admissions & Hostel (New Admission, View Applications, **Add/View Residents**)
+  - Transport & HR (Vehicles, Drivers, HR Events, Recruitment, Payroll)
+  - Learning (Materials)
+- Role-based display: Admins see all, others see limited options
+
+### Critical SQL Query Fixes ✅
+- **HostelVisitor Model**: Fixed 3 queries (getAll, find, getActiveVisitors)
+  - Changed from `s.first_name` to `u_s.first_name` (via students→users join)
+  - Fixed PostgreSQL date: `CURDATE()` → `CURRENT_DATE`
+- **HostelComplaint Model**: Fixed 2 queries (getAll, find)
+  - Same students→users join pattern for name retrieval
+- **Query Pattern**: Added alias renaming (u_s for student user, u_a for assigned user)
+
 ### Transport Module - COMPLETE ✅
 - **Vehicles**: 5 dummy vehicles with full CRUD, view/edit/delete buttons
 - **Drivers**: 5 dummy drivers with license numbers (DL-2024-001 through DL-2024-005), payroll processing
@@ -62,12 +93,7 @@ The system employs a custom MVC architecture for clear separation of concerns.
   - Add room form with 3 sections: Basic Info (Hostel, Room #, Type, Capacity), Location (Floor, Fee), Settings (Status)
   - Edit room form with same structure
   - Delete with inline confirmation
-- **26 Dummy Rooms**: 
-  - Boys Hostel A: 5 rooms (single, double, triple mix) - ₹4,500-₹12,000/month
-  - Girls Hostel B: 5 rooms (single, double, triple, quad) - ₹5,500-₹16,000/month
-  - Boys Hostel C: 5 rooms - ₹4,500-₹15,000/month
-  - Girls Hostel D: 5 rooms - ₹8,500-₹16,000/month
-  - Mixed Hostel E: 6 rooms - ₹4,500-₹14,000/month
+- **26 Dummy Rooms**: Distributed across 5 hostels with varying capacity levels
 - Column fix: Uses `room_fee` (not `rent`) - correct database column
 
 ### HR Module - COMPLETE ✅

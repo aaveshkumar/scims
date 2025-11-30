@@ -7,15 +7,16 @@ class HostelComplaint
     public static function getAll($filters = [])
     {
         $sql = "SELECT c.*, 
-                s.first_name as student_first_name, s.last_name as student_last_name, 
+                u_s.first_name as student_first_name, u_s.last_name as student_last_name, 
                 s.roll_number,
                 h.name as hostel_name,
-                CONCAT(u.first_name, ' ', u.last_name) as assigned_to_name
+                CONCAT(u_a.first_name, ' ', u_a.last_name) as assigned_to_name
                 FROM hostel_complaints c
                 JOIN hostel_residents r ON c.resident_id = r.id
                 JOIN students s ON r.student_id = s.id
+                JOIN users u_s ON s.user_id = u_s.id
                 JOIN hostels h ON c.hostel_id = h.id
-                LEFT JOIN users u ON c.assigned_to = u.id
+                LEFT JOIN users u_a ON c.assigned_to = u_a.id
                 WHERE 1=1";
         $params = [];
         
@@ -50,15 +51,16 @@ class HostelComplaint
     public static function find($id)
     {
         $sql = "SELECT c.*, 
-                s.first_name as student_first_name, s.last_name as student_last_name, 
-                s.roll_number, s.phone as student_phone,
+                u_s.first_name as student_first_name, u_s.last_name as student_last_name, 
+                s.roll_number, u_s.phone as student_phone,
                 h.name as hostel_name,
-                CONCAT(u.first_name, ' ', u.last_name) as assigned_to_name, u.email as assigned_to_email
+                CONCAT(u_a.first_name, ' ', u_a.last_name) as assigned_to_name, u_a.email as assigned_to_email
                 FROM hostel_complaints c
                 JOIN hostel_residents r ON c.resident_id = r.id
                 JOIN students s ON r.student_id = s.id
+                JOIN users u_s ON s.user_id = u_s.id
                 JOIN hostels h ON c.hostel_id = h.id
-                LEFT JOIN users u ON c.assigned_to = u.id
+                LEFT JOIN users u_a ON c.assigned_to = u_a.id
                 WHERE c.id = ?";
         
         return db()->fetchOne($sql, [$id]);
