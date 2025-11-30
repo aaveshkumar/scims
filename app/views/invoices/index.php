@@ -80,12 +80,6 @@
                                     <a href="/invoices/<?= $invoice['id'] ?>" class="btn btn-sm btn-info">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <?php if ($invoice['balance'] > 0): ?>
-                                        <button onclick="recordPayment(<?= $invoice['id'] ?>, <?= $invoice['balance'] ?>)" 
-                                                class="btn btn-sm btn-success">
-                                            <i class="bi bi-cash"></i>
-                                        </button>
-                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -96,38 +90,5 @@
     </div>
 </div>
 
-<script>
-function recordPayment(invoiceId, balance) {
-    const amount = prompt(`Enter payment amount (Balance: ₹${balance.toFixed(2)}):`);
-    if (amount && !isNaN(amount)) {
-        const method = prompt('Payment method (cash/card/upi/bank):') || 'cash';
-        
-        fetch(`/invoices/${invoiceId}/payment`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({
-                amount: parseFloat(amount),
-                payment_method: method
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Payment recorded successfully!');
-                location.reload();
-            } else {
-                alert(data.message || 'Failed to record payment');
-            }
-        })
-        .catch(error => {
-            alert('An error occurred');
-            console.error(error);
-        });
-    }
-}
-</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
