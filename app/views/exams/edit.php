@@ -55,14 +55,25 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label">Start Date *</label>
                     <input type="date" name="start_date" class="form-control" value="<?= $exam['start_date'] ?>" required>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label">End Date *</label>
                     <input type="date" name="end_date" class="form-control" value="<?= $exam['end_date'] ?>" required>
                 </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Total Marks *</label>
+                    <input type="number" name="total_marks" class="form-control" value="<?= htmlspecialchars($exam['total_marks']) ?>" min="0" step="0.01" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Passing Marks *</label>
+                    <input type="number" name="passing_marks" class="form-control" value="<?= htmlspecialchars($exam['passing_marks']) ?>" min="0" step="0.01" required>
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Status *</label>
                     <select name="status" class="form-select" required>
