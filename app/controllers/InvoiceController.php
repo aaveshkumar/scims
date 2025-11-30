@@ -136,14 +136,28 @@ class InvoiceController
                 $paymentStatus = 'partial';
             }
 
-            db()->update('invoices', [
-                'amount_paid' => $newAmountPaid,
-                'balance' => $newBalance,
-                'payment_status' => $paymentStatus,
-                'payment_method' => $request->post('payment_method'),
-                'transaction_id' => $request->post('transaction_id') ?? null,
-                'payment_date' => date('Y-m-d')
-            ], ['id' => $id]);
+            $transactionId = $request->post('transaction_id') ?? null;
+            $paymentDate = date('Y-m-d');
+            $paymentMethod = $request->post('payment_method');
+
+            $sql = "UPDATE invoices SET 
+                    amount_paid = ?, 
+                    balance = ?, 
+                    payment_status = ?, 
+                    payment_method = ?, 
+                    transaction_id = ?, 
+                    payment_date = ? 
+                    WHERE id = ?";
+
+            db()->execute($sql, [
+                $newAmountPaid,
+                $newBalance,
+                $paymentStatus,
+                $paymentMethod,
+                $transactionId,
+                $paymentDate,
+                $id
+            ]);
 
             return responseJSON(['success' => true, 'message' => 'Payment recorded successfully']);
         } catch (Exception $e) {
