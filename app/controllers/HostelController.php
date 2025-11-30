@@ -567,6 +567,28 @@ class HostelController
         }
         return redirect('/hostel/complaints');
     }
+
+    public function progressComplaint($request, $id)
+    {
+        try {
+            HostelComplaint::assign($id, auth()['id']);
+            flash('success', 'Complaint marked as in progress');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update status: ' . $e->getMessage());
+        }
+        return redirect('/hostel/complaints');
+    }
+
+    public function resolveComplaint($request, $id)
+    {
+        try {
+            HostelComplaint::resolve($id, $request->post('remarks'));
+            flash('success', 'Complaint resolved successfully');
+        } catch (Exception $e) {
+            flash('error', 'Failed to resolve complaint: ' . $e->getMessage());
+        }
+        return redirect('/hostel/complaints');
+    }
     
     public function storeComplaint($request)
     {

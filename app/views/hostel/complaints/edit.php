@@ -7,6 +7,38 @@
     </a>
 </div>
 
+<!-- Quick Action Buttons -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="btn-group" role="group">
+            <?php if ($complaint['status'] === 'pending'): ?>
+                <form method="POST" action="/hostel/complaints/<?= $complaint['id'] ?>/progress" style="display: inline;">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-info">
+                        <i class="bi bi-arrow-right me-1"></i>Mark In Progress
+                    </button>
+                </form>
+            <?php endif; ?>
+            
+            <?php if ($complaint['status'] !== 'resolved'): ?>
+                <form method="POST" action="/hostel/complaints/<?= $complaint['id'] ?>/resolve" style="display: inline;">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i>Resolve
+                    </button>
+                </form>
+            <?php endif; ?>
+            
+            <form method="POST" action="/hostel/complaints/<?= $complaint['id'] ?>/delete" style="display: inline;">
+                <?= csrf_field() ?>
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this complaint?')">
+                    <i class="bi bi-trash me-1"></i>Delete
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <form method="POST" action="/hostel/complaints/<?= $complaint['id'] ?>" class="card">
     <?= csrf_field() ?>
     
@@ -49,8 +81,8 @@
                     <select id="complaint_type" name="complaint_type" class="form-select">
                         <option value="">-- Select Type --</option>
                         <?php foreach ($types as $type): ?>
-                            <option value="<?= $type ?>" <?= $type == $complaint['complaint_type'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($type) ?>
+                            <option value="<?= htmlspecialchars($type['complaint_type']) ?>" <?= $type['complaint_type'] == $complaint['complaint_type'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($type['complaint_type']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>

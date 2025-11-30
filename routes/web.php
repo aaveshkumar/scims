@@ -405,6 +405,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/hostel/complaints/{id}/edit', 'HostelController@editComplaint');
         $router->post('/hostel/complaints/{id}', 'HostelController@updateComplaint', ['csrf']);
         $router->post('/hostel/complaints/{id}/delete', 'HostelController@deleteComplaint', ['csrf']);
+        $router->post('/hostel/complaints/{id}/progress', 'HostelController@progressComplaint', ['csrf']);
+        $router->post('/hostel/complaints/{id}/resolve', 'HostelController@resolveComplaint', ['csrf']);
         
         // Hostel Management - Generic (Hostels CRUD)
         $router->get('/hostel', 'HostelController@index');
