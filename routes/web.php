@@ -228,6 +228,10 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/fee-structure', 'FeeStructureController@index');
         $router->get('/fee-structure/create', 'FeeStructureController@create');
         $router->post('/fee-structure', 'FeeStructureController@store', ['csrf']);
+        $router->get('/fee-structure/{id}', 'FeeStructureController@show');
+        $router->get('/fee-structure/{id}/edit', 'FeeStructureController@edit');
+        $router->post('/fee-structure/{id}', 'FeeStructureController@update', ['csrf']);
+        $router->delete('/fee-structure/{id}', 'FeeStructureController@destroy', ['csrf']);
         
         $router->get('/expenses', 'ExpenseController@index');
         $router->get('/expenses/create', 'ExpenseController@create');

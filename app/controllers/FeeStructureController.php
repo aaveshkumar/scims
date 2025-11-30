@@ -113,24 +113,34 @@ class FeeStructureController
 
     public function show($request, $id)
     {
-        $feeTemplate = FeeTemplate::find($id);
+        $sql = "SELECT fs.*, c.name as class_name
+                FROM fees_structures fs
+                LEFT JOIN classes c ON fs.class_id = c.id
+                WHERE fs.id = ?";
         
-        if (!$feeTemplate) {
+        $feeStructure = db()->fetchOne($sql, [$id]);
+        
+        if (!$feeStructure) {
             flash('error', 'Fee structure not found');
             return redirect('/fee-structure');
         }
         
         return view('fee_structure/show', [
             'title' => 'Fee Structure Details',
-            'feeTemplate' => $feeTemplate
+            'feeStructure' => $feeStructure
         ]);
     }
 
     public function edit($request, $id)
     {
-        $feeTemplate = FeeTemplate::find($id);
+        $sql = "SELECT fs.*, c.name as class_name
+                FROM fees_structures fs
+                LEFT JOIN classes c ON fs.class_id = c.id
+                WHERE fs.id = ?";
         
-        if (!$feeTemplate) {
+        $feeStructure = db()->fetchOne($sql, [$id]);
+        
+        if (!$feeStructure) {
             flash('error', 'Fee structure not found');
             return redirect('/fee-structure');
         }
@@ -139,7 +149,7 @@ class FeeStructureController
         
         return view('fee_structure/edit', [
             'title' => 'Edit Fee Structure',
-            'feeTemplate' => $feeTemplate,
+            'feeStructure' => $feeStructure,
             'classes' => $classes
         ]);
     }
@@ -148,6 +158,7 @@ class FeeStructureController
     {
         $rules = [
             'name' => 'required',
+            'fee_type' => 'required',
             'academic_year' => 'required',
             'amount' => 'required|numeric'
         ];
@@ -158,18 +169,29 @@ class FeeStructureController
         }
 
         try {
-            $data = [
-                'name' => $request->post('name'),
-                'class_id' => $request->post('class_id'),
-                'academic_year' => $request->post('academic_year'),
-                'amount' => $request->post('amount'),
-                'due_date' => $request->post('due_date'),
-                'fine_per_day' => $request->post('fine_per_day') ?? 0,
-                'description' => $request->post('description'),
-                'status' => $request->post('status')
-            ];
+            $sql = "UPDATE fees_structures SET 
+                    name = ?, 
+                    class_id = ?, 
+                    fee_type = ?,
+                    academic_year = ?, 
+                    semester = ?,
+                    amount = ?, 
+                    due_date = ?, 
+                    status = ?
+                    WHERE id = ?";
 
-            FeeTemplate::update($id, $data);
+            db()->execute($sql, [
+                $request->post('name'),
+                $request->post('class_id') ?: null,
+                $request->post('fee_type'),
+                $request->post('academic_year'),
+                $request->post('semester') ?: null,
+                (float) $request->post('amount'),
+                $request->post('due_date') ?: null,
+                $request->post('status'),
+                $id
+            ]);
+
             flash('success', 'Fee structure updated successfully');
             return redirect('/fee-structure');
         } catch (Exception $e) {
@@ -181,7 +203,7 @@ class FeeStructureController
     public function destroy($request, $id)
     {
         try {
-            FeeTemplate::delete($id);
+            db()->execute("DELETE FROM fees_structures WHERE id = ?", [$id]);
             flash('success', 'Fee structure deleted successfully');
             return redirect('/fee-structure');
         } catch (Exception $e) {
