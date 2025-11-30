@@ -224,6 +224,15 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/academic-calendar/{id}', 'AcademicCalendarController@update', ['csrf']);
         $router->delete('/academic-calendar/{id}', 'AcademicCalendarController@destroy', ['csrf']);
         
+        $router->get('/assignments', 'AssignmentController@index');
+        $router->get('/assignments/create', 'AssignmentController@create');
+        $router->post('/assignments', 'AssignmentController@store', ['csrf']);
+        $router->get('/assignments/{id}', 'AssignmentController@show');
+        $router->get('/assignments/{id}/edit', 'AssignmentController@edit');
+        $router->post('/assignments/{id}', 'AssignmentController@update', ['csrf']);
+        $router->post('/assignments/{id}/delete', 'AssignmentController@destroy', ['csrf']);
+        $router->post('/assignments/{id}/grade-submission', 'AssignmentController@gradeSubmission', ['csrf']);
+        
         // Finance Extensions
         $router->get('/fee-structure', 'FeeStructureController@index');
         $router->get('/fee-structure/create', 'FeeStructureController@create');

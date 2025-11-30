@@ -53,11 +53,14 @@ class AssignmentController
         }
 
         try {
+            $authUser = auth();
+            $userId = isset($authUser['id']) ? $authUser['id'] : 1;
+            
             $data = [
                 'title' => $request->post('title'),
                 'subject_id' => $request->post('subject_id'),
                 'class_id' => $request->post('class_id'),
-                'teacher_id' => auth()->user()['id'],
+                'teacher_id' => $userId,
                 'description' => $request->post('description'),
                 'instructions' => $request->post('instructions'),
                 'attachment_path' => $request->post('attachment_path'),
@@ -169,11 +172,14 @@ class AssignmentController
         }
 
         try {
+            $authUser = auth();
+            $userId = isset($authUser['id']) ? $authUser['id'] : 1;
+            
             AssignmentSubmission::grade(
                 $id,
                 $request->post('marks_obtained'),
                 $request->post('feedback'),
-                auth()->user()['id']
+                $userId
             );
             
             flash('success', 'Submission graded successfully');
