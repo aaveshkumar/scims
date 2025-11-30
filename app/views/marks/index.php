@@ -17,11 +17,11 @@
 <!-- Class Selection Dropdown -->
 <div class="mb-4">
     <label class="form-label fw-bold">
-        <i class="bi bi-building me-2"></i>Select Class
+        <i class="bi bi-building me-2"></i>Select Class (Optional)
     </label>
     <div class="input-group">
         <select class="form-select form-select-lg" id="classSelect" onchange="selectClass()">
-            <option value="">-- Choose a Class --</option>
+            <option value="">-- All Classes --</option>
             <?php foreach ($classes as $class): ?>
                 <option value="<?= $class['id'] ?>" <?= ($selectedClassId == $class['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($class['name']) ?> (<?= (int)$class['student_count'] ?> students)
@@ -31,18 +31,38 @@
     </div>
 </div>
 
+<!-- Loader -->
+<div id="loadingSpinner" class="text-center py-5" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="text-muted mt-2">Loading student data...</p>
+</div>
+
 <script>
 function selectClass() {
     const classId = document.getElementById('classSelect').value;
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const studentsCard = document.getElementById('studentsCard');
+    
     if (classId) {
-        window.location.href = '/marks?exam_id=<?= $exam['id'] ?>&class_id=' + classId;
+        // Show loader
+        loadingSpinner.style.display = 'block';
+        if (studentsCard) studentsCard.style.display = 'none';
+        
+        // Simulate loading delay for better UX
+        setTimeout(() => {
+            window.location.href = '/marks?exam_id=<?= $exam['id'] ?>&class_id=' + classId;
+        }, 500);
+    } else {
+        // Clear filter - go back to all classes
+        window.location.href = '/marks?exam_id=<?= $exam['id'] ?>';
     }
 }
 </script>
 
 <!-- Students List Card -->
-<?php if ($selectedClassId): ?>
-<div class="card">
+<div class="card" id="studentsCard">
     <div class="card-header">
         <h5 class="mb-0">Student Marks Status</h5>
         <small class="text-muted d-block mt-1">View and manage marks for all students</small>
@@ -113,7 +133,6 @@ function selectClass() {
         </div>
     </div>
 </div>
-<?php endif; ?>
 
 <!-- Select Student Modal -->
 <div class="modal fade" id="selectStudentModal" tabindex="-1">

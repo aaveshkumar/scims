@@ -49,9 +49,7 @@ class MarkController
              ORDER BY c.name"
         );
 
-        $students = [];
-        
-        // If a class is selected, get students from that class
+        // If a class is selected, get students from that class; otherwise get all students
         if ($classId) {
             $students = db()->fetchAll(
                 "SELECT DISTINCT 
@@ -70,6 +68,26 @@ class MarkController
                  GROUP BY s.id, s.admission_number, u.first_name, u.last_name, c.name
                  ORDER BY u.last_name, u.first_name",
                 [$examId, $classId]
+            );
+        } else {
+            // Show all students when no class is selected
+            $students = db()->fetchAll(
+                "SELECT DISTINCT 
+                    s.id,
+                    s.admission_number,
+                    u.first_name,
+                    u.last_name,
+                    c.name as class_name,
+                    COUNT(DISTINCT m.id) as marks_count,
+                    ROUND(AVG(CAST(m.marks_obtained AS DECIMAL) / NULLIF(CAST(m.total_marks AS DECIMAL), 0) * 100), 2) as avg_percentage
+                 FROM students s
+                 INNER JOIN users u ON s.user_id = u.id
+                 LEFT JOIN classes c ON s.class_id = c.id
+                 LEFT JOIN marks m ON m.student_id = s.id AND m.exam_id = ?
+                 WHERE s.status = 'active'
+                 GROUP BY s.id, s.admission_number, u.first_name, u.last_name, c.name
+                 ORDER BY u.last_name, u.first_name",
+                [$examId]
             );
         }
 
