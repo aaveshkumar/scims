@@ -158,9 +158,11 @@ class ExamController
     {
         try {
             $this->examModel->delete($id);
-            return responseJSON(['success' => true, 'message' => 'Exam deleted successfully']);
+            flash('success', 'Exam deleted successfully');
+            return redirect('/exams');
         } catch (Exception $e) {
-            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+            flash('error', 'Failed to delete exam: ' . $e->getMessage());
+            return back();
         }
     }
 }

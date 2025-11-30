@@ -14,7 +14,6 @@
     <div class="card-body">
         <form method="POST" action="/exams/<?= $exam['id'] ?>">
             <input type="hidden" name="_token" value="<?= csrf() ?>">
-            <input type="hidden" name="_method" value="PUT">
             
             <div class="row">
                 <div class="col-md-6 mb-3">
