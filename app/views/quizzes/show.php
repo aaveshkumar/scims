@@ -91,8 +91,11 @@
 
         <!-- Questions -->
         <div class="card mb-4">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Questions (<?= count($questions ?? []) ?>)</h5>
+                <a href="/quizzes/<?= $quiz['id'] ?>/add-questions" class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>Add Questions
+                </a>
             </div>
             <div class="card-body">
                 <?php if (!empty($questions)): ?>

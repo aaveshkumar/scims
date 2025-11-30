@@ -240,6 +240,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/quizzes/{id}/edit', 'QuizController@edit');
         $router->post('/quizzes/{id}', 'QuizController@update', ['csrf']);
         $router->post('/quizzes/{id}/delete', 'QuizController@destroy', ['csrf']);
+        $router->get('/quizzes/{id}/add-questions', 'QuizController@addQuestions');
+        $router->post('/quizzes/{id}/add-questions', 'QuizController@storeQuestions', ['csrf']);
         
         // Finance Extensions
         $router->get('/fee-structure', 'FeeStructureController@index');

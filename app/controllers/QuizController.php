@@ -158,4 +158,59 @@ class QuizController
             return back();
         }
     }
+
+    public function addQuestions($request, $id)
+    {
+        $quiz = Quiz::find($id);
+        
+        if (!$quiz) {
+            flash('error', 'Quiz not found');
+            return redirect('/quizzes');
+        }
+        
+        $questions = db()->fetchAll("SELECT id, question_text, subject_id, difficulty_level FROM question_bank WHERE subject_id = ? ORDER BY id", [$quiz['subject_id']]);
+        $existingQuestions = db()->fetchAll("SELECT question_id FROM quiz_questions WHERE quiz_id = ?", [$id]);
+        $existingIds = array_column($existingQuestions, 'question_id');
+        
+        return view('quizzes/add-questions', [
+            'title' => 'Add Questions to Quiz',
+            'quiz' => $quiz,
+            'questions' => $questions,
+            'existingIds' => $existingIds
+        ]);
+    }
+
+    public function storeQuestions($request, $id)
+    {
+        $quiz = Quiz::find($id);
+        
+        if (!$quiz) {
+            flash('error', 'Quiz not found');
+            return redirect('/quizzes');
+        }
+
+        $selectedQuestions = $request->post('question_ids') ?? [];
+        
+        if (empty($selectedQuestions)) {
+            flash('error', 'Please select at least one question');
+            return back();
+        }
+
+        try {
+            foreach ($selectedQuestions as $order => $questionId) {
+                $existingQuestion = db()->fetchOne("SELECT id FROM quiz_questions WHERE quiz_id = ? AND question_id = ?", [$id, $questionId]);
+                
+                if (!$existingQuestion) {
+                    $sql = "INSERT INTO quiz_questions (quiz_id, question_id, question_order, marks) VALUES (?, ?, ?, 1)";
+                    db()->execute($sql, [$id, $questionId, $order + 1]);
+                }
+            }
+            
+            flash('success', 'Questions added to quiz successfully');
+            return redirect("/quizzes/$id");
+        } catch (Exception $e) {
+            flash('error', 'Failed to add questions: ' . $e->getMessage());
+            return back();
+        }
+    }
 }
