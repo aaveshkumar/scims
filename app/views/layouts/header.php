@@ -304,46 +304,51 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Black text ONLY on white backgrounds */
-        
-        /* White background elements - Black text */
-        .card {
+        /* Light Mode Only - Black text on white backgrounds */
+        [data-bs-theme="light"] .card {
+            color: #000 !important;
+            background-color: #fff !important;
+        }
+        [data-bs-theme="light"] .card-body, 
+        [data-bs-theme="light"] .card-text {
             color: #000 !important;
         }
-        .card-body, .card-text {
+        [data-bs-theme="light"] .card-header {
+            color: #000 !important;
+            background-color: #f8f9fc !important;
+        }
+        [data-bs-theme="light"] .table tbody td {
             color: #000 !important;
         }
-        .card-header {
+        [data-bs-theme="light"] .form-label {
             color: #000 !important;
         }
-        .table tbody td {
+        [data-bs-theme="light"] .form-control, 
+        [data-bs-theme="light"] .form-select {
             color: #000 !important;
+            background-color: #fff !important;
         }
-        .form-label {
-            color: #000 !important;
-        }
-        .form-control, .form-select {
-            color: #000 !important;
-        }
-        .form-control::placeholder {
+        [data-bs-theme="light"] .form-control::placeholder {
             color: #999 !important;
         }
-        .dropdown-menu {
+        [data-bs-theme="light"] .dropdown-menu {
+            color: #000 !important;
+            background-color: #fff !important;
+        }
+        [data-bs-theme="light"] .dropdown-item {
             color: #000 !important;
         }
-        .dropdown-item {
+        [data-bs-theme="light"] .dropdown-item:hover, 
+        [data-bs-theme="light"] .dropdown-item.active {
             color: #000 !important;
         }
-        .dropdown-item:hover, .dropdown-item.active {
+        [data-bs-theme="light"] textarea.form-control {
             color: #000 !important;
         }
-        textarea.form-control {
+        [data-bs-theme="light"] .nav-tabs .nav-link {
             color: #000 !important;
         }
-        .nav-tabs .nav-link {
-            color: #000 !important;
-        }
-        .nav-tabs .nav-link.active {
+        [data-bs-theme="light"] .nav-tabs .nav-link.active {
             color: #000 !important;
         }
     </style>
