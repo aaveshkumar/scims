@@ -89,14 +89,14 @@
         })();
         
         // Delete Confirmation Function - Using Form Submit instead of Fetch
-        function confirmDelete(url, message = 'Are you sure you want to delete this?') {
+        function confirmDelete(url, message = 'Are you sure you want to delete this?', button = null) {
             if (confirm(message)) {
-                performDelete(url);
+                performDelete(url, button);
             }
         }
         
         // Perform actual delete using form submission
-        function performDelete(url) {
+        function performDelete(url, button = null) {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
             
             if (!csrfToken) {
@@ -104,10 +104,11 @@
                 return;
             }
             
-            // Show page loader
-            const loader = document.getElementById('page-loader');
-            if (loader) {
-                loader.classList.add('active');
+            // Show loader on button if provided
+            if (button) {
+                const originalHTML = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
             }
             
             // Create a hidden form to submit DELETE request

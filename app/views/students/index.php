@@ -62,7 +62,7 @@
                                     <a href="/students/<?= $student['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button onclick="confirmDelete('/students/<?= $student['id'] ?>' + window.location.search)" class="btn btn-sm btn-danger" title="<?= $classId ? 'Remove from Class' : 'Delete' ?>">
+                                    <button onclick="confirmDelete('/students/<?= $student['id'] ?>' + window.location.search, 'Are you sure you want to delete this student?', this)" class="btn btn-sm btn-danger" title="<?= $classId ? 'Remove from Class' : 'Delete' ?>">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
