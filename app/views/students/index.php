@@ -45,10 +45,10 @@
                     <?php else: ?>
                         <?php foreach ($students as $student): ?>
                             <tr>
-                                <td><?= htmlspecialchars($student['admission_number']) ?></td>
-                                <td><?= htmlspecialchars($student['first_name'] . ' ' . $student['last_name']) ?></td>
-                                <td><?= htmlspecialchars($student['email']) ?></td>
-                                <td><?= htmlspecialchars($student['phone']) ?></td>
+                                <td><?= htmlspecialchars($student['admission_number'] ?? 'N/A') ?></td>
+                                <td><?= htmlspecialchars(($student['first_name'] ?? '') . ' ' . ($student['last_name'] ?? '')) ?></td>
+                                <td><?= htmlspecialchars($student['email'] ?? 'N/A') ?></td>
+                                <td><?= htmlspecialchars($student['phone'] ?? 'N/A') ?></td>
                                 <td><?= htmlspecialchars($student['class_name'] ?? 'N/A') ?></td>
                                 <td>
                                     <span class="badge bg-<?= $student['status'] === 'active' ? 'success' : 'secondary' ?>" id="status-badge-<?= $student['id'] ?>">
