@@ -75,6 +75,32 @@
                 <p><strong>Guardian Email:</strong> <?= htmlspecialchars($admission['guardian_email'] ?? 'N/A') ?></p>
             </div>
         </div>
+
+        <?php if ($admission['documents']): ?>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Uploaded Documents</h5>
+            </div>
+            <div class="card-body">
+                <?php 
+                    $documents = json_decode($admission['documents'], true);
+                    if (is_array($documents) && !empty($documents)):
+                ?>
+                <div class="list-group">
+                    <?php foreach ($documents as $docType => $docPath): ?>
+                    <a href="<?= htmlspecialchars($docPath) ?>" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="bi bi-file-earmark-pdf me-2"></i>
+                        <strong><?= ucwords(str_replace('_', ' ', $docType)) ?></strong>
+                        <small class="float-end text-muted"><i class="bi bi-download"></i> Download</small>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+                <?php else: ?>
+                <p class="text-muted">No documents uploaded</p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 
     <div class="col-md-4">
