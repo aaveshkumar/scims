@@ -46,7 +46,7 @@
                     <label class="form-label">Designation *</label>
                     <input type="text" name="designation" class="form-control" placeholder="e.g., Teacher, Principal" required>
                 </div>
-                <?php if (auth() && auth()->hasRole('admin')): ?>
+                <?php if (hasRole('admin')): ?>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Role *</label>
                     <select name="role" class="form-select" required>

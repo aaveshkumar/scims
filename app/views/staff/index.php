@@ -34,6 +34,7 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Designation</th>
+                            <th>Role</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -46,6 +47,11 @@
                                 <td><?= htmlspecialchars($member['email']) ?></td>
                                 <td><?= htmlspecialchars($member['phone']) ?></td>
                                 <td><?= htmlspecialchars($member['designation']) ?></td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        <?= ucfirst($member['role']) ?>
+                                    </span>
+                                </td>
                                 <td>
                                     <span class="badge bg-<?= $member['status'] === 'active' ? 'success' : 'secondary' ?>" id="status-badge-<?= $member['id'] ?>">
                                         <?= ucfirst($member['status']) ?>

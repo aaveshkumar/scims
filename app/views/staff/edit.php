@@ -56,7 +56,7 @@
                 </div>
             </div>
 
-            <?php if (auth() && auth()->hasRole('admin')): ?>
+            <?php if (hasRole('admin')): ?>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Role</label>
