@@ -481,6 +481,9 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/reports/attendance/{id}/delete', 'ReportController@attendanceDelete', ['csrf']);
         $router->get('/reports/attendance', 'ReportController@attendance');
         
+        // Reports - Class Attendance
+        $router->get('/reports/class-attendance', 'ReportController@classAttendance');
+
         // Reports - Other
         $router->get('/reports/academic', 'ReportController@academic');
         $router->get('/reports/financial', 'ReportController@financial');

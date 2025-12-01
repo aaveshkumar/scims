@@ -2,15 +2,20 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-graph-up me-2"></i>Attendance Reports</h2>
-    <a href="/reports/attendance/create" class="btn btn-primary">
-        <i class="bi bi-plus-circle me-2"></i>Add Attendance
-    </a>
+    <div>
+        <a href="/reports/class-attendance" class="btn btn-success me-2">
+            <i class="bi bi-people-fill me-2"></i>Class Attendance
+        </a>
+        <a href="/reports/attendance/create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Add Attendance
+        </a>
+    </div>
 </div>
 
 <!-- Filter Form -->
 <div class="card mb-4">
     <div class="card-header">
-        <h6 class="mb-0">Filter Attendance</h6>
+        <h6 class="mb-0">Filter Individual Records</h6>
     </div>
     <div class="card-body">
         <form method="GET" action="/reports/attendance">

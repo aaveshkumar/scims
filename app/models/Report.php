@@ -198,4 +198,44 @@ class Report
 
         return $this->db->fetchOne($sql, $params);
     }
+
+    public function getClassAttendanceRoster($classId, $date = null)
+    {
+        $sql = "
+            SELECT 
+                s.roll_number,
+                u.first_name,
+                u.last_name,
+                s.guardian_name,
+                a.status,
+                a.id as attendance_id
+            FROM students s
+            JOIN users u ON s.user_id = u.id
+            LEFT JOIN attendance a ON s.user_id = a.student_id AND a.class_id = ? 
+                AND a.date = ?
+            WHERE s.class_id = ?
+            ORDER BY s.roll_number ASC
+        ";
+        
+        $params = [$classId, $date, $classId];
+        return $this->db->fetchAll($sql, $params);
+    }
+
+    public function getClassSummary($classId, $date = null)
+    {
+        $sql = "
+            SELECT COUNT(DISTINCT s.id) as total,
+                   SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END) as present,
+                   SUM(CASE WHEN a.status = 'absent' THEN 1 ELSE 0 END) as absent,
+                   SUM(CASE WHEN a.status = 'leave' THEN 1 ELSE 0 END) as leave_count,
+                   SUM(CASE WHEN a.status = 'late' THEN 1 ELSE 0 END) as late
+            FROM students s
+            LEFT JOIN attendance a ON s.user_id = a.student_id AND a.class_id = ? 
+                AND a.date = ?
+            WHERE s.class_id = ?
+        ";
+        
+        $params = [$classId, $date, $classId];
+        return $this->db->fetchOne($sql, $params);
+    }
 }

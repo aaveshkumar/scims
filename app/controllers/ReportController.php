@@ -222,4 +222,49 @@ class ReportController
             'record' => $record
         ]);
     }
+
+    public function classAttendance($request)
+    {
+        $classId = $request->get('class_id');
+        $date = $request->get('date') ?? date('Y-m-d');
+
+        $classes = $this->reportModel->getAllClasses();
+        $roster = [];
+        $summary = [];
+        $className = '';
+
+        if ($classId) {
+            // Get class name
+            $classData = array_filter($classes, function($c) use ($classId) {
+                return $c['id'] == $classId;
+            });
+            $className = reset($classData)['name'] ?? '';
+
+            // Get roster with attendance
+            $roster = $this->reportModel->getClassAttendanceRoster($classId, $date);
+            $summary = $this->reportModel->getClassSummary($classId, $date);
+            
+            // Add student_id to roster from users table
+            foreach ($roster as &$student) {
+                $stmt = \Database::getInstance()->query(
+                    "SELECT id FROM users WHERE first_name = ? AND last_name = ?",
+                    [$student['first_name'], $student['last_name']]
+                );
+                $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+                if ($user) {
+                    $student['student_id'] = $user['id'];
+                }
+            }
+        }
+
+        return view('reports/class-attendance', [
+            'title' => 'Class Attendance Report',
+            'classes' => $classes,
+            'roster' => $roster,
+            'summary' => $summary,
+            'selectedClass' => $classId,
+            'selectedDate' => $date,
+            'className' => $className
+        ]);
+    }
 }
