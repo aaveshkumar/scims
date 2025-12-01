@@ -49,8 +49,8 @@ class ReportController
 
     public function attendance($request)
     {
-        $classId = $request['class_id'] ?? null;
-        $date = $request['date'] ?? null;
+        $classId = $request->get('class_id');
+        $date = $request->get('date');
 
         // Get filtered records and summary
         if ($classId || $date) {
@@ -119,11 +119,11 @@ class ReportController
 
     public function attendanceStore($request)
     {
-        $student_id = $request['student_id'] ?? null;
-        $class_id = $request['class_id'] ?? null;
-        $date = $request['date'] ?? null;
-        $status = $request['status'] ?? null;
-        $remarks = $request['remarks'] ?? null;
+        $student_id = $request->post('student_id');
+        $class_id = $request->post('class_id');
+        $date = $request->post('date');
+        $status = $request->post('status');
+        $remarks = $request->post('remarks');
 
         if (!$student_id || !$class_id || !$date || !$status) {
             flash('error', 'All fields are required');
@@ -164,11 +164,11 @@ class ReportController
 
     public function attendanceUpdate($request, $id)
     {
-        $student_id = $request['student_id'] ?? null;
-        $class_id = $request['class_id'] ?? null;
-        $date = $request['date'] ?? null;
-        $status = $request['status'] ?? null;
-        $remarks = $request['remarks'] ?? null;
+        $student_id = $request->post('student_id');
+        $class_id = $request->post('class_id');
+        $date = $request->post('date');
+        $status = $request->post('status');
+        $remarks = $request->post('remarks');
 
         if (!$student_id || !$class_id || !$date || !$status) {
             flash('error', 'All fields are required');
