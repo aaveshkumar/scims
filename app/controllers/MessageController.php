@@ -101,19 +101,32 @@ class MessageController
         try {
             $message = $this->messageModel->find($id);
             
-            if (!$message || $message['sender_id'] != auth()['id']) {
-                flash('error', 'Cannot edit this message');
+            if (!$message) {
+                flash('error', 'Message not found');
+                return redirect('/messages');
+            }
+
+            // Check if current user is sender (editing) or receiver (replying)
+            if ($message['sender_id'] != auth()['id'] && $message['receiver_id'] != auth()['id']) {
+                flash('error', 'Cannot access this message');
                 return redirect('/messages');
             }
 
             $users = $this->messageModel->getAllUsers(auth()['id']);
-            $receiver = $this->messageModel->getUserInfo($message['receiver_id']);
+            
+            // If replying to received message, pre-fill sender info
+            if ($message['receiver_id'] == auth()['id']) {
+                $receiver = $this->messageModel->getUserInfo($message['sender_id']);
+            } else {
+                $receiver = $this->messageModel->getUserInfo($message['receiver_id']);
+            }
 
             return view('messages.edit', [
                 'title' => 'Edit - Messages',
                 'message' => $message,
                 'receiver' => $receiver,
-                'users' => $users
+                'users' => $users,
+                'isReply' => $message['receiver_id'] == auth()['id']
             ]);
         } catch (Exception $e) {
             flash('error', 'Failed to load message');
@@ -136,21 +149,40 @@ class MessageController
         try {
             $message = $this->messageModel->find($id);
             
-            if (!$message || $message['sender_id'] != auth()['id']) {
-                flash('error', 'Cannot edit this message');
+            if (!$message) {
+                flash('error', 'Message not found');
                 return redirect('/messages');
             }
 
-            $this->messageModel->update($id, [
-                'receiver_id' => $request->post('receiver_id'),
-                'subject' => $request->post('subject'),
-                'message_body' => $request->post('message_body')
-            ]);
+            // Check if current user is sender (editing) or receiver (replying)
+            if ($message['sender_id'] != auth()['id'] && $message['receiver_id'] != auth()['id']) {
+                flash('error', 'Cannot access this message');
+                return redirect('/messages');
+            }
 
-            flash('success', 'Message updated successfully');
+            // If sender is editing their own message
+            if ($message['sender_id'] == auth()['id']) {
+                $this->messageModel->update($id, [
+                    'receiver_id' => $request->post('receiver_id'),
+                    'subject' => $request->post('subject'),
+                    'message_body' => $request->post('message_body')
+                ]);
+                flash('success', 'Message updated successfully');
+            } else {
+                // If receiver is replying, create a new message instead
+                $this->messageModel->create([
+                    'sender_id' => auth()['id'],
+                    'receiver_id' => $request->post('receiver_id'),
+                    'subject' => 'Re: ' . $message['subject'],
+                    'message_body' => $request->post('message_body'),
+                    'parent_message_id' => $id
+                ]);
+                flash('success', 'Reply sent successfully');
+            }
+
             return redirect('/messages');
         } catch (Exception $e) {
-            flash('error', 'Failed to update message: ' . $e->getMessage());
+            flash('error', 'Failed to process message: ' . $e->getMessage());
             return redirect("/messages/$id/edit");
         }
     }

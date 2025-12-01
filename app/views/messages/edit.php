@@ -1,7 +1,7 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-reply me-2"></i>Reply to Message</h2>
+    <h2><i class="bi bi-reply me-2"></i><?= isset($isReply) && $isReply ? 'Reply to Message' : 'Edit Message' ?></h2>
     <a href="/messages" class="btn btn-secondary">
         <i class="bi bi-arrow-left me-2"></i>Back
     </a>
@@ -28,7 +28,7 @@
                 <select name="receiver_id" class="form-select" required>
                     <option value="">Select recipient</option>
                     <?php foreach ($users as $user): ?>
-                        <option value="<?= $user['id'] ?>" <?= $user['id'] == $message['receiver_id'] ? 'selected' : '' ?>>
+                        <option value="<?= $user['id'] ?>" <?= $user['id'] == $receiver['id'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -37,17 +37,17 @@
 
             <div class="mb-3">
                 <label class="form-label">Subject *</label>
-                <input type="text" name="subject" class="form-control" required value="<?= htmlspecialchars($message['subject']) ?>">
+                <input type="text" name="subject" class="form-control" required value="<?= htmlspecialchars((isset($isReply) && $isReply && strpos($message['subject'], 'Re:') === false) ? 'Re: ' . $message['subject'] : $message['subject']) ?>">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Message *</label>
-                <textarea name="message_body" class="form-control" rows="8" required><?= htmlspecialchars($message['message_body']) ?></textarea>
+                <textarea name="message_body" class="form-control" rows="8" required placeholder="Type your message here..."></textarea>
             </div>
 
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-send me-2"></i>Send Reply
+                    <i class="bi bi-send me-2"></i><?= isset($isReply) && $isReply ? 'Send Reply' : 'Update Message' ?>
                 </button>
                 <a href="/messages" class="btn btn-secondary">Cancel</a>
             </div>
