@@ -158,9 +158,6 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-info" title="View" data-bs-toggle="modal" data-bs-target="#viewStockModal<?= $item['id'] ?>">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
                                     <button class="btn btn-sm btn-warning" title="Edit" data-bs-toggle="modal" data-bs-target="#editStockModal<?= $item['id'] ?>">
                                         <i class="bi bi-pencil"></i>
                                     </button>
