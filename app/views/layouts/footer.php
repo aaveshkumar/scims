@@ -335,48 +335,6 @@
                     });
                 });
                 
-                // Global button click loader for ALL buttons (except special cases)
-                document.addEventListener('click', function(e) {
-                    const btn = e.target.closest('button');
-                    if (!btn) return;
-                    
-                    // Skip loader for:
-                    // - Buttons with data-no-loader attribute
-                    // - Buttons that are inside forms (they already have form submission loader)
-                    // - Modal dismiss buttons
-                    // - Delete buttons (they have their own loader)
-                    // - Buttons inside sidebar or any parent of sidebar
-                    // - Buttons with nav-link class
-                    if (btn.hasAttribute('data-no-loader') || 
-                        btn.closest('form') ||
-                        btn.getAttribute('data-bs-dismiss') ||
-                        btn.getAttribute('onclick')?.includes('confirmDelete') ||
-                        btn.closest('.sidebar') ||
-                        btn.classList.contains('nav-link') ||
-                        btn.closest('.nav-link')) {
-                        return;
-                    }
-                    
-                    // If button is already disabled or has loader, skip
-                    if (btn.disabled || btn.hasAttribute('data-submitting')) {
-                        return;
-                    }
-                    
-                    // Add loader to button
-                    btn.setAttribute('data-submitting', 'true');
-                    const originalHTML = btn.innerHTML;
-                    btn.disabled = true;
-                    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-                    
-                    // Auto-restore after 5 seconds
-                    setTimeout(() => {
-                        if (btn.disabled) {
-                            btn.disabled = false;
-                            btn.removeAttribute('data-submitting');
-                            btn.innerHTML = originalHTML;
-                        }
-                    }, 5000);
-                });
             });
         })();
     </script>
