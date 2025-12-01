@@ -49,13 +49,30 @@ class ReportController
 
     public function attendance($request)
     {
-        $records = $this->reportModel->getAttendanceRecords();
-        $summary = $this->reportModel->getAttendanceSummary();
+        $classId = $request['class_id'] ?? null;
+        $date = $request['date'] ?? null;
+
+        // Get filtered records and summary
+        if ($classId || $date) {
+            $records = $this->reportModel->getFilteredAttendance($classId, $date);
+            $summary = $this->reportModel->getFilteredSummary($classId, $date);
+        } else {
+            $records = $this->reportModel->getAttendanceRecords();
+            $summary = $this->reportModel->getAttendanceSummary();
+        }
+
+        // Get filter options
+        $classes = $this->reportModel->getAllClasses();
+        $dates = $this->reportModel->getUniqueDates();
 
         return view('reports/attendance', [
             'title' => 'Attendance Reports',
             'records' => $records,
-            'summary' => $summary
+            'summary' => $summary,
+            'classes' => $classes,
+            'dates' => $dates,
+            'selectedClass' => $classId,
+            'selectedDate' => $date
         ]);
     }
 

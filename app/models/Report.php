@@ -141,4 +141,61 @@ class Report
         $sql = "SELECT id, name FROM classes ORDER BY name";
         return $this->db->fetchAll($sql);
     }
+
+    public function getUniqueDates()
+    {
+        $sql = "SELECT DISTINCT date FROM attendance ORDER BY date DESC";
+        return $this->db->fetchAll($sql);
+    }
+
+    public function getFilteredAttendance($classId = null, $date = null)
+    {
+        $sql = "
+            SELECT a.*, u.first_name, u.last_name, c.name as class_name
+            FROM attendance a
+            LEFT JOIN users u ON a.student_id = u.id
+            LEFT JOIN classes c ON a.class_id = c.id
+            WHERE 1=1
+        ";
+        $params = [];
+
+        if ($classId) {
+            $sql .= " AND a.class_id = ?";
+            $params[] = $classId;
+        }
+
+        if ($date) {
+            $sql .= " AND a.date = ?";
+            $params[] = $date;
+        }
+
+        $sql .= " ORDER BY a.date DESC, u.first_name ASC LIMIT 200";
+        
+        return $this->db->fetchAll($sql, $params);
+    }
+
+    public function getFilteredSummary($classId = null, $date = null)
+    {
+        $sql = "
+            SELECT COUNT(*) as total, 
+                   SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) as present,
+                   SUM(CASE WHEN status = 'absent' THEN 1 ELSE 0 END) as absent,
+                   SUM(CASE WHEN status = 'late' THEN 1 ELSE 0 END) as late
+            FROM attendance
+            WHERE 1=1
+        ";
+        $params = [];
+
+        if ($classId) {
+            $sql .= " AND class_id = ?";
+            $params[] = $classId;
+        }
+
+        if ($date) {
+            $sql .= " AND date = ?";
+            $params[] = $date;
+        }
+
+        return $this->db->fetchOne($sql, $params);
+    }
 }

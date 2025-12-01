@@ -7,6 +7,60 @@
     </a>
 </div>
 
+<!-- Filter Form -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h6 class="mb-0">Filter Attendance</h6>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="/reports/attendance">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Select Date</label>
+                    <select name="date" class="form-select">
+                        <option value="">-- All Dates --</option>
+                        <?php if (!empty($dates)): ?>
+                            <?php foreach ($dates as $d): ?>
+                                <option value="<?= $d['date'] ?>" <?= ($selectedDate == $d['date']) ? 'selected' : '' ?>>
+                                    <?= date('M d, Y', strtotime($d['date'])) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Select Class</label>
+                    <select name="class_id" class="form-select">
+                        <option value="">-- All Classes --</option>
+                        <?php if (!empty($classes)): ?>
+                            <?php foreach ($classes as $class): ?>
+                                <option value="<?= $class['id'] ?>" <?= ($selectedClass == $class['id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($class['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">&nbsp;</label>
+                    <div>
+                        <button type="submit" class="btn btn-info w-100">
+                            <i class="bi bi-search me-2"></i>Filter Records
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <?php if ($selectedDate || $selectedClass): ?>
+                <div class="text-end">
+                    <a href="/reports/attendance" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-x-circle me-1"></i>Clear Filters
+                    </a>
+                </div>
+            <?php endif; ?>
+        </form>
+    </div>
+</div>
+
 <!-- Summary Cards -->
 <div class="row mb-4">
     <div class="col-md-3">
@@ -46,7 +100,19 @@
 <!-- Data Table -->
 <div class="card">
     <div class="card-header">
-        <h6 class="mb-0">Recent Attendance Records</h6>
+        <h6 class="mb-0">
+            <?php if ($selectedDate || $selectedClass): ?>
+                Filtered Attendance Records
+                <?php if ($selectedClass): ?>
+                    - Class: <?= htmlspecialchars($selectedClass) ?>
+                <?php endif; ?>
+                <?php if ($selectedDate): ?>
+                    - Date: <?= date('M d, Y', strtotime($selectedDate)) ?>
+                <?php endif; ?>
+            <?php else: ?>
+                Recent Attendance Records
+            <?php endif; ?>
+        </h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
