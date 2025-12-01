@@ -54,6 +54,10 @@ $router->group(['middleware' => 'auth'], function($router) {
     $router->get('/announcements', 'AnnouncementController@index');
     $router->get('/announcements/create', 'AnnouncementController@create');
     $router->post('/announcements', 'AnnouncementController@store', ['csrf']);
+    $router->get('/announcements/{id}', 'AnnouncementController@show');
+    $router->get('/announcements/{id}/edit', 'AnnouncementController@edit');
+    $router->put('/announcements/{id}', 'AnnouncementController@update', ['csrf']);
+    $router->delete('/announcements/{id}', 'AnnouncementController@destroy', ['csrf']);
 
     $router->get('/materials', 'MaterialController@index');
 

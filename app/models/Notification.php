@@ -32,6 +32,14 @@ class Notification extends Model
         return $result['count'] ?? 0;
     }
 
+    public function getUnreadNotifications($userId)
+    {
+        return $this->db->fetchAll(
+            "SELECT * FROM notifications WHERE user_id = ? AND is_read = false ORDER BY created_at DESC",
+            [$userId]
+        );
+    }
+
     public function markAllAsRead($userId)
     {
         return $this->db->execute(

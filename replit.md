@@ -41,26 +41,72 @@ The system employs a custom MVC architecture for clear separation of concerns, e
    
 2. **Notification Counter Badge** - Implemented dynamic unread notification count
    - Badge displays unread notification count in navbar
+   - Positioned exactly at top-right corner of bell icon, touching it
    - Updates in real-time when notifications are marked as read
    - Auto-refreshes every 30 seconds
    - Shows only when there are unread notifications
    
-3. **Database Query Fixes** - Fixed PostgreSQL boolean type handling
+3. **Clickable Notifications** - Notifications link to relevant pages
+   - Click notification → auto-marks as read → navigates to relevant page
+   - CSRF token properly integrated in fetch requests
+   - Link field in database allows dynamic routing
+
+4. **Database Query Fixes** - Fixed PostgreSQL boolean type handling
    - Changed `is_read = 0` to `is_read = false` (proper boolean comparison)
    - Changed `is_read = 1` to `is_read = true` (proper boolean assignment)
    - Applied fixes across: `markAsRead()`, `markAllAsRead()`, `getUnreadCount()` methods
 
+### Announcements Module Implementation
+1. **Model Created** - `app/models/Announcement.php`
+   - `getAllActive()` - Get all visible announcements
+   - `getByUser()` - Get announcements by publisher
+   - `incrementViews()` - Track announcement views
+
+2. **Controller Created** - `app/controllers/AnnouncementController.php`
+   - Full CRUD operations: Create, Read, Update, Delete
+   - Validation for required fields
+   - Error handling with user-friendly messages
+
+3. **Routes Added** - `routes/web.php`
+   - `GET /announcements` - List all announcements
+   - `GET /announcements/create` - Create form
+   - `POST /announcements` - Store new announcement
+   - `GET /announcements/{id}` - View announcement
+   - `GET /announcements/{id}/edit` - Edit form
+   - `PUT /announcements/{id}` - Update announcement
+   - `DELETE /announcements/{id}` - Delete announcement
+
+4. **Views Created**
+   - `index.php` - List announcements with priority badges, visibility status, view count
+   - `create.php` - Form to create new announcement (title, content, audience, priority, dates)
+   - `show.php` - View single announcement with details panel
+   - `edit.php` - Edit existing announcement
+
+5. **Dummy Data Added** - 10 meaningful announcements
+   - Academic Calendar Released (High Priority)
+   - School Closed for Maintenance
+   - Mid-Term Exam Results
+   - Sports Day Registration
+   - Fee Payment Due (URGENT)
+   - Library Opening Ceremony
+   - Staff Development Workshop
+   - Admissions for 2026-27
+   - COVID Safety Guidelines
+   - Parent-Teacher Meeting
+
 ### Files Modified
 - `app/views/notifications/index.php` - Added dark mode class, improved styling
 - `app/views/layouts/header.php` - Added dark mode CSS for notifications
-- `app/views/layouts/navbar.php` - Added ID to notification badge for dynamic updates
+- `app/views/layouts/navbar.php` - Fixed notification badge positioning to touch bell icon
 - `app/views/layouts/footer.php` - Added JavaScript to fetch and update notification count
-- `app/models/Notification.php` - Fixed boolean comparisons in SQL queries
+- `app/models/Notification.php` - Fixed boolean comparisons, added `getUnreadNotifications()` method
+- `app/controllers/NotificationController.php` - Fixed database access, CSRF integration
+- `routes/web.php` - Added announcements CRUD routes
 
 ### Dummy Data Status
-- **11 meaningful notifications** added for admin user (ID: 53)
-- **9 unread**, **2 read** notifications available
-- All CRUD operations fully functional
+- **Notifications**: 11 meaningful notifications for admin user (ID: 53) - 9 unread, 2 read
+- **Announcements**: 10 announcements with varied priorities, audiences, and dates
+- All CRUD operations fully functional for both modules
 
 ## External Dependencies
 - **Database**: PostgreSQL (Neon) accessed via PHP's PDO extension.
