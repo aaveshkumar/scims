@@ -63,7 +63,7 @@
             // Only initialize if loader element exists
             if (!loader) return;
             
-            // Show loader on all link clicks (except # links, logout, and sidebar links)
+            // Show loader on all link clicks (except # links, logout, sidebar links, and external links)
             document.addEventListener('click', function(e) {
                 const target = e.target.closest('a');
                 if (target && target.getAttribute('href') && 
