@@ -50,10 +50,7 @@
                                     <a href="/staff/<?= $member['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button onclick="toggleStatus('staff', <?= $member['id'] ?>)" class="btn btn-sm btn-<?= $member['status'] === 'active' ? 'secondary' : 'success' ?>" title="Toggle Status">
-                                        <i class="bi bi-<?= $member['status'] === 'active' ? 'x-circle' : 'check-circle' ?>"></i>
-                                    </button>
-                                    <button onclick="confirmDelete('/staff/<?= $member['id'] ?>')" class="btn btn-sm btn-danger" title="Delete">
+                                    <button onclick="confirmDelete('/staff/<?= $member['id'] ?>', 'Are you sure you want to delete this staff member?', this)" class="btn btn-sm btn-danger" title="Delete">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>

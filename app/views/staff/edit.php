@@ -71,6 +71,16 @@
                     <input type="date" name="date_of_birth" class="form-control" value="<?= $staff['date_of_birth'] ?? '' ?>">
                 </div>
                 <div class="col-md-4 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="active" <?= $staff['status'] === 'active' ? 'selected' : '' ?>>Active</option>
+                        <option value="inactive" <?= $staff['status'] === 'inactive' ? 'selected' : '' ?>>Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
                     <label class="form-label">Qualification</label>
                     <input type="text" name="qualification" class="form-control" value="<?= htmlspecialchars($staff['qualification'] ?? '') ?>">
                 </div>

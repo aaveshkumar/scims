@@ -63,8 +63,8 @@
                     </select>
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label class="form-label">Status</label>
-                    <select name="status" class="form-select">
+                    <label class="form-label">Status *</label>
+                    <select name="status" class="form-select" required>
                         <option value="active" <?= $student['status'] === 'active' ? 'selected' : '' ?>>Active</option>
                         <option value="inactive" <?= $student['status'] === 'inactive' ? 'selected' : '' ?>>Inactive</option>
                     </select>
