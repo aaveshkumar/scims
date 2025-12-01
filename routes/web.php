@@ -201,56 +201,58 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/departments/{id}/delete', 'DepartmentController@destroy', ['csrf']);
         
         // Academic Extensions
-        $router->get('/syllabus', 'SyllabusController@index');
-        $router->get('/syllabus/create', 'SyllabusController@create');
-        $router->post('/syllabus', 'SyllabusController@store', ['csrf']);
-        $router->get('/syllabus/{id}', 'SyllabusController@show');
-        $router->get('/syllabus/{id}/edit', 'SyllabusController@edit');
-        $router->post('/syllabus/{id}', 'SyllabusController@update', ['csrf']);
-        $router->delete('/syllabus/{id}', 'SyllabusController@destroy', ['csrf']);
-        
-        $router->get('/lesson-plans', 'LessonPlanController@index');
-        $router->get('/lesson-plans/create', 'LessonPlanController@create');
-        $router->post('/lesson-plans', 'LessonPlanController@store', ['csrf']);
-        $router->get('/lesson-plans/{id}', 'LessonPlanController@show');
-        $router->get('/lesson-plans/{id}/edit', 'LessonPlanController@edit');
-        $router->post('/lesson-plans/{id}', 'LessonPlanController@update', ['csrf']);
-        $router->delete('/lesson-plans/{id}', 'LessonPlanController@destroy', ['csrf']);
-        
-        $router->get('/question-bank', 'QuestionBankController@index');
-        $router->get('/question-bank/create', 'QuestionBankController@create');
-        $router->post('/question-bank', 'QuestionBankController@store', ['csrf']);
-        $router->get('/question-bank/{id}', 'QuestionBankController@show');
-        $router->get('/question-bank/{id}/edit', 'QuestionBankController@edit');
-        $router->post('/question-bank/{id}', 'QuestionBankController@update', ['csrf']);
-        $router->delete('/question-bank/{id}', 'QuestionBankController@destroy', ['csrf']);
-        
-        $router->get('/academic-calendar', 'AcademicCalendarController@index');
-        $router->get('/academic-calendar/create', 'AcademicCalendarController@create');
-        $router->post('/academic-calendar', 'AcademicCalendarController@store', ['csrf']);
-        $router->get('/academic-calendar/{id}', 'AcademicCalendarController@show');
-        $router->get('/academic-calendar/{id}/edit', 'AcademicCalendarController@edit');
-        $router->post('/academic-calendar/{id}', 'AcademicCalendarController@update', ['csrf']);
-        $router->delete('/academic-calendar/{id}', 'AcademicCalendarController@destroy', ['csrf']);
-        
-        $router->get('/assignments', 'AssignmentController@index');
-        $router->get('/assignments/create', 'AssignmentController@create');
-        $router->post('/assignments', 'AssignmentController@store', ['csrf']);
-        $router->get('/assignments/{id}', 'AssignmentController@show');
-        $router->get('/assignments/{id}/edit', 'AssignmentController@edit');
-        $router->post('/assignments/{id}', 'AssignmentController@update', ['csrf']);
-        $router->post('/assignments/{id}/delete', 'AssignmentController@destroy', ['csrf']);
-        $router->post('/assignments/{id}/grade-submission', 'AssignmentController@gradeSubmission', ['csrf']);
-        
-        $router->get('/quizzes', 'QuizController@index');
-        $router->get('/quizzes/create', 'QuizController@create');
-        $router->post('/quizzes', 'QuizController@store', ['csrf']);
-        $router->get('/quizzes/{id}', 'QuizController@show');
-        $router->get('/quizzes/{id}/edit', 'QuizController@edit');
-        $router->post('/quizzes/{id}', 'QuizController@update', ['csrf']);
-        $router->post('/quizzes/{id}/delete', 'QuizController@destroy', ['csrf']);
-        $router->get('/quizzes/{id}/add-questions', 'QuizController@addQuestions');
-        $router->post('/quizzes/{id}/add-questions', 'QuizController@storeQuestions', ['csrf']);
+        $router->group(['prefix' => '/academics'], function($router) {
+            $router->get('/syllabus', 'SyllabusController@index');
+            $router->get('/syllabus/create', 'SyllabusController@create');
+            $router->post('/syllabus', 'SyllabusController@store', ['csrf']);
+            $router->get('/syllabus/{id}', 'SyllabusController@show');
+            $router->get('/syllabus/{id}/edit', 'SyllabusController@edit');
+            $router->post('/syllabus/{id}', 'SyllabusController@update', ['csrf']);
+            $router->delete('/syllabus/{id}', 'SyllabusController@destroy', ['csrf']);
+            
+            $router->get('/lesson-plans', 'LessonPlanController@index');
+            $router->get('/lesson-plans/create', 'LessonPlanController@create');
+            $router->post('/lesson-plans', 'LessonPlanController@store', ['csrf']);
+            $router->get('/lesson-plans/{id}', 'LessonPlanController@show');
+            $router->get('/lesson-plans/{id}/edit', 'LessonPlanController@edit');
+            $router->post('/lesson-plans/{id}', 'LessonPlanController@update', ['csrf']);
+            $router->delete('/lesson-plans/{id}', 'LessonPlanController@destroy', ['csrf']);
+            
+            $router->get('/question-bank', 'QuestionBankController@index');
+            $router->get('/question-bank/create', 'QuestionBankController@create');
+            $router->post('/question-bank', 'QuestionBankController@store', ['csrf']);
+            $router->get('/question-bank/{id}', 'QuestionBankController@show');
+            $router->get('/question-bank/{id}/edit', 'QuestionBankController@edit');
+            $router->post('/question-bank/{id}', 'QuestionBankController@update', ['csrf']);
+            $router->delete('/question-bank/{id}', 'QuestionBankController@destroy', ['csrf']);
+            
+            $router->get('/academic-calendar', 'AcademicCalendarController@index');
+            $router->get('/academic-calendar/create', 'AcademicCalendarController@create');
+            $router->post('/academic-calendar', 'AcademicCalendarController@store', ['csrf']);
+            $router->get('/academic-calendar/{id}', 'AcademicCalendarController@show');
+            $router->get('/academic-calendar/{id}/edit', 'AcademicCalendarController@edit');
+            $router->post('/academic-calendar/{id}', 'AcademicCalendarController@update', ['csrf']);
+            $router->delete('/academic-calendar/{id}', 'AcademicCalendarController@destroy', ['csrf']);
+            
+            $router->get('/assignments', 'AssignmentController@index');
+            $router->get('/assignments/create', 'AssignmentController@create');
+            $router->post('/assignments', 'AssignmentController@store', ['csrf']);
+            $router->get('/assignments/{id}', 'AssignmentController@show');
+            $router->get('/assignments/{id}/edit', 'AssignmentController@edit');
+            $router->post('/assignments/{id}', 'AssignmentController@update', ['csrf']);
+            $router->post('/assignments/{id}/delete', 'AssignmentController@destroy', ['csrf']);
+            $router->post('/assignments/{id}/grade-submission', 'AssignmentController@gradeSubmission', ['csrf']);
+            
+            $router->get('/quizzes', 'QuizController@index');
+            $router->get('/quizzes/create', 'QuizController@create');
+            $router->post('/quizzes', 'QuizController@store', ['csrf']);
+            $router->get('/quizzes/{id}', 'QuizController@show');
+            $router->get('/quizzes/{id}/edit', 'QuizController@edit');
+            $router->post('/quizzes/{id}', 'QuizController@update', ['csrf']);
+            $router->post('/quizzes/{id}/delete', 'QuizController@destroy', ['csrf']);
+            $router->get('/quizzes/{id}/add-questions', 'QuizController@addQuestions');
+            $router->post('/quizzes/{id}/add-questions', 'QuizController@storeQuestions', ['csrf']);
+        });
         
         // Finance Extensions
         $router->get('/fee-structure', 'FeeStructureController@index');
