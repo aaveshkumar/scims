@@ -141,6 +141,15 @@ class StaffController
         // Get all departments
         $departments = db()->fetchAll("SELECT * FROM departments WHERE status = 'active' ORDER BY name");
 
+        // Get current role
+        $currentRoles = db()->fetchAll(
+            "SELECT r.name FROM roles r 
+             INNER JOIN user_roles ur ON r.id = ur.role_id 
+             WHERE ur.user_id = ?",
+            [$staff['user_id']]
+        );
+        $staff['current_role'] = !empty($currentRoles) ? $currentRoles[0]['name'] : 'teacher';
+
         return view('staff.edit', ['staff' => $staff, 'departments' => $departments]);
     }
 
@@ -192,6 +201,23 @@ class StaffController
                 'account_number' => $request->post('account_number'),
                 'emergency_contact' => $request->post('emergency_contact')
             ]);
+
+            // Handle role update if user is admin
+            if (auth() && auth()->hasRole('admin') && $request->post('role')) {
+                $newRole = $request->post('role');
+                $roleModel = new Role();
+                $newRoleData = $roleModel->findByName($newRole);
+
+                if ($newRoleData) {
+                    // Delete old roles
+                    db()->execute("DELETE FROM user_roles WHERE user_id = ?", [$staff['user_id']]);
+                    // Assign new role
+                    db()->execute(
+                        "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)",
+                        [$staff['user_id'], $newRoleData['id']]
+                    );
+                }
+            }
 
             flash('success', 'Staff member updated successfully');
             return redirect('/staff/' . $id);

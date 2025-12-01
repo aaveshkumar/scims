@@ -56,6 +56,20 @@
                 </div>
             </div>
 
+            <?php if (auth() && auth()->hasRole('admin')): ?>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Role</label>
+                    <select name="role" class="form-select">
+                        <option value="teacher" <?= ($staff['current_role'] ?? '') === 'teacher' ? 'selected' : '' ?>>Teacher</option>
+                        <option value="admin" <?= ($staff['current_role'] ?? '') === 'admin' ? 'selected' : '' ?>>Admin</option>
+                        <option value="accountant" <?= ($staff['current_role'] ?? '') === 'accountant' ? 'selected' : '' ?>>Accountant</option>
+                        <option value="librarian" <?= ($staff['current_role'] ?? '') === 'librarian' ? 'selected' : '' ?>>Librarian</option>
+                    </select>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Gender</label>
