@@ -122,6 +122,11 @@
                                     <a href="/admissions/<?= $admission['id'] ?>" class="btn btn-sm btn-info" title="View Details">
                                         <i class="bi bi-eye"></i>
                                     </a>
+                                    <?php if (($admission['status'] === 'pending' || $admission['status'] === 'waitlisted') && hasRole('admin')): ?>
+                                        <a href="/admissions/<?= $admission['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit Application">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    <?php endif; ?>
                                     <?php if ($admission['status'] === 'pending' && hasRole('admin')): ?>
                                         <form method="POST" action="/admissions/<?= $admission['id'] ?>/approve" class="d-inline">
                                             <?= csrf_field() ?>
