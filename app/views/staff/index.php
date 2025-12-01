@@ -7,31 +7,39 @@
     </a>
 </div>
 
+<?php if (empty($staffByRole)): ?>
 <div class="card">
-    <div class="card-header">
-        <h5 class="mb-0">All Staff Members</h5>
+    <div class="card-body text-center py-5 text-muted">
+        <p class="mb-0">No staff members found</p>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Employee ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Designation</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($staff)): ?>
+</div>
+<?php else: ?>
+    <?php foreach ($staffByRole as $role => $members): ?>
+    <div class="card mb-4">
+        <div class="card-header" style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <span class="badge bg-primary me-2"><?= count($members) ?></span>
+                    <?= ucfirst($role) ?>
+                </h5>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">No staff members found</td>
+                            <th>Employee ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Designation</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
-                    <?php else: ?>
-                        <?php foreach ($staff as $member): ?>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($members as $member): ?>
                             <tr>
                                 <td><strong><?= htmlspecialchars($member['employee_id']) ?></strong></td>
                                 <td><?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?></td>
@@ -56,11 +64,12 @@
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+    <?php endforeach; ?>
+<?php endif; ?>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

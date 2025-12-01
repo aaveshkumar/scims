@@ -13,14 +13,44 @@ class StaffController
 
     public function index($request)
     {
+        $staffByRole = [];
+        
+        // Get all staff with their roles
         $staff = db()->fetchAll(
-            "SELECT s.*, u.first_name, u.last_name, u.email, u.phone
+            "SELECT s.*, u.first_name, u.last_name, u.email, u.phone,
+                    COALESCE(r.name, 'teacher') as role
              FROM staff s
              INNER JOIN users u ON s.user_id = u.id
-             ORDER BY s.created_at DESC"
+             LEFT JOIN user_roles ur ON u.id = ur.user_id
+             LEFT JOIN roles r ON ur.role_id = r.id
+             ORDER BY r.name, s.created_at DESC"
         );
 
-        return view('staff.index', ['staff' => $staff]);
+        // Group by role
+        foreach ($staff as $member) {
+            $role = $member['role'] ?: 'teacher';
+            if (!isset($staffByRole[$role])) {
+                $staffByRole[$role] = [];
+            }
+            $staffByRole[$role][] = $member;
+        }
+
+        // Sort roles in a specific order
+        $roleOrder = ['admin', 'teacher', 'accountant', 'librarian'];
+        $sortedStaffByRole = [];
+        foreach ($roleOrder as $role) {
+            if (isset($staffByRole[$role])) {
+                $sortedStaffByRole[$role] = $staffByRole[$role];
+            }
+        }
+        // Add any remaining roles not in the order
+        foreach ($staffByRole as $role => $members) {
+            if (!in_array($role, $roleOrder)) {
+                $sortedStaffByRole[$role] = $members;
+            }
+        }
+
+        return view('staff.index', ['staffByRole' => $sortedStaffByRole]);
     }
 
     public function create($request)
