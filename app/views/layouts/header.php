@@ -281,13 +281,13 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            display: none;
+            display: none !important;
             justify-content: center;
             align-items: center;
             z-index: 9999;
         }
         #page-loader.active {
-            display: flex;
+            display: none !important;
         }
         .loader-spinner {
             width: 50px;
