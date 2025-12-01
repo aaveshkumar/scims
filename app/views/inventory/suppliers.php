@@ -101,7 +101,6 @@
                         <th>Company Name</th>
                         <th>Contact Person</th>
                         <th>Phone</th>
-                        <th>Email</th>
                         <th>City</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -110,7 +109,7 @@
                 <tbody>
                     <?php if (empty($suppliers)): ?>
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">
+                            <td colspan="7" class="text-center text-muted py-4">
                                 <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                 No suppliers found. Click "Add Supplier" to get started.
                             </td>
@@ -122,7 +121,6 @@
                                 <td><?= htmlspecialchars($supplier['name']) ?></td>
                                 <td><?= htmlspecialchars($supplier['contact_person'] ?? 'N/A') ?></td>
                                 <td><?= htmlspecialchars($supplier['phone'] ?? 'N/A') ?></td>
-                                <td><?= htmlspecialchars($supplier['email'] ?? 'N/A') ?></td>
                                 <td><?= htmlspecialchars($supplier['city'] ?? 'N/A') ?></td>
                                 <td>
                                     <span class="badge bg-<?= ($supplier['status'] ?? 'active') == 'active' ? 'success' : 'secondary' ?>">
@@ -130,10 +128,10 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-info" title="View" data-bs-toggle="modal" data-bs-target="#viewSupplierModal<?= $supplier['id'] ?>">
+                                    <button class="btn btn-sm btn-info" title="View Details" data-bs-toggle="modal" data-bs-target="#viewSupplierModal" data-supplier-id="<?= $supplier['id'] ?>" onclick="showSupplierDetails(this)">
                                         <i class="bi bi-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-warning" title="Edit" data-bs-toggle="modal" data-bs-target="#editSupplierModal<?= $supplier['id'] ?>">
+                                    <button class="btn btn-sm btn-warning" title="Edit" data-bs-toggle="modal" data-bs-target="#editSupplierModal" data-supplier-id="<?= $supplier['id'] ?>" onclick="loadSupplierForEdit(this)">
                                         <i class="bi bi-pencil"></i>
                                     </button>
                                     <form method="POST" action="/inventory/suppliers/<?= $supplier['id'] ?>/delete" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this supplier?');">
@@ -144,111 +142,102 @@
                                     </form>
                                 </td>
                             </tr>
-                            
-                            <!-- View Modal -->
-                            <div class="modal fade" id="viewSupplierModal<?= $supplier['id'] ?>" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title"><i class="bi bi-eye me-2"></i>Supplier Details</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <table class="table table-borderless">
-                                                <tr><th>Code:</th><td><?= htmlspecialchars($supplier['supplier_code']) ?></td></tr>
-                                                <tr><th>Company:</th><td><?= htmlspecialchars($supplier['name']) ?></td></tr>
-                                                <tr><th>Contact Person:</th><td><?= htmlspecialchars($supplier['contact_person'] ?? 'N/A') ?></td></tr>
-                                                <tr><th>Phone:</th><td><?= htmlspecialchars($supplier['phone'] ?? 'N/A') ?></td></tr>
-                                                <tr><th>Email:</th><td><?= htmlspecialchars($supplier['email'] ?? 'N/A') ?></td></tr>
-                                                <tr><th>Address:</th><td><?= htmlspecialchars($supplier['address'] ?? 'N/A') ?></td></tr>
-                                                <tr><th>City:</th><td><?= htmlspecialchars($supplier['city'] ?? 'N/A') ?></td></tr>
-                                                <tr><th>Country:</th><td><?= htmlspecialchars($supplier['country'] ?? 'N/A') ?></td></tr>
-                                                <tr><th>Payment Terms:</th><td><?= htmlspecialchars($supplier['payment_terms'] ?? 'N/A') ?></td></tr>
-                                                <tr><th>Status:</th><td><span class="badge bg-<?= ($supplier['status'] ?? 'active') == 'active' ? 'success' : 'secondary' ?>"><?= ucfirst($supplier['status'] ?? 'active') ?></span></td></tr>
-                                            </table>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Edit Modal -->
-                            <div class="modal fade" id="editSupplierModal<?= $supplier['id'] ?>" tabindex="-1">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <form method="POST" action="/inventory/suppliers/<?= $supplier['id'] ?>">
-                                            <?= csrf_field() ?>
-                                            <div class="modal-header">
-                                                <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Supplier</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Supplier Code *</label>
-                                                        <input type="text" name="supplier_code" class="form-control" value="<?= htmlspecialchars($supplier['supplier_code']) ?>" required>
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Company Name *</label>
-                                                        <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($supplier['name']) ?>" required>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Contact Person</label>
-                                                        <input type="text" name="contact_person" class="form-control" value="<?= htmlspecialchars($supplier['contact_person'] ?? '') ?>">
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Phone</label>
-                                                        <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($supplier['phone'] ?? '') ?>">
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Email</label>
-                                                    <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($supplier['email'] ?? '') ?>">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Address</label>
-                                                    <textarea name="address" class="form-control" rows="2"><?= htmlspecialchars($supplier['address'] ?? '') ?></textarea>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">City</label>
-                                                        <input type="text" name="city" class="form-control" value="<?= htmlspecialchars($supplier['city'] ?? '') ?>">
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Country</label>
-                                                        <input type="text" name="country" class="form-control" value="<?= htmlspecialchars($supplier['country'] ?? '') ?>">
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-8 mb-3">
-                                                        <label class="form-label">Payment Terms</label>
-                                                        <input type="text" name="payment_terms" class="form-control" value="<?= htmlspecialchars($supplier['payment_terms'] ?? '') ?>">
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label class="form-label">Status</label>
-                                                        <select name="status" class="form-select">
-                                                            <option value="active" <?= ($supplier['status'] ?? 'active') == 'active' ? 'selected' : '' ?>>Active</option>
-                                                            <option value="inactive" <?= ($supplier['status'] ?? '') == 'inactive' ? 'selected' : '' ?>>Inactive</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-primary">Update Supplier</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- View Supplier Modal (Single reusable modal) -->
+<div class="modal fade" id="viewSupplierModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-eye me-2"></i>Supplier Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="supplierDetailsContent">
+                    <p class="text-muted">Loading...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Supplier Modal (Single reusable modal) -->
+<div class="modal fade" id="editSupplierModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="POST" id="editSupplierForm">
+                <?= csrf_field() ?>
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Supplier</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Supplier Code *</label>
+                            <input type="text" name="supplier_code" id="editSupplierCode" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Company Name *</label>
+                            <input type="text" name="name" id="editSupplierName" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Contact Person</label>
+                            <input type="text" name="contact_person" id="editContactPerson" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" id="editPhone" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" id="editEmail" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <textarea name="address" id="editAddress" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">City</label>
+                            <input type="text" name="city" id="editCity" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Country</label>
+                            <input type="text" name="country" id="editCountry" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label">Payment Terms</label>
+                            <input type="text" name="payment_terms" id="editPaymentTerms" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Status</label>
+                            <select name="status" id="editStatus" class="form-select">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Supplier</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -357,5 +346,104 @@
         </div>
     </div>
 </div>
+
+<!-- Store all supplier data in hidden elements for quick access -->
+<?php foreach ($suppliers ?? [] as $supplier): ?>
+    <div class="d-none" id="supplierData<?= $supplier['id'] ?>" data-supplier="<?= htmlspecialchars(json_encode($supplier), ENT_QUOTES, 'UTF-8') ?>"></div>
+<?php endforeach; ?>
+
+<script>
+function showSupplierDetails(button) {
+    const supplierId = button.getAttribute('data-supplier-id');
+    const supplierDataElement = document.getElementById('supplierData' + supplierId);
+    const supplier = JSON.parse(supplierDataElement.getAttribute('data-supplier'));
+    
+    const statusBadge = supplier.status === 'active' ? 'success' : 'secondary';
+    
+    const html = `
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Code:</strong></p>
+                <p>${supplier.supplier_code}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Status:</strong></p>
+                <p><span class="badge bg-${statusBadge}">${supplier.status.charAt(0).toUpperCase() + supplier.status.slice(1)}</span></p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <p><strong>Company Name:</strong></p>
+                <p>${supplier.name}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Contact Person:</strong></p>
+                <p>${supplier.contact_person || 'N/A'}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Phone:</strong></p>
+                <p>${supplier.phone || 'N/A'}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <p><strong>Email:</strong></p>
+                <p>${supplier.email || 'N/A'}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <p><strong>Address:</strong></p>
+                <p>${supplier.address || 'N/A'}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>City:</strong></p>
+                <p>${supplier.city || 'N/A'}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Country:</strong></p>
+                <p>${supplier.country || 'N/A'}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <p><strong>Payment Terms:</strong></p>
+                <p>${supplier.payment_terms || 'N/A'}</p>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('supplierDetailsContent').innerHTML = html;
+}
+
+function loadSupplierForEdit(button) {
+    const supplierId = button.getAttribute('data-supplier-id');
+    const supplierDataElement = document.getElementById('supplierData' + supplierId);
+    const supplier = JSON.parse(supplierDataElement.getAttribute('data-supplier'));
+    
+    document.getElementById('editSupplierCode').value = supplier.supplier_code;
+    document.getElementById('editSupplierName').value = supplier.name;
+    document.getElementById('editContactPerson').value = supplier.contact_person || '';
+    document.getElementById('editPhone').value = supplier.phone || '';
+    document.getElementById('editEmail').value = supplier.email || '';
+    document.getElementById('editAddress').value = supplier.address || '';
+    document.getElementById('editCity').value = supplier.city || '';
+    document.getElementById('editCountry').value = supplier.country || '';
+    document.getElementById('editPaymentTerms').value = supplier.payment_terms || '';
+    document.getElementById('editStatus').value = supplier.status || 'active';
+    
+    document.getElementById('editSupplierForm').action = '/inventory/suppliers/' + supplierId;
+}
+</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
