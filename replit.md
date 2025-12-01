@@ -232,9 +232,11 @@ The system employs a custom MVC architecture for clear separation of concerns, e
 ### Fixed Issues (December 1, 2025 - Final Updates)
 1. **Attendance Report Database Query** - Fixed getAllStudents() to properly join students and users tables
 2. **Report Model Architecture** - Uses Database::getInstance() and proper query methods (fetchAll, fetchOne)
-3. **Attendance CRUD Routes** - Added 6 routes for Create, Read, Update, Delete operations
+3. **Attendance CRUD Routes** - Added 6 routes for Create, Read, Update, Delete operations with proper ordering
 4. **Forms & Validation** - Created attendance-create.php and attendance-edit.php with proper form handling
 5. **CSRF Protection** - All POST/PUT/DELETE operations protected with CSRF tokens
+6. **Navbar Link Fixed** - Updated navbar to link to `/reports/attendance` instead of old `/attendance/report`
+7. **Route Ordering Fixed** - Specific routes (create, {id}/edit) now come before generic `/attendance` route
 
 ### Dummy Data Status
 - **Notifications**: 11 meaningful notifications - 9 unread, 2 read

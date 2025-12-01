@@ -55,7 +55,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow">
                     <li><h6 class="dropdown-header">Academic Reports</h6></li>
-                    <li><a class="dropdown-item" href="/attendance/report"><i class="bi bi-calendar-check me-2"></i> Attendance Report</a></li>
+                    <li><a class="dropdown-item" href="/reports/attendance"><i class="bi bi-calendar-check me-2"></i> Attendance Report</a></li>
                     <li><a class="dropdown-item" href="/marks"><i class="bi bi-award me-2"></i> Marks Report</a></li>
                     <?php if (hasRole('admin')): ?>
                     <li><hr class="dropdown-divider"></li>

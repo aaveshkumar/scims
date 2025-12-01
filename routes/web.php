@@ -472,13 +472,15 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/inventory/suppliers/{id}', 'InventoryController@updateSupplier', ['csrf']);
         $router->post('/inventory/suppliers/{id}/delete', 'InventoryController@deleteSupplier', ['csrf']);
         
-        // Reports
-        $router->get('/reports/attendance', 'ReportController@attendance');
+        // Reports - Attendance (specific routes before generic {id} routes)
         $router->get('/reports/attendance/create', 'ReportController@attendanceCreate');
         $router->post('/reports/attendance/store', 'ReportController@attendanceStore', ['csrf']);
         $router->get('/reports/attendance/{id}/edit', 'ReportController@attendanceEdit');
         $router->post('/reports/attendance/{id}/update', 'ReportController@attendanceUpdate', ['csrf']);
         $router->post('/reports/attendance/{id}/delete', 'ReportController@attendanceDelete', ['csrf']);
+        $router->get('/reports/attendance', 'ReportController@attendance');
+        
+        // Reports - Other
         $router->get('/reports/academic', 'ReportController@academic');
         $router->get('/reports/financial', 'ReportController@financial');
         $router->get('/reports/custom', 'ReportController@custom');
