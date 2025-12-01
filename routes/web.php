@@ -71,9 +71,8 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/support/{id}', 'SupportMessageController@show');
     });
 
-    // Admin Support Tickets Management
+    // Admin Support Tickets Management - Reply and Close
     $router->group(['middleware' => 'role:admin'], function($router) {
-        $router->get('/support', 'SupportMessageController@admin');
         $router->get('/support/{id}/reply', 'SupportMessageController@reply');
         $router->post('/support/{id}/reply', 'SupportMessageController@sendReply', ['csrf']);
         $router->post('/support/{id}/close', 'SupportMessageController@closeTicket', ['csrf']);

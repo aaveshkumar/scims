@@ -12,6 +12,17 @@ class SupportMessageController
     public function index($request)
     {
         try {
+            // If user is admin, show admin dashboard instead
+            if (hasRole('admin')) {
+                $messages = $this->supportMessageModel->getForAdmin();
+                
+                return view('support.admin-index', [
+                    'title' => 'Support Messages - Admin',
+                    'messages' => $messages
+                ]);
+            }
+
+            // For regular users, show their own messages
             $messages = $this->supportMessageModel->getForUser(auth()['id']);
             
             return view('support.index', [
