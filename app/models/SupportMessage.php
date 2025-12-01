@@ -7,16 +7,17 @@ class SupportMessage extends Model
 
     public function getForUser($userId)
     {
-        return $this->where('user_id', $userId)
-                    ->orderBy('created_at', 'DESC')
-                    ->get();
+        return $this->db->fetchAll(
+            "SELECT * FROM support_messages WHERE user_id = ? ORDER BY created_at DESC",
+            [$userId]
+        );
     }
 
     public function getForAdmin()
     {
-        return $this->orderBy('status', 'ASC')
-                    ->orderBy('created_at', 'DESC')
-                    ->get();
+        return $this->db->fetchAll(
+            "SELECT * FROM support_messages ORDER BY status ASC, created_at DESC"
+        );
     }
 
     public function getOpenTickets()

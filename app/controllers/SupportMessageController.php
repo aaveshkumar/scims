@@ -30,7 +30,8 @@ class SupportMessageController
                 'messages' => $messages
             ]);
         } catch (Exception $e) {
-            flash('error', 'Failed to load messages');
+            error_log('Support index error: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
+            flash('error', 'Failed to load messages: ' . $e->getMessage());
             return redirect('/dashboard');
         }
     }
