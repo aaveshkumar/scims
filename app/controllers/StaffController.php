@@ -123,7 +123,7 @@ class StaffController
     {
         $staff = db()->fetchOne(
             "SELECT s.id, s.user_id, s.designation, s.department, s.qualification,
-                    s.experience_years, s.salary, s.join_date, s.bank_name, s.account_number,
+                    s.experience_years, s.salary, s.joining_date, s.bank_name, s.account_number,
                     s.emergency_contact, s.status,
                     u.first_name, u.last_name, u.email, u.phone, u.gender, 
                     u.date_of_birth, u.address
