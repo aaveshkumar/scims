@@ -50,7 +50,8 @@ class SupportMessageController
         ];
 
         if (!validate($request->post(), $rules)) {
-            return redirect('/support/create')->with('errors', getValidationErrors());
+            flash('error', 'Validation failed. ' . implode(', ', array_map(fn($e) => $e[0], getValidationErrors())));
+            return redirect('/support/create');
         }
 
         try {
@@ -133,7 +134,8 @@ class SupportMessageController
         $rules = ['admin_reply' => 'required|min:5'];
 
         if (!validate($request->post(), $rules)) {
-            return redirect("/support/$id/reply")->with('errors', getValidationErrors());
+            flash('error', 'Validation failed. ' . implode(', ', array_map(fn($e) => $e[0], getValidationErrors())));
+            return redirect("/support/$id/reply");
         }
 
         try {
