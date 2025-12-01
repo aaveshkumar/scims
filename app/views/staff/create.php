@@ -50,10 +50,11 @@
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Role *</label>
                     <select name="role" class="form-select" required>
-                        <option value="teacher">Teacher</option>
-                        <option value="admin">Admin</option>
-                        <option value="accountant">Accountant</option>
-                        <option value="librarian">Librarian</option>
+                        <?php foreach ($allRoles as $role): ?>
+                            <option value="<?= htmlspecialchars($role['name']) ?>">
+                                <?= htmlspecialchars(ucfirst($role['name'])) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <?php else: ?>

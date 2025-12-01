@@ -58,7 +58,10 @@ class StaffController
         // Get all departments
         $departments = db()->fetchAll("SELECT * FROM departments WHERE status = 'active' ORDER BY name");
         
-        return view('staff.create', ['departments' => $departments]);
+        // Get all available roles
+        $allRoles = db()->fetchAll("SELECT * FROM roles ORDER BY name");
+        
+        return view('staff.create', ['departments' => $departments, 'allRoles' => $allRoles]);
     }
 
     public function store($request)
