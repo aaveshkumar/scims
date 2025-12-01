@@ -61,10 +61,11 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Role</label>
                     <select name="role" class="form-select">
-                        <option value="teacher" <?= ($staff['current_role'] ?? '') === 'teacher' ? 'selected' : '' ?>>Teacher</option>
-                        <option value="admin" <?= ($staff['current_role'] ?? '') === 'admin' ? 'selected' : '' ?>>Admin</option>
-                        <option value="accountant" <?= ($staff['current_role'] ?? '') === 'accountant' ? 'selected' : '' ?>>Accountant</option>
-                        <option value="librarian" <?= ($staff['current_role'] ?? '') === 'librarian' ? 'selected' : '' ?>>Librarian</option>
+                        <?php foreach ($allRoles as $role): ?>
+                            <option value="<?= htmlspecialchars($role['name']) ?>" <?= ($staff['current_role'] ?? '') === $role['name'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars(ucfirst($role['name'])) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>

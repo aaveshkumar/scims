@@ -171,6 +171,9 @@ class StaffController
         // Get all departments
         $departments = db()->fetchAll("SELECT * FROM departments WHERE status = 'active' ORDER BY name");
 
+        // Get all available roles
+        $allRoles = db()->fetchAll("SELECT * FROM roles ORDER BY name");
+
         // Get current role
         $currentRoles = db()->fetchAll(
             "SELECT r.name FROM roles r 
@@ -180,7 +183,7 @@ class StaffController
         );
         $staff['current_role'] = !empty($currentRoles) ? $currentRoles[0]['name'] : 'teacher';
 
-        return view('staff.edit', ['staff' => $staff, 'departments' => $departments]);
+        return view('staff.edit', ['staff' => $staff, 'departments' => $departments, 'allRoles' => $allRoles]);
     }
 
     public function update($request, $id)
