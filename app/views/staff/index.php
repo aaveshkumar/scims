@@ -7,6 +7,22 @@
     </a>
 </div>
 
+<!-- Category Filter -->
+<?php if (!empty($staffByRole)): ?>
+<div class="mb-4">
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary category-filter active" data-role="all">
+            <i class="bi bi-funnel me-2"></i>All Categories
+        </button>
+        <?php foreach (array_keys($staffByRole) as $role): ?>
+            <button type="button" class="btn btn-outline-primary category-filter" data-role="<?= $role ?>">
+                <?= ucfirst($role) ?> (<?= count($staffByRole[$role]) ?>)
+            </button>
+        <?php endforeach; ?>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php if (empty($staffByRole)): ?>
 <div class="card">
     <div class="card-body text-center py-5 text-muted">
@@ -15,7 +31,7 @@
 </div>
 <?php else: ?>
     <?php foreach ($staffByRole as $role => $members): ?>
-    <div class="card mb-4">
+    <div class="card mb-4 role-section" data-role="<?= $role ?>">
         <div class="card-header" style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
@@ -77,5 +93,29 @@
     </div>
     <?php endforeach; ?>
 <?php endif; ?>
+
+<script>
+document.querySelectorAll('.category-filter').forEach(button => {
+    button.addEventListener('click', function() {
+        const selectedRole = this.getAttribute('data-role');
+        
+        // Update active button
+        document.querySelectorAll('.category-filter').forEach(b => {
+            b.classList.remove('active');
+        });
+        this.classList.add('active');
+        
+        // Filter sections
+        document.querySelectorAll('.role-section').forEach(section => {
+            const sectionRole = section.getAttribute('data-role');
+            if (selectedRole === 'all' || sectionRole === selectedRole) {
+                section.style.display = 'block';
+            } else {
+                section.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
