@@ -111,6 +111,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Location</th>
+                        <th>Assigned To</th>
                         <th>Purchase Cost</th>
                         <th>Current Value</th>
                         <th>Condition</th>
@@ -121,7 +122,7 @@
                 <tbody>
                     <?php if (empty($assets)): ?>
                         <tr>
-                            <td colspan="9" class="text-center text-muted py-4">
+                            <td colspan="10" class="text-center text-muted py-4">
                                 <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                 No assets found. Click "Add New Asset" to get started.
                             </td>
@@ -133,6 +134,7 @@
                                 <td><?= htmlspecialchars($asset['name']) ?></td>
                                 <td><?= htmlspecialchars($asset['category'] ?? 'N/A') ?></td>
                                 <td><?= htmlspecialchars($asset['location'] ?? 'N/A') ?></td>
+                                <td><?= htmlspecialchars($asset['assigned_to_name'] ?? 'Unassigned') ?></td>
                                 <td>₹<?= number_format($asset['purchase_cost'] ?? 0, 2) ?></td>
                                 <td>₹<?= number_format($asset['current_value'] ?? 0, 2) ?></td>
                                 <td>
