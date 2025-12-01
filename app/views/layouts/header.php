@@ -55,13 +55,6 @@
             padding: 0.75rem 1.25rem;
             font-weight: 600;
         }
-        [data-bs-theme="dark"] .card-header {
-            background-color: #3a3f47 !important;
-            border-bottom: 1px solid #4a5058 !important;
-            padding: 0.75rem 1.25rem;
-            font-weight: 600;
-            color: #e9ecef !important;
-        }
         .btn {
             border-radius: 0.35rem;
             padding: 0.375rem 1rem;
@@ -130,12 +123,16 @@
             color: #e9ecef !important;
         }
         [data-bs-theme="dark"] .card {
-            background-color: #2d3238;
+            background-color: #2d3238 !important;
+            color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .card-body {
+            background-color: #2d3238 !important;
             color: #e9ecef !important;
         }
         [data-bs-theme="dark"] .card-header {
-            background-color: #3a3f47;
-            border-bottom-color: #4a5058;
+            background-color: #3a3f47 !important;
+            border-bottom-color: #4a5058 !important;
             color: #e9ecef !important;
         }
         /* Dark Mode Navbar */
@@ -275,18 +272,6 @@
         }
         [data-bs-theme="dark"] .alert {
             color: #e9ecef;
-        }
-        [data-bs-theme="dark"] .card {
-            background-color: #2d3238 !important;
-            color: #e9ecef !important;
-        }
-        [data-bs-theme="dark"] .card-header {
-            background-color: #3a3f47 !important;
-            color: #e9ecef !important;
-        }
-        [data-bs-theme="dark"] .card-body {
-            background-color: #2d3238 !important;
-            color: #e9ecef !important;
         }
         
         #page-loader {
