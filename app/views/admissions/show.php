@@ -76,15 +76,15 @@
             </div>
         </div>
 
-        <?php 
-            $documents = !empty($admission['documents']) ? json_decode($admission['documents'], true) : null;
-            if (is_array($documents) && !empty($documents)):
-        ?>
         <div class="card mb-4">
             <div class="card-header">
                 <h5>Uploaded Documents</h5>
             </div>
             <div class="card-body">
+                <?php 
+                    $documents = !empty($admission['documents']) ? json_decode($admission['documents'], true) : null;
+                    if (is_array($documents) && !empty($documents)):
+                ?>
                 <table class="table table-sm mb-0">
                     <tbody>
                         <?php foreach ($documents as $docType => $docPath): ?>
@@ -102,9 +102,11 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php else: ?>
+                <p class="text-muted"><i class="bi bi-info-circle me-2"></i>No documents uploaded yet</p>
+                <?php endif; ?>
             </div>
         </div>
-        <?php endif; ?>
     </div>
 
     <div class="col-md-4">
