@@ -20,7 +20,7 @@
         <?php else: ?>
             <div class="list-group list-group-flush">
                 <?php foreach ($notifications as $notification): ?>
-                    <div class="list-group-item <?= $notification['is_read'] ? '' : 'bg-light notification-unread' ?>" style="<?= $notification['is_read'] ? '' : 'background-color: #f8f9fc !important;' ?>">
+                    <div class="list-group-item <?= $notification['is_read'] ? '' : 'notification-unread' ?>" style="">
                         <div class="d-flex w-100 justify-content-between align-items-start">
                             <div class="flex-grow-1">
                                 <h6 class="mb-1">
