@@ -438,14 +438,14 @@ class AdmissionController
         // Get monthly applications data
         $db = Database::getInstance();
         $monthlyData = $db->fetchAll(
-            "SELECT DATE_FORMAT(created_at, '%Y-%m') as month, 
+            "SELECT TO_CHAR(created_at, 'YYYY-MM') as month, 
                     COUNT(*) as total,
                     SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved,
                     SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected,
                     SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending
              FROM admissions
-             WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
-             GROUP BY month
+             WHERE created_at >= NOW() - INTERVAL '6 months'
+             GROUP BY TO_CHAR(created_at, 'YYYY-MM')
              ORDER BY month DESC"
         );
 
