@@ -25,11 +25,12 @@ class NotificationController
     {
         $userId = auth()['id'];
         $unreadCount = $this->notificationModel->getUnreadCount($userId);
-        $notifications = $this->notificationModel
-            ->where('user_id', $userId)
-            ->where('is_read', false)
-            ->orderBy('created_at', 'DESC')
-            ->get();
+        
+        // Use raw query to properly handle PostgreSQL boolean
+        $notifications = $this->notificationModel->db->fetchAll(
+            "SELECT * FROM notifications WHERE user_id = ? AND is_read = false ORDER BY created_at DESC",
+            [$userId]
+        );
 
         return responseJSON([
             'count' => $unreadCount,

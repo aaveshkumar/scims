@@ -68,10 +68,10 @@
             <?php endif; ?>
 
             <!-- Notifications -->
-            <li class="nav-item dropdown me-3">
-                <a class="nav-link position-relative" href="/notifications" id="notificationLink" style="display: flex; align-items: center;">
-                    <i class="bi bi-bell fs-5"></i>
-                    <span class="position-absolute badge rounded-pill bg-danger" style="font-size: 0.6rem; top: -8px; right: -8px; padding: 0px 2px; line-height: 1; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;" id="notificationCount">
+            <li class="nav-item dropdown me-3" style="position: relative;">
+                <a class="nav-link" href="/notifications" id="notificationLink">
+                    <i class="bi bi-bell fs-5" style="position: relative;"></i>
+                    <span class="badge rounded-pill bg-danger" style="font-size: 0.55rem; position: absolute; top: 0; right: 0; padding: 1px 3px; line-height: 1; min-width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; transform: translate(50%, -50%);" id="notificationCount">
                         0
                     </span>
                 </a>
