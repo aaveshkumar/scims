@@ -394,7 +394,7 @@ class AdmissionController
             }
             
         } catch (Exception $e) {
-            flash('error', 'Failed to convert to student: ' . $e->getMessage());
+            flash('error', 'Unable to convert applicant to student. Please try again or contact support.');
             return back();
         }
     }

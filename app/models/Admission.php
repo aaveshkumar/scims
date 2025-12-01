@@ -160,7 +160,7 @@ class Admission extends Model
                 "INSERT INTO students (user_id, admission_number, class_id, admission_date,
                  guardian_name, guardian_phone, guardian_email, previous_school,
                  documents, status, created_at, updated_at)
-                 VALUES (?, ?, ?, CURDATE(), ?, ?, ?, ?, ?, 'active', NOW(), NOW())",
+                 VALUES (?, ?, ?, CURRENT_DATE, ?, ?, ?, ?, ?, 'active', NOW(), NOW())",
                 [
                     $userId,
                     $admissionNumber,
@@ -202,7 +202,16 @@ class Admission extends Model
             
         } catch (Exception $e) {
             $db->rollback();
-            return ['success' => false, 'message' => 'Failed to convert: ' . $e->getMessage()];
+            // Extract user-friendly error message
+            $errorMsg = $e->getMessage();
+            if (strpos($errorMsg, 'class_id') !== false) {
+                $errorMsg = 'Invalid class selected. Please verify the class assignment.';
+            } elseif (strpos($errorMsg, 'UNIQUE') !== false || strpos($errorMsg, 'duplicate') !== false) {
+                $errorMsg = 'This application has already been converted to a student record.';
+            } else {
+                $errorMsg = 'Unable to convert applicant. Please ensure all required information is complete.';
+            }
+            return ['success' => false, 'message' => $errorMsg];
         }
     }
 
