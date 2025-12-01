@@ -127,7 +127,12 @@ class Report
 
     public function getAllStudents()
     {
-        $sql = "SELECT id, first_name, last_name FROM users WHERE role = 'student' ORDER BY first_name";
+        $sql = "
+            SELECT u.id, u.first_name, u.last_name
+            FROM students s
+            JOIN users u ON s.user_id = u.id
+            ORDER BY u.first_name
+        ";
         return $this->db->fetchAll($sql);
     }
 
