@@ -18,7 +18,12 @@
         }
         body {
             font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        [data-bs-theme="light"] body {
             background-color: #f8f9fc;
+        }
+        [data-bs-theme="dark"] body {
+            background-color: #1a1d20 !important;
         }
         .sidebar {
             min-height: 100vh;
@@ -44,11 +49,18 @@
             border-radius: 0.5rem;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
         }
-        .card-header {
+        [data-bs-theme="light"] .card-header {
             background-color: #f8f9fc;
             border-bottom: 1px solid #e3e6f0;
             padding: 0.75rem 1.25rem;
             font-weight: 600;
+        }
+        [data-bs-theme="dark"] .card-header {
+            background-color: #3a3f47 !important;
+            border-bottom: 1px solid #4a5058 !important;
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+            color: #e9ecef !important;
         }
         .btn {
             border-radius: 0.35rem;
