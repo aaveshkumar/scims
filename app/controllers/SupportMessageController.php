@@ -109,14 +109,24 @@ class SupportMessageController
     public function reply($request, $id)
     {
         try {
-            $message = $this->supportMessageModel->find($id);
-            
-            if (!$message || !hasRole('admin')) {
+            if (!hasRole('admin')) {
                 flash('error', 'Unauthorized access');
                 return redirect('/support');
             }
 
+            $message = $this->supportMessageModel->find($id);
+            
+            if (!$message || !is_array($message)) {
+                flash('error', 'Message not found');
+                return redirect('/support');
+            }
+
             $user = $this->supportMessageModel->getUserInfo($message['user_id']);
+            
+            if (!$user || !is_array($user)) {
+                flash('error', 'User information not found');
+                return redirect('/support');
+            }
 
             return view('support.reply', [
                 'title' => 'Reply to Message',
@@ -124,7 +134,8 @@ class SupportMessageController
                 'user' => $user
             ]);
         } catch (Exception $e) {
-            flash('error', 'Failed to load message');
+            error_log('Reply view error: ' . $e->getMessage());
+            flash('error', 'Failed to load message: ' . $e->getMessage());
             return redirect('/support');
         }
     }

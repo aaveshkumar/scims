@@ -103,10 +103,80 @@ The system employs a custom MVC architecture for clear separation of concerns, e
 - `app/controllers/NotificationController.php` - Fixed database access, CSRF integration
 - `routes/web.php` - Added announcements CRUD routes
 
+### Messages Module Implementation
+1. **Model Created** - `app/models/Message.php`
+   - `getSentMessages()` - Get all messages sent by user
+   - `getReceivedMessages()` - Get all received messages
+   - `getUnreadMessages()` - Get unread messages
+   - `getUnreadCount()` - Count unread messages
+   - `markAsRead()` - Mark message as read
+   - `getUserInfo()`, `getAllUsers()` - Public helper methods for fetching user data
+
+2. **Controller Created** - `app/controllers/MessageController.php`
+   - Full CRUD operations with proper authorization
+   - Both senders can edit their messages, receivers can reply
+   - Auto-mark as read when viewing
+
+3. **Routes Added** - `/messages` endpoints
+   - Inbox with sent/received messages
+   - Compose and reply functionality
+   - View and edit with proper authorization
+
+4. **Dummy Data** - 10 meaningful messages between valid users
+
+### Support Messages/Contact Admin Module Implementation
+1. **Database Table** - `support_messages`
+   - user_id, subject, message, status, admin_reply, admin_replied_by, replied_at
+   - Proper foreign keys and cascading operations
+
+2. **Model Created** - `app/models/SupportMessage.php`
+   - `getForUser()` - Get messages by user with direct SQL queries
+   - `getForAdmin()` - Get all tickets for admin dashboard
+   - `addReply()` - Add admin response to ticket
+   - `getUserInfo()`, `getAdminInfo()` - Get user/admin details
+
+3. **Controller Created** - `app/controllers/SupportMessageController.php`
+   - Full CRUD with role-based access
+   - Users (students/teachers/drivers/parents) can send support messages
+   - Admin can view all tickets and reply
+   - Manual validation with user-friendly error messages
+
+4. **Views Created** - 5 views for complete workflow
+   - `index.php` - User inbox showing support messages
+   - `create.php` - Compose new message form
+   - `show.php` - View message details and admin reply
+   - `admin-index.php` - Admin dashboard with status summary and ticket list
+   - `reply.php` - Admin reply form with original message context
+
+5. **Routes Added** - `/support` endpoints
+   - User routes: view inbox, send message, view details
+   - Admin routes: view all tickets, reply, manage tickets
+
+6. **Navbar Integration**
+   - Chat bubble icon (💬) for students/teachers/drivers/parents
+   - Headset icon (🎧) for admin support tickets
+   - Icons in top navbar between Reports and Notifications
+
+7. **Dummy Data** - 10 meaningful support tickets
+   - Various statuses (open/replied/resolved)
+   - Real user IDs (34, 35, 36, 37, 38, 39, 40, 42, 44, 45)
+   - Admin replies for some tickets
+
+8. **Features Implemented**
+   - ✅ Role-based access control (admin/user differentiation)
+   - ✅ Status tracking (open → replied → resolved)
+   - ✅ Auto-redirect logic (single /support endpoint handles both user and admin)
+   - ✅ Input validation with error messages
+   - ✅ Direct SQL queries (stable and efficient)
+   - ✅ Proper error handling and logging
+   - ✅ Safe data handling with null checks and type validation
+
 ### Dummy Data Status
-- **Notifications**: 11 meaningful notifications for admin user (ID: 53) - 9 unread, 2 read
-- **Announcements**: 10 announcements with varied priorities, audiences, and dates
-- All CRUD operations fully functional for both modules
+- **Notifications**: 11 meaningful notifications - 9 unread, 2 read
+- **Announcements**: 10 announcements with varied priorities and audiences
+- **Messages**: 10 messages between users
+- **Support Messages**: 10 tickets (5 open/replied, 5 resolved)
+- All CRUD operations fully functional for all modules
 
 ## External Dependencies
 - **Database**: PostgreSQL (Neon) accessed via PHP's PDO extension.

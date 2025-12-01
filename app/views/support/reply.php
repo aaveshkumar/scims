@@ -10,21 +10,23 @@
         </div>
 
         <!-- Original Message -->
+        <?php if (is_array($user) && is_array($message)): ?>
         <div class="card mb-3">
             <div class="card-header bg-light">
-                <h6 class="mb-0"><i class="bi bi-person me-2"></i><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></h6>
-                <small class="text-muted"><?= htmlspecialchars($user['email']) ?></small>
+                <h6 class="mb-0"><i class="bi bi-person me-2"></i><?= htmlspecialchars(($user['first_name'] ?? 'Unknown') . ' ' . ($user['last_name'] ?? '')) ?></h6>
+                <small class="text-muted"><?= htmlspecialchars($user['email'] ?? 'N/A') ?></small>
             </div>
             <div class="card-body">
-                <h5><?= htmlspecialchars($message['subject']) ?></h5>
-                <p><?= nl2br(htmlspecialchars($message['message'])) ?></p>
+                <h5><?= htmlspecialchars($message['subject'] ?? 'No Subject') ?></h5>
+                <p><?= nl2br(htmlspecialchars($message['message'] ?? 'No Message')) ?></p>
             </div>
         </div>
+        <?php endif; ?>
 
         <!-- Reply Form -->
         <div class="card">
             <div class="card-body">
-                <form method="POST" action="/support/<?= $message['id'] ?>/reply">
+                <form method="POST" action="/support/<?= htmlspecialchars($message['id'] ?? '#') ?>/reply">
                     <?= csrf_field() ?>
                     
                     <div class="mb-3">
