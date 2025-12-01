@@ -63,13 +63,14 @@
             // Only initialize if loader element exists
             if (!loader) return;
             
-            // Show loader on all link clicks (except # links and logout)
+            // Show loader on all link clicks (except # links, logout, and sidebar links)
             document.addEventListener('click', function(e) {
                 const target = e.target.closest('a');
                 if (target && target.getAttribute('href') && 
                     !target.getAttribute('href').startsWith('#') && 
                     !target.getAttribute('href').startsWith('javascript:') &&
                     !target.classList.contains('no-loader') &&
+                    !target.closest('.sidebar') &&
                     target.getAttribute('target') !== '_blank') {
                     loader.classList.add('active');
                 }
