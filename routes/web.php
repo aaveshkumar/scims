@@ -140,7 +140,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/staff', 'StaffController@store', ['csrf']);
         $router->get('/staff/{id}', 'StaffController@show');
         $router->get('/staff/{id}/edit', 'StaffController@edit');
-        $router->post('/staff/{id}', 'StaffController@update', ['csrf']);
+        $router->put('/staff/{id}', 'StaffController@update', ['csrf']);
         $router->post('/staff/{id}/toggle-status', 'StaffController@toggleStatus', ['csrf']);
         $router->delete('/staff/{id}', 'StaffController@destroy', ['csrf']);
 
