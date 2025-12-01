@@ -69,9 +69,9 @@
 
             <!-- Notifications -->
             <li class="nav-item dropdown me-3">
-                <a class="nav-link position-relative" href="/notifications" id="notificationLink">
+                <a class="nav-link position-relative" href="/notifications" id="notificationLink" style="display: flex; align-items: center;">
                     <i class="bi bi-bell fs-5"></i>
-                    <span class="position-absolute badge rounded-pill bg-danger" style="font-size: 0.65rem; top: -2px; right: -5px; padding: 1px 3px; line-height: 1;" id="notificationCount">
+                    <span class="position-absolute badge rounded-pill bg-danger" style="font-size: 0.6rem; top: -8px; right: -8px; padding: 0px 2px; line-height: 1; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;" id="notificationCount">
                         0
                     </span>
                 </a>
