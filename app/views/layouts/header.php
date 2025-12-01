@@ -209,11 +209,29 @@
         }
         [data-bs-theme="dark"] .notification-unread {
             background-color: #3a3f47 !important;
+            color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .notification-unread h6,
+        [data-bs-theme="dark"] .notification-unread p,
+        [data-bs-theme="dark"] .notification-unread small {
+            color: #e9ecef !important;
         }
         [data-bs-theme="dark"] .list-group-item {
             background-color: #2d3238 !important;
             border-color: #3a3f47 !important;
             color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .list-group-item h6 {
+            color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .list-group-item p {
+            color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .list-group-item small {
+            color: #a8b1bd !important;
+        }
+        [data-bs-theme="dark"] .list-group-item .text-muted {
+            color: #a8b1bd !important;
         }
         [data-bs-theme="dark"] h1,
         [data-bs-theme="dark"] h2,
