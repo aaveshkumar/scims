@@ -493,9 +493,9 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/settings', 'SettingController@index');
         $router->get('/settings/backup', 'SettingController@backup');
         $router->post('/settings/backup/create', 'SettingController@createBackup', ['csrf']);
-        $router->get('/settings/backup/download/:filename', 'SettingController@downloadBackup');
+        $router->get('/settings/backup/download/{filename}', 'SettingController@downloadBackup');
         $router->post('/settings/backup/restore', 'SettingController@restoreBackup', ['csrf']);
-        $router->post('/settings/backup/delete/:filename', 'SettingController@deleteBackup', ['csrf']);
+        $router->post('/settings/backup/delete/{filename}', 'SettingController@deleteBackup', ['csrf']);
         $router->get('/settings/audit-logs', 'SettingController@auditLogs');
         $router->post('/settings', 'SettingController@update', ['csrf']);
 
