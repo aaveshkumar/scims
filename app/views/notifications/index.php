@@ -20,7 +20,10 @@
         <?php else: ?>
             <div class="list-group list-group-flush">
                 <?php foreach ($notifications as $notification): ?>
-                    <div class="list-group-item <?= $notification['is_read'] ? '' : 'notification-unread' ?>" style="">
+                    <a href="<?= $notification['link'] ? htmlspecialchars($notification['link']) : '#' ?>" 
+                       class="list-group-item list-group-item-action <?= $notification['is_read'] ? '' : 'notification-unread' ?>" 
+                       onclick="<?= $notification['link'] ? 'handleNotificationClick(event, ' . $notification['id'] . ')' : 'return false;' ?>" 
+                       style="text-decoration: none; cursor: <?= $notification['link'] ? 'pointer' : 'default' ?>;">
                         <div class="d-flex w-100 justify-content-between align-items-start">
                             <div class="flex-grow-1">
                                 <h6 class="mb-1">
@@ -36,13 +39,12 @@
                                 </small>
                             </div>
                             <?php if (!$notification['is_read']): ?>
-                                <button onclick="markAsRead(<?= $notification['id'] ?>)" 
-                                        class="btn btn-sm btn-outline-primary ms-3">
-                                    <i class="bi bi-check"></i>
-                                </button>
+                                <span class="badge bg-warning ms-3" title="Mark as read and navigate">
+                                    <i class="bi bi-arrow-right-short"></i>
+                                </span>
                             <?php endif; ?>
                         </div>
-                    </div>
+                    </a>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
@@ -50,7 +52,10 @@
 </div>
 
 <script>
-function markAsRead(id) {
+function handleNotificationClick(event, id) {
+    event.preventDefault();
+    const link = event.currentTarget.href;
+    
     fetch(`/notifications/${id}/mark-as-read`, {
         method: 'POST',
         headers: {
@@ -62,7 +67,11 @@ function markAsRead(id) {
     .then(data => {
         if (data.success) {
             updateNotificationCount();
-            location.reload();
+            if (link && link !== '#') {
+                window.location.href = link;
+            } else {
+                location.reload();
+            }
         }
     });
 }
