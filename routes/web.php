@@ -63,6 +63,22 @@ $router->group(['middleware' => 'auth'], function($router) {
     $router->put('/announcements/{id}', 'AnnouncementController@update', ['csrf']);
     $router->delete('/announcements/{id}', 'AnnouncementController@destroy', ['csrf']);
 
+    // Support Messages - For all authenticated users
+    $router->group(['middleware' => 'auth'], function($router) {
+        $router->get('/support', 'SupportMessageController@index');
+        $router->get('/support/create', 'SupportMessageController@create');
+        $router->post('/support', 'SupportMessageController@store', ['csrf']);
+        $router->get('/support/{id}', 'SupportMessageController@show');
+    });
+
+    // Admin Support Tickets Management
+    $router->group(['middleware' => 'role:admin'], function($router) {
+        $router->get('/support', 'SupportMessageController@admin');
+        $router->get('/support/{id}/reply', 'SupportMessageController@reply');
+        $router->post('/support/{id}/reply', 'SupportMessageController@sendReply', ['csrf']);
+        $router->post('/support/{id}/close', 'SupportMessageController@closeTicket', ['csrf']);
+    });
+
     $router->get('/materials', 'MaterialController@index');
 
     $router->group(['middleware' => 'role:admin,teacher'], function($router) {

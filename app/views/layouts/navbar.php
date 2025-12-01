@@ -67,6 +67,24 @@
             </li>
             <?php endif; ?>
 
+            <!-- Support Messages (for non-admin users) -->
+            <?php if (!hasRole('admin')): ?>
+            <li class="nav-item me-3">
+                <a class="nav-link" href="/support" title="Contact Admin">
+                    <i class="bi bi-chat-left-dots fs-5"></i>
+                </a>
+            </li>
+            <?php endif; ?>
+
+            <!-- Admin Support Tickets -->
+            <?php if (hasRole('admin')): ?>
+            <li class="nav-item me-3">
+                <a class="nav-link" href="/support" title="Support Tickets">
+                    <i class="bi bi-headset fs-5"></i>
+                </a>
+            </li>
+            <?php endif; ?>
+
             <!-- Notifications -->
             <li class="nav-item dropdown me-3" style="position: relative;">
                 <a class="nav-link" href="/notifications" id="notificationLink">
