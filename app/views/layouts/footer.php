@@ -345,12 +345,15 @@
                     // - Buttons that are inside forms (they already have form submission loader)
                     // - Modal dismiss buttons
                     // - Delete buttons (they have their own loader)
-                    // - Buttons inside sidebar
+                    // - Buttons inside sidebar or any parent of sidebar
+                    // - Buttons with nav-link class
                     if (btn.hasAttribute('data-no-loader') || 
                         btn.closest('form') ||
                         btn.getAttribute('data-bs-dismiss') ||
                         btn.getAttribute('onclick')?.includes('confirmDelete') ||
-                        btn.closest('.sidebar')) {
+                        btn.closest('.sidebar') ||
+                        btn.classList.contains('nav-link') ||
+                        btn.closest('.nav-link')) {
                         return;
                     }
                     
