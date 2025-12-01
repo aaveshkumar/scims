@@ -47,13 +47,11 @@ class SupportMessage extends Model
 
     public function getUserInfo($userId)
     {
-        $result = new Model();
-        return $result->db->fetchOne("SELECT id, first_name, last_name, email FROM users WHERE id = ?", [$userId]);
+        return $this->db->fetchOne("SELECT id, first_name, last_name, email FROM users WHERE id = ?", [$userId]);
     }
 
     public function getAdminInfo($adminId)
     {
-        $result = new Model();
-        return $result->db->fetchOne("SELECT id, first_name, last_name, email FROM users WHERE id = ?", [$adminId]);
+        return $this->db->fetchOne("SELECT id, first_name, last_name, email FROM users WHERE id = ?", [$adminId]);
     }
 }
