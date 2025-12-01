@@ -54,4 +54,24 @@ class Message extends Model
             [$userId1, $userId2, $userId2, $userId1]
         );
     }
+
+    public function getUserInfo($userId)
+    {
+        $result = new Model();
+        return $result->db->fetchOne("SELECT id, first_name, last_name, email FROM users WHERE id = ?", [$userId]);
+    }
+
+    public function getAllUsers($excludeUserId = null)
+    {
+        $query = "SELECT id, first_name, last_name FROM users";
+        $params = [];
+        if ($excludeUserId) {
+            $query .= " WHERE id != ?";
+            $params[] = $excludeUserId;
+        }
+        $query .= " ORDER BY first_name";
+        
+        $result = new Model();
+        return $result->db->fetchAll($query, $params);
+    }
 }

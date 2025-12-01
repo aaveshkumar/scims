@@ -23,7 +23,7 @@ class MessageController
     public function create($request)
     {
         // Get list of users to send message to
-        $users = $this->messageModel->db->fetchAll("SELECT id, first_name, last_name FROM users WHERE id != ? ORDER BY first_name", [auth()['id']]);
+        $users = $this->messageModel->getAllUsers(auth()['id']);
         
         return view('messages.create', [
             'title' => 'Create - Messages',
@@ -81,8 +81,8 @@ class MessageController
             }
 
             // Get sender/receiver details
-            $sender = $this->messageModel->db->fetchOne("SELECT id, first_name, last_name, email FROM users WHERE id = ?", [$message['sender_id']]);
-            $receiver = $this->messageModel->db->fetchOne("SELECT id, first_name, last_name, email FROM users WHERE id = ?", [$message['receiver_id']]);
+            $sender = $this->messageModel->getUserInfo($message['sender_id']);
+            $receiver = $this->messageModel->getUserInfo($message['receiver_id']);
 
             return view('messages.show', [
                 'title' => 'View - Messages',
@@ -106,8 +106,8 @@ class MessageController
                 return redirect('/messages');
             }
 
-            $users = $this->messageModel->db->fetchAll("SELECT id, first_name, last_name FROM users WHERE id != ? ORDER BY first_name", [auth()['id']]);
-            $receiver = $this->messageModel->db->fetchOne("SELECT id, first_name, last_name FROM users WHERE id = ?", [$message['receiver_id']]);
+            $users = $this->messageModel->getAllUsers(auth()['id']);
+            $receiver = $this->messageModel->getUserInfo($message['receiver_id']);
 
             return view('messages.edit', [
                 'title' => 'Edit - Messages',
