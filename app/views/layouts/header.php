@@ -246,6 +246,18 @@
         [data-bs-theme="dark"] .alert {
             color: #e9ecef;
         }
+        [data-bs-theme="dark"] .card {
+            background-color: #2d3238 !important;
+            color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .card-header {
+            background-color: #3a3f47 !important;
+            color: #e9ecef !important;
+        }
+        [data-bs-theme="dark"] .card-body {
+            background-color: #2d3238 !important;
+            color: #e9ecef !important;
+        }
         
         #page-loader {
             position: fixed;
