@@ -198,10 +198,22 @@ class StaffController
     public function destroy($request, $id)
     {
         try {
+            $staff = $this->staffModel->find($id);
+            if (!$staff) {
+                flash('error', 'Staff member not found');
+                return redirect('/staff');
+            }
+
+            // Delete the associated user as well
+            $userId = $staff['user_id'];
             $this->staffModel->delete($id);
-            return responseJSON(['success' => true, 'message' => 'Staff member deleted successfully']);
+            $this->userModel->delete($userId);
+
+            flash('success', 'Staff member deleted successfully');
+            return redirect('/staff');
         } catch (Exception $e) {
-            return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
+            flash('error', 'Failed to delete staff member: ' . $e->getMessage());
+            return redirect('/staff');
         }
     }
 
