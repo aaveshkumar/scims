@@ -1,5 +1,21 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
+<?php
+// Helper function to format bytes to human readable format
+if (!function_exists('formatBytes')) {
+    function formatBytes($bytes, $precision = 2)
+    {
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= (1 << (10 * $pow));
+
+        return round($bytes, $precision) . ' ' . $units[$pow];
+    }
+}
+?>
+
 <div class="mb-4">
     <h2><i class="bi bi-cloud-download me-2"></i>Backup & Restore</h2>
     <p class="text-muted">Create, download, and restore database backups to protect your data</p>
@@ -151,22 +167,5 @@
         gap: 0.25rem;
     }
 </style>
-
-<?php
-
-// Helper function to format bytes to human readable format
-if (!function_exists('formatBytes')) {
-    function formatBytes($bytes, $precision = 2)
-    {
-        $units = ['B', 'KB', 'MB', 'GB'];
-        $bytes = max($bytes, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-        $bytes /= (1 << (10 * $pow));
-
-        return round($bytes, $precision) . ' ' . $units[$pow];
-    }
-}
-?>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
