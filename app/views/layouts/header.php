@@ -207,6 +207,14 @@
             color: #fff !important;
             border-bottom-color: #5a8dee;
         }
+        [data-bs-theme="dark"] .notification-unread {
+            background-color: #3a3f47 !important;
+        }
+        [data-bs-theme="dark"] .list-group-item {
+            background-color: #2d3238 !important;
+            border-color: #3a3f47 !important;
+            color: #e9ecef !important;
+        }
         [data-bs-theme="dark"] h1,
         [data-bs-theme="dark"] h2,
         [data-bs-theme="dark"] h3,

@@ -8,7 +8,7 @@ class Notification extends Model
     public function markAsRead()
     {
         return $this->update($this->id, [
-            'is_read' => 1,
+            'is_read' => true,
             'read_at' => date('Y-m-d H:i:s')
         ]);
     }
@@ -25,7 +25,7 @@ class Notification extends Model
     {
         $result = $this->db->fetchOne(
             "SELECT COUNT(*) as count FROM notifications 
-             WHERE user_id = ? AND is_read = 0",
+             WHERE user_id = ? AND is_read = false",
             [$userId]
         );
 
@@ -35,8 +35,8 @@ class Notification extends Model
     public function markAllAsRead($userId)
     {
         return $this->db->execute(
-            "UPDATE notifications SET is_read = 1, read_at = ? 
-             WHERE user_id = ? AND is_read = 0",
+            "UPDATE notifications SET is_read = true, read_at = ? 
+             WHERE user_id = ? AND is_read = false",
             [date('Y-m-d H:i:s'), $userId]
         );
     }

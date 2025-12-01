@@ -190,6 +190,37 @@
             });
         }
         
+        // Notification Counter - Update Badge on Page Load
+        (function() {
+            function updateNotificationBadge() {
+                const badge = document.getElementById('notificationCount');
+                if (!badge) return;
+                
+                fetch('/notifications/unread', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.count !== undefined) {
+                        badge.textContent = data.count;
+                        badge.style.display = data.count > 0 ? 'inline-block' : 'none';
+                    }
+                })
+                .catch(error => console.log('Error updating notification count:', error));
+            }
+            
+            // Update badge on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                updateNotificationBadge();
+                // Refresh every 30 seconds
+                setInterval(updateNotificationBadge, 30000);
+            });
+        })();
+        
         // Global Form Handler with Loading States
         (function() {
             document.addEventListener('DOMContentLoaded', function() {

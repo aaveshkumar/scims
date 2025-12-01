@@ -20,7 +20,7 @@
         <?php else: ?>
             <div class="list-group list-group-flush">
                 <?php foreach ($notifications as $notification): ?>
-                    <div class="list-group-item <?= $notification['is_read'] ? '' : 'bg-light' ?>">
+                    <div class="list-group-item <?= $notification['is_read'] ? '' : 'bg-light notification-unread' ?>" style="<?= $notification['is_read'] ? '' : 'background-color: #f8f9fc !important;' ?>">
                         <div class="d-flex w-100 justify-content-between align-items-start">
                             <div class="flex-grow-1">
                                 <h6 class="mb-1">
@@ -61,6 +61,7 @@ function markAsRead(id) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            updateNotificationCount();
             location.reload();
         }
     });
@@ -77,10 +78,36 @@ function markAllRead() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            updateNotificationCount();
             location.reload();
         }
     });
 }
+
+function updateNotificationCount() {
+    fetch('/notifications/unread', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.count !== undefined) {
+            const badge = document.getElementById('notificationCount');
+            if (badge) {
+                badge.textContent = data.count;
+                badge.style.display = data.count > 0 ? 'inline-block' : 'none';
+            }
+        }
+    })
+    .catch(error => console.log('Error updating notification count:', error));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateNotificationCount();
+});
 </script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

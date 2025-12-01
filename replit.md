@@ -32,6 +32,36 @@ The system employs a custom MVC architecture for clear separation of concerns, e
 - **File Structure**: Adheres to industry standards with a logical organization (`/app`, `/config`, `/database`, `/public`, `/routes`).
 - **Database Schema**: Designed with proper relationships, foreign keys, indexing, and cascading operations for data integrity.
 
+## Recent Fixes & Updates (December 1, 2025)
+
+### Notifications Module Enhancements
+1. **Dark Mode Styling** - Fixed notification background colors in dark mode
+   - Unread notifications now show darker background (#3a3f47) in dark mode instead of white
+   - List items properly themed for dark mode with correct text colors
+   
+2. **Notification Counter Badge** - Implemented dynamic unread notification count
+   - Badge displays unread notification count in navbar
+   - Updates in real-time when notifications are marked as read
+   - Auto-refreshes every 30 seconds
+   - Shows only when there are unread notifications
+   
+3. **Database Query Fixes** - Fixed PostgreSQL boolean type handling
+   - Changed `is_read = 0` to `is_read = false` (proper boolean comparison)
+   - Changed `is_read = 1` to `is_read = true` (proper boolean assignment)
+   - Applied fixes across: `markAsRead()`, `markAllAsRead()`, `getUnreadCount()` methods
+
+### Files Modified
+- `app/views/notifications/index.php` - Added dark mode class, improved styling
+- `app/views/layouts/header.php` - Added dark mode CSS for notifications
+- `app/views/layouts/navbar.php` - Added ID to notification badge for dynamic updates
+- `app/views/layouts/footer.php` - Added JavaScript to fetch and update notification count
+- `app/models/Notification.php` - Fixed boolean comparisons in SQL queries
+
+### Dummy Data Status
+- **11 meaningful notifications** added for admin user (ID: 53)
+- **9 unread**, **2 read** notifications available
+- All CRUD operations fully functional
+
 ## External Dependencies
 - **Database**: PostgreSQL (Neon) accessed via PHP's PDO extension.
 - **Frontend Framework**: Bootstrap 5 for UI components and responsiveness.
