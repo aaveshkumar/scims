@@ -236,7 +236,7 @@ class StaffController
             ]);
 
             // Handle role update if user is admin
-            if (auth() && auth()->hasRole('admin') && $request->post('role')) {
+            if (hasRole('admin') && $request->post('role')) {
                 $newRole = $request->post('role');
                 $roleModel = new Role();
                 $newRoleData = $roleModel->findByName($newRole);
