@@ -76,28 +76,32 @@
             </div>
         </div>
 
-        <?php if ($admission['documents']): ?>
+        <?php 
+            $documents = !empty($admission['documents']) ? json_decode($admission['documents'], true) : null;
+            if (is_array($documents) && !empty($documents)):
+        ?>
         <div class="card mb-4">
             <div class="card-header">
                 <h5>Uploaded Documents</h5>
             </div>
             <div class="card-body">
-                <?php 
-                    $documents = json_decode($admission['documents'], true);
-                    if (is_array($documents) && !empty($documents)):
-                ?>
-                <div class="list-group">
-                    <?php foreach ($documents as $docType => $docPath): ?>
-                    <a href="<?= htmlspecialchars($docPath) ?>" target="_blank" class="list-group-item list-group-item-action">
-                        <i class="bi bi-file-earmark-pdf me-2"></i>
-                        <strong><?= ucwords(str_replace('_', ' ', $docType)) ?></strong>
-                        <small class="float-end text-muted"><i class="bi bi-download"></i> Download</small>
-                    </a>
-                    <?php endforeach; ?>
-                </div>
-                <?php else: ?>
-                <p class="text-muted">No documents uploaded</p>
-                <?php endif; ?>
+                <table class="table table-sm mb-0">
+                    <tbody>
+                        <?php foreach ($documents as $docType => $docPath): ?>
+                        <tr>
+                            <td>
+                                <i class="bi bi-file-earmark-pdf"></i>
+                                <strong><?= ucwords(str_replace('_', ' ', $docType)) ?></strong>
+                            </td>
+                            <td class="text-end">
+                                <a href="<?= htmlspecialchars($docPath) ?>" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-download me-1"></i>Download
+                                </a>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
         <?php endif; ?>
