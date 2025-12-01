@@ -27,7 +27,7 @@ class NotificationController
         $unreadCount = $this->notificationModel->getUnreadCount($userId);
         $notifications = $this->notificationModel
             ->where('user_id', $userId)
-            ->where('is_read', 0)
+            ->where('is_read', false)
             ->orderBy('created_at', 'DESC')
             ->get();
 

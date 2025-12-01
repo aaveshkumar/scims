@@ -55,41 +55,61 @@
 function handleNotificationClick(event, id) {
     event.preventDefault();
     const link = event.currentTarget.href;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
     
     fetch(`/notifications/${id}/mark-as-read`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ _token: csrfToken })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return response.json();
+    })
+    .then(data => {
+        updateNotificationCount();
+        if (link && link !== '#') {
+            window.location.href = link;
+        } else {
+            location.reload();
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            updateNotificationCount();
-            if (link && link !== '#') {
-                window.location.href = link;
-            } else {
-                location.reload();
-            }
+    .catch(error => {
+        console.error('Error marking notification as read:', error);
+        // Still navigate even if mark-as-read fails
+        if (link && link !== '#') {
+            window.location.href = link;
         }
     });
 }
 
 function markAllRead() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+    
     fetch('/notifications/mark-all-read', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ _token: csrfToken })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return response.json();
+    })
     .then(data => {
-        if (data.success) {
-            updateNotificationCount();
-            location.reload();
-        }
+        updateNotificationCount();
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error marking all as read:', error);
+        location.reload();
     });
 }
 
