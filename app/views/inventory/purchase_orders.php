@@ -110,9 +110,8 @@
                         <th>PO Number</th>
                         <th>Supplier</th>
                         <th>Order Date</th>
-                        <th>Expected Delivery</th>
-                        <th>Total Amount</th>
-                        <th>Created By</th>
+                        <th>Delivery Date</th>
+                        <th>Amount</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -120,7 +119,7 @@
                 <tbody>
                     <?php if (empty($orders)): ?>
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">
+                            <td colspan="7" class="text-center text-muted py-4">
                                 <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                 No purchase orders found. Click "Create Purchase Order" to get started.
                             </td>
@@ -133,7 +132,6 @@
                                 <td><?= $order['order_date'] ? date('d M Y', strtotime($order['order_date'])) : 'N/A' ?></td>
                                 <td><?= $order['expected_delivery'] ? date('d M Y', strtotime($order['expected_delivery'])) : 'N/A' ?></td>
                                 <td>₹<?= number_format($order['total_amount'] ?? 0, 2) ?></td>
-                                <td><?= htmlspecialchars($order['created_by_name'] ?? 'N/A') ?></td>
                                 <td>
                                     <?php
                                     $statusBadge = match($order['status'] ?? 'pending') {
@@ -149,7 +147,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-info" title="View" data-bs-toggle="modal" data-bs-target="#viewPOModal<?= $order['id'] ?>">
+                                    <button class="btn btn-sm btn-info" title="View Details" data-bs-toggle="modal" data-bs-target="#viewPOModal" data-po-id="<?= $order['id'] ?>" onclick="showPODetails(this)">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                     <?php if ($order['status'] == 'pending'): ?>
@@ -168,37 +166,30 @@
                                     </form>
                                 </td>
                             </tr>
-                            
-                            <!-- View Modal -->
-                            <div class="modal fade" id="viewPOModal<?= $order['id'] ?>" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title"><i class="bi bi-eye me-2"></i>Purchase Order Details</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <table class="table table-borderless">
-                                                <tr><th>PO Number:</th><td><?= htmlspecialchars($order['po_number']) ?></td></tr>
-                                                <tr><th>Supplier:</th><td><?= htmlspecialchars($order['supplier_name'] ?? 'N/A') ?></td></tr>
-                                                <tr><th>Order Date:</th><td><?= $order['order_date'] ? date('d M Y', strtotime($order['order_date'])) : 'N/A' ?></td></tr>
-                                                <tr><th>Expected Delivery:</th><td><?= $order['expected_delivery'] ? date('d M Y', strtotime($order['expected_delivery'])) : 'N/A' ?></td></tr>
-                                                <tr><th>Total Amount:</th><td>₹<?= number_format($order['total_amount'] ?? 0, 2) ?></td></tr>
-                                                <tr><th>Status:</th><td><span class="badge bg-<?= $statusBadge ?>"><?= ucfirst($order['status'] ?? 'pending') ?></span></td></tr>
-                                                <tr><th>Created By:</th><td><?= htmlspecialchars($order['created_by_name'] ?? 'N/A') ?></td></tr>
-                                                <tr><th>Remarks:</th><td><?= htmlspecialchars($order['remarks'] ?? 'No remarks') ?></td></tr>
-                                            </table>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- View PO Modal (Single modal for all orders) -->
+<div class="modal fade" id="viewPOModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-eye me-2"></i>Purchase Order Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="poDetailsContent">
+                    <p class="text-muted">Loading...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
@@ -276,5 +267,81 @@
         </div>
     </div>
 </div>
+
+<!-- Store all PO data in hidden elements for quick access -->
+<?php foreach ($orders ?? [] as $order): ?>
+    <div class="d-none" id="poData<?= $order['id'] ?>" data-po="<?= htmlspecialchars(json_encode($order), ENT_QUOTES, 'UTF-8') ?>"></div>
+<?php endforeach; ?>
+
+<script>
+function showPODetails(button) {
+    const poId = button.getAttribute('data-po-id');
+    const poDataElement = document.getElementById('poData' + poId);
+    const order = JSON.parse(poDataElement.getAttribute('data-po'));
+    
+    const statusBadges = {
+        'pending': 'warning',
+        'approved': 'success',
+        'received': 'info',
+        'cancelled': 'danger',
+        'default': 'secondary'
+    };
+    
+    const statusBadge = statusBadges[order.status] || statusBadges['default'];
+    
+    const html = `
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>PO Number:</strong></p>
+                <p>${order.po_number}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Status:</strong></p>
+                <p><span class="badge bg-${statusBadge}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span></p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Supplier:</strong></p>
+                <p>${order.supplier_name || 'N/A'}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Created By:</strong></p>
+                <p>${order.created_by_name || 'N/A'}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Order Date:</strong></p>
+                <p>${new Date(order.order_date).toLocaleDateString('en-IN', {year: 'numeric', month: 'short', day: 'numeric'})}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Expected Delivery:</strong></p>
+                <p>${order.expected_delivery ? new Date(order.expected_delivery).toLocaleDateString('en-IN', {year: 'numeric', month: 'short', day: 'numeric'}) : 'N/A'}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Total Amount:</strong></p>
+                <p class="h5">₹${parseFloat(order.total_amount || 0).toFixed(2)}</p>
+            </div>
+        </div>
+        ${order.remarks ? `
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <p><strong>Remarks:</strong></p>
+                <p>${order.remarks}</p>
+            </div>
+        </div>
+        ` : ''}
+    `;
+    
+    document.getElementById('poDetailsContent').innerHTML = html;
+}
+</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
