@@ -57,8 +57,10 @@ The system employs a custom MVC architecture for clear separation of concerns, e
    - Form for generating custom reports
    - Ready for report generation logic
 
-5. **ReportController Updates**
-   - Added database connection in controller
+5. **Model & Controller Architecture**
+   - Created `Report` model with database query methods
+   - ReportController uses Report model for clean separation
+   - Uses `Database::getInstance()` for proper PDO connection
    - Methods fetch real data with aggregates
    - LEFT JOIN with users/subjects/exams tables
    - Proper pagination and sorting

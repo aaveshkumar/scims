@@ -2,15 +2,11 @@
 
 class ReportController
 {
-    protected $db;
+    private $reportModel;
 
     public function __construct()
     {
-        $this->db = new \PDO(
-            'pgsql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME,
-            DB_USER,
-            DB_PASS
-        );
+        $this->reportModel = new Report();
     }
 
     public function index($request)
@@ -53,25 +49,8 @@ class ReportController
 
     public function attendance($request)
     {
-        $stmt = $this->db->prepare("
-            SELECT a.*, u.first_name, u.last_name, c.name as class_name
-            FROM attendance a
-            LEFT JOIN users u ON a.student_id = u.id
-            LEFT JOIN classes c ON a.class_id = c.id
-            ORDER BY a.date DESC LIMIT 100
-        ");
-        $stmt->execute();
-        $records = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*) as total, 
-                   SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) as present,
-                   SUM(CASE WHEN status = 'absent' THEN 1 ELSE 0 END) as absent,
-                   SUM(CASE WHEN status = 'late' THEN 1 ELSE 0 END) as late
-            FROM attendance
-        ");
-        $stmt->execute();
-        $summary = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $records = $this->reportModel->getAttendanceRecords();
+        $summary = $this->reportModel->getAttendanceSummary();
 
         return view('reports/attendance', [
             'title' => 'Attendance Reports',
@@ -82,26 +61,8 @@ class ReportController
 
     public function academic($request)
     {
-        $stmt = $this->db->prepare("
-            SELECT m.*, u.first_name, u.last_name, s.name as subject_name, e.exam_name
-            FROM marks m
-            LEFT JOIN users u ON m.student_id = u.id
-            LEFT JOIN subjects s ON m.subject_id = s.id
-            LEFT JOIN exams e ON m.exam_id = e.id
-            ORDER BY m.marks_obtained DESC LIMIT 100
-        ");
-        $stmt->execute();
-        $records = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*) as total,
-                   AVG(marks_obtained) as avg_marks,
-                   MAX(marks_obtained) as highest,
-                   MIN(marks_obtained) as lowest
-            FROM marks
-        ");
-        $stmt->execute();
-        $summary = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $records = $this->reportModel->getAcademicRecords();
+        $summary = $this->reportModel->getAcademicSummary();
 
         return view('reports/academic', [
             'title' => 'Academic Reports',
@@ -112,24 +73,8 @@ class ReportController
 
     public function financial($request)
     {
-        $stmt = $this->db->prepare("
-            SELECT i.*, u.first_name, u.last_name
-            FROM invoices i
-            LEFT JOIN users u ON i.student_id = u.id
-            ORDER BY i.issue_date DESC LIMIT 100
-        ");
-        $stmt->execute();
-        $records = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*) as total,
-                   SUM(amount) as total_amount,
-                   SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as paid,
-                   SUM(CASE WHEN status != 'paid' THEN amount ELSE 0 END) as pending
-            FROM invoices
-        ");
-        $stmt->execute();
-        $summary = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $records = $this->reportModel->getFinancialRecords();
+        $summary = $this->reportModel->getFinancialSummary();
 
         return view('reports/financial', [
             'title' => 'Financial Reports',
