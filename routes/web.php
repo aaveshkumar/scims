@@ -50,6 +50,10 @@ $router->group(['middleware' => 'auth'], function($router) {
     $router->get('/messages', 'MessageController@index');
     $router->get('/messages/create', 'MessageController@create');
     $router->post('/messages', 'MessageController@store', ['csrf']);
+    $router->get('/messages/{id}', 'MessageController@show');
+    $router->get('/messages/{id}/edit', 'MessageController@edit');
+    $router->put('/messages/{id}', 'MessageController@update', ['csrf']);
+    $router->delete('/messages/{id}', 'MessageController@destroy', ['csrf']);
 
     $router->get('/announcements', 'AnnouncementController@index');
     $router->get('/announcements/create', 'AnnouncementController@create');

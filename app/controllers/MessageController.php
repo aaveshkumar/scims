@@ -2,41 +2,175 @@
 
 class MessageController
 {
+    private $messageModel;
+
+    public function __construct()
+    {
+        $this->messageModel = new Message();
+    }
+
     public function index($request)
     {
-        return view('messages/index', ['title' => 'Messages']);
+        $userId = auth()['id'];
+        $messages = $this->messageModel->getReceivedMessages($userId);
+        
+        return view('messages.index', [
+            'title' => 'Messages',
+            'messages' => $messages
+        ]);
     }
 
     public function create($request)
     {
-        return view('messages/create', ['title' => 'Create - Messages']);
+        // Get list of users to send message to
+        $users = $this->messageModel->db->fetchAll("SELECT id, first_name, last_name FROM users WHERE id != ? ORDER BY first_name", [auth()['id']]);
+        
+        return view('messages.create', [
+            'title' => 'Create - Messages',
+            'users' => $users
+        ]);
     }
 
     public function store($request)
     {
-        flash('success', 'Record created successfully');
-        return redirect('/messages');
+        $rules = [
+            'receiver_id' => 'required|numeric',
+            'subject' => 'required',
+            'message_body' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            return redirect('/messages/create')->with('errors', getValidationErrors());
+        }
+
+        try {
+            $this->messageModel->create([
+                'sender_id' => auth()['id'],
+                'receiver_id' => $request->post('receiver_id'),
+                'subject' => $request->post('subject'),
+                'message_body' => $request->post('message_body')
+            ]);
+
+            flash('success', 'Message sent successfully');
+            return redirect('/messages');
+        } catch (Exception $e) {
+            flash('error', 'Failed to send message: ' . $e->getMessage());
+            return redirect('/messages/create');
+        }
     }
 
     public function show($request, $id)
     {
-        return view('messages/show', ['title' => 'View - Messages', 'id' => $id]);
+        try {
+            $message = $this->messageModel->find($id);
+            
+            if (!$message) {
+                flash('error', 'Message not found');
+                return redirect('/messages');
+            }
+
+            // Check if current user is receiver
+            if ($message['receiver_id'] != auth()['id'] && $message['sender_id'] != auth()['id']) {
+                flash('error', 'Unauthorized access');
+                return redirect('/messages');
+            }
+
+            // Mark as read if user is receiver
+            if ($message['receiver_id'] == auth()['id'] && !$message['is_read']) {
+                $this->messageModel->markAsRead($id);
+            }
+
+            // Get sender/receiver details
+            $sender = $this->messageModel->db->fetchOne("SELECT id, first_name, last_name, email FROM users WHERE id = ?", [$message['sender_id']]);
+            $receiver = $this->messageModel->db->fetchOne("SELECT id, first_name, last_name, email FROM users WHERE id = ?", [$message['receiver_id']]);
+
+            return view('messages.show', [
+                'title' => 'View - Messages',
+                'message' => $message,
+                'sender' => $sender,
+                'receiver' => $receiver
+            ]);
+        } catch (Exception $e) {
+            flash('error', 'Failed to load message');
+            return redirect('/messages');
+        }
     }
 
     public function edit($request, $id)
     {
-        return view('messages/edit', ['title' => 'Edit - Messages', 'id' => $id]);
+        try {
+            $message = $this->messageModel->find($id);
+            
+            if (!$message || $message['sender_id'] != auth()['id']) {
+                flash('error', 'Cannot edit this message');
+                return redirect('/messages');
+            }
+
+            $users = $this->messageModel->db->fetchAll("SELECT id, first_name, last_name FROM users WHERE id != ? ORDER BY first_name", [auth()['id']]);
+            $receiver = $this->messageModel->db->fetchOne("SELECT id, first_name, last_name FROM users WHERE id = ?", [$message['receiver_id']]);
+
+            return view('messages.edit', [
+                'title' => 'Edit - Messages',
+                'message' => $message,
+                'receiver' => $receiver,
+                'users' => $users
+            ]);
+        } catch (Exception $e) {
+            flash('error', 'Failed to load message');
+            return redirect('/messages');
+        }
     }
 
     public function update($request, $id)
     {
-        flash('success', 'Record updated successfully');
-        return redirect('/messages');
+        $rules = [
+            'receiver_id' => 'required|numeric',
+            'subject' => 'required',
+            'message_body' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            return redirect("/messages/$id/edit")->with('errors', getValidationErrors());
+        }
+
+        try {
+            $message = $this->messageModel->find($id);
+            
+            if (!$message || $message['sender_id'] != auth()['id']) {
+                flash('error', 'Cannot edit this message');
+                return redirect('/messages');
+            }
+
+            $this->messageModel->update($id, [
+                'receiver_id' => $request->post('receiver_id'),
+                'subject' => $request->post('subject'),
+                'message_body' => $request->post('message_body')
+            ]);
+
+            flash('success', 'Message updated successfully');
+            return redirect('/messages');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update message: ' . $e->getMessage());
+            return redirect("/messages/$id/edit");
+        }
     }
 
     public function destroy($request, $id)
     {
-        flash('success', 'Record deleted successfully');
-        return redirect('/messages');
+        try {
+            $message = $this->messageModel->find($id);
+            
+            if (!$message || $message['sender_id'] != auth()['id']) {
+                flash('error', 'Cannot delete this message');
+                return redirect('/messages');
+            }
+
+            $this->messageModel->delete($id);
+            flash('success', 'Message deleted successfully');
+            return redirect('/messages');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete message: ' . $e->getMessage());
+            return redirect('/messages');
+        }
     }
 }
