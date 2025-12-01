@@ -76,7 +76,8 @@ class InventoryController
             flash('success', 'Asset added successfully');
             return redirect('/inventory');
         } catch (Exception $e) {
-            flash('error', 'Failed to add asset: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Adding asset');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -149,7 +150,8 @@ class InventoryController
             flash('success', 'Asset updated successfully');
             return redirect('/inventory');
         } catch (Exception $e) {
-            flash('error', 'Failed to update asset: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Updating asset');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -161,7 +163,8 @@ class InventoryController
             flash('success', 'Asset deleted successfully');
             return redirect('/inventory');
         } catch (Exception $e) {
-            flash('error', 'Failed to delete asset: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Deleting asset');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -221,7 +224,8 @@ class InventoryController
             flash('success', 'Stock item added successfully');
             return redirect('/inventory/stock');
         } catch (Exception $e) {
-            flash('error', 'Failed to add stock item: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Adding stock item');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -277,7 +281,8 @@ class InventoryController
             flash('success', 'Purchase order created successfully');
             return redirect('/inventory/purchase-orders');
         } catch (Exception $e) {
-            flash('error', 'Failed to create purchase order: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Creating purchase order');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -333,7 +338,8 @@ class InventoryController
             flash('success', 'Supplier added successfully');
             return redirect('/inventory/suppliers');
         } catch (Exception $e) {
-            flash('error', 'Failed to add supplier: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Adding supplier');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -368,7 +374,8 @@ class InventoryController
             flash('success', 'Stock item updated successfully');
             return redirect('/inventory/stock');
         } catch (Exception $e) {
-            flash('error', 'Failed to update stock item: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Updating stock item');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -380,7 +387,8 @@ class InventoryController
             flash('success', 'Stock item deleted successfully');
             return redirect('/inventory/stock');
         } catch (Exception $e) {
-            flash('error', 'Failed to delete stock item: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Deleting stock item');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -392,7 +400,8 @@ class InventoryController
             flash('success', 'Purchase order approved successfully');
             return redirect('/inventory/purchase-orders');
         } catch (Exception $e) {
-            flash('error', 'Failed to approve purchase order: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Approving purchase order');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -404,7 +413,8 @@ class InventoryController
             flash('success', 'Purchase order deleted successfully');
             return redirect('/inventory/purchase-orders');
         } catch (Exception $e) {
-            flash('error', 'Failed to delete purchase order: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Deleting purchase order');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -439,7 +449,8 @@ class InventoryController
             flash('success', 'Supplier updated successfully');
             return redirect('/inventory/suppliers');
         } catch (Exception $e) {
-            flash('error', 'Failed to update supplier: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Updating supplier');
+            flash('error', $errorMsg);
             return back();
         }
     }
@@ -451,7 +462,8 @@ class InventoryController
             flash('success', 'Supplier deleted successfully');
             return redirect('/inventory/suppliers');
         } catch (Exception $e) {
-            flash('error', 'Failed to delete supplier: ' . $e->getMessage());
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Deleting supplier');
+            flash('error', $errorMsg);
             return back();
         }
     }
