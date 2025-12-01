@@ -119,9 +119,37 @@
                                     <span class="badge bg-<?= $color ?>"><?= ucfirst($admission['status']) ?></span>
                                 </td>
                                 <td>
-                                    <a href="/admissions/<?= $admission['id'] ?>" class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i> View
+                                    <a href="/admissions/<?= $admission['id'] ?>" class="btn btn-sm btn-info" title="View Details">
+                                        <i class="bi bi-eye"></i>
                                     </a>
+                                    <?php if ($admission['status'] === 'pending' && hasRole('admin')): ?>
+                                        <form method="POST" action="/admissions/<?= $admission['id'] ?>/approve" class="d-inline">
+                                            <?= csrf_field() ?>
+                                            <button type="submit" class="btn btn-sm btn-success" title="Approve" onclick="return confirm('Approve this application?')">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                        </form>
+                                        <button class="btn btn-sm btn-danger" title="Reject" data-bs-toggle="modal" data-bs-target="#rejectModal-<?= $admission['id'] ?>">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-warning" title="Waitlist" data-bs-toggle="modal" data-bs-target="#waitlistModal-<?= $admission['id'] ?>">
+                                            <i class="bi bi-hourglass"></i>
+                                        </button>
+                                    <?php elseif ($admission['status'] === 'waitlisted' && hasRole('admin')): ?>
+                                        <form method="POST" action="/admissions/<?= $admission['id'] ?>/approve" class="d-inline">
+                                            <?= csrf_field() ?>
+                                            <button type="submit" class="btn btn-sm btn-success" title="Approve from Waitlist" onclick="return confirm('Approve this application?')">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                        </form>
+                                    <?php elseif ($admission['status'] === 'approved' && hasRole('admin')): ?>
+                                        <form method="POST" action="/admissions/<?= $admission['id'] ?>/convert" class="d-inline">
+                                            <?= csrf_field() ?>
+                                            <button type="submit" class="btn btn-sm btn-primary" title="Convert to Student" onclick="return confirm('Convert to student record?')">
+                                                <i class="bi bi-person-check"></i>
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -131,5 +159,56 @@
         </div>
     </div>
 </div>
+
+<!-- Modals for Reject and Waitlist -->
+<?php foreach ($admissions as $admission): ?>
+    <?php if ($admission['status'] === 'pending'): ?>
+    <!-- Reject Modal -->
+    <div class="modal fade" id="rejectModal-<?= $admission['id'] ?>">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="/admissions/<?= $admission['id'] ?>/reject">
+                    <?= csrf_field() ?>
+                    <div class="modal-header">
+                        <h5>Reject Application</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label>Reason for rejection *</label>
+                        <textarea name="remarks" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Reject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Waitlist Modal -->
+    <div class="modal fade" id="waitlistModal-<?= $admission['id'] ?>">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="/admissions/<?= $admission['id'] ?>/waitlist">
+                    <?= csrf_field() ?>
+                    <div class="modal-header">
+                        <h5>Move to Waitlist</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label>Remarks</label>
+                        <textarea name="remarks" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning">Move to Waitlist</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+<?php endforeach; ?>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
