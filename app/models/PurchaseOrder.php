@@ -76,18 +76,14 @@ class PurchaseOrder
     public static function update($id, $data)
     {
         $sql = "UPDATE purchase_orders SET supplier_id = ?, order_date = ?, 
-                expected_delivery = ?, actual_delivery = ?, total_amount = ?, 
-                status = ?, approved_by = ?, remarks = ?, updated_at = NOW() 
+                expected_delivery = ?, status = ?, remarks = ?, updated_at = NOW() 
                 WHERE id = ?";
         
         return db()->execute($sql, [
             $data['supplier_id'],
             $data['order_date'],
             $data['expected_delivery'] ?? null,
-            $data['actual_delivery'] ?? null,
-            $data['total_amount'],
             $data['status'],
-            $data['approved_by'] ?? null,
             $data['remarks'] ?? null,
             $id
         ]);

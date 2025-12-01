@@ -397,7 +397,8 @@ class InventoryController
     {
         $rules = [
             'supplier_id' => 'required',
-            'order_date' => 'required'
+            'order_date' => 'required',
+            'status' => 'required'
         ];
 
         if (!validate($request->post(), $rules)) {
