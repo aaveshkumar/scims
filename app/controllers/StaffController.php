@@ -166,13 +166,19 @@ class StaffController
         }
 
         try {
+            // Handle empty date_of_birth
+            $dateOfBirth = $request->post('date_of_birth');
+            if (empty($dateOfBirth)) {
+                $dateOfBirth = null;
+            }
+
             $this->userModel->update($staff['user_id'], [
                 'first_name' => $request->post('first_name'),
                 'last_name' => $request->post('last_name'),
                 'email' => $request->post('email'),
                 'phone' => $request->post('phone'),
-                'gender' => $request->post('gender'),
-                'date_of_birth' => $request->post('date_of_birth'),
+                'gender' => $request->post('gender') ?: null,
+                'date_of_birth' => $dateOfBirth,
                 'address' => $request->post('address')
             ]);
 
@@ -180,8 +186,8 @@ class StaffController
                 'designation' => $request->post('designation'),
                 'department' => $request->post('department'),
                 'qualification' => $request->post('qualification'),
-                'experience_years' => $request->post('experience_years'),
-                'salary' => $request->post('salary'),
+                'experience_years' => $request->post('experience_years') ?: null,
+                'salary' => $request->post('salary') ?: null,
                 'bank_name' => $request->post('bank_name'),
                 'account_number' => $request->post('account_number'),
                 'emergency_contact' => $request->post('emergency_contact')
@@ -190,7 +196,7 @@ class StaffController
             flash('success', 'Staff member updated successfully');
             return redirect('/staff/' . $id);
         } catch (Exception $e) {
-            flash('error', 'Failed to update staff member: ' . $e->getMessage());
+            flash('error', 'Failed to update staff member. Please check all fields and try again.');
             return back();
         }
     }
