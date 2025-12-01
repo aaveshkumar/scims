@@ -345,10 +345,12 @@
                     // - Buttons that are inside forms (they already have form submission loader)
                     // - Modal dismiss buttons
                     // - Delete buttons (they have their own loader)
+                    // - Buttons inside sidebar
                     if (btn.hasAttribute('data-no-loader') || 
                         btn.closest('form') ||
                         btn.getAttribute('data-bs-dismiss') ||
-                        btn.getAttribute('onclick')?.includes('confirmDelete')) {
+                        btn.getAttribute('onclick')?.includes('confirmDelete') ||
+                        btn.closest('.sidebar')) {
                         return;
                     }
                     
