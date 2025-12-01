@@ -140,15 +140,12 @@ class RoleController
     public function destroy($request, $id)
     {
         try {
-            // Check if any users are assigned to this role
-            $count = db()->fetchOne("SELECT COUNT(*) as count FROM user_roles WHERE role_id = ?", [$id]);
+            // Delete all user-role assignments for this role
+            db()->execute("DELETE FROM user_roles WHERE role_id = ?", [$id]);
             
-            if ($count['count'] > 0) {
-                flash('error', 'Cannot delete role. Users are assigned to this role.');
-                return redirect('/roles');
-            }
-            
+            // Delete the role
             db()->execute("DELETE FROM roles WHERE id = ?", [$id]);
+            
             flash('success', 'Role deleted successfully');
         } catch (Exception $e) {
             flash('error', 'Failed to delete role: ' . $e->getMessage());
