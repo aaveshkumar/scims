@@ -45,21 +45,25 @@ class SupportMessageController
 
     public function store($request)
     {
-        $rules = [
-            'subject' => 'required|min:5',
-            'message' => 'required|min:10'
-        ];
+        $subject = $request->post('subject');
+        $message = $request->post('message');
 
-        if (!validate($request->post(), $rules)) {
-            flash('error', 'Validation failed. ' . implode(', ', array_map(fn($e) => $e[0], getValidationErrors())));
+        // Validate inputs
+        if (empty($subject) || strlen($subject) < 5) {
+            flash('error', 'Subject is required and must be at least 5 characters');
+            return redirect('/support/create');
+        }
+
+        if (empty($message) || strlen($message) < 10) {
+            flash('error', 'Message is required and must be at least 10 characters');
             return redirect('/support/create');
         }
 
         try {
             $this->supportMessageModel->create([
                 'user_id' => auth()['id'],
-                'subject' => $request->post('subject'),
-                'message' => $request->post('message'),
+                'subject' => $subject,
+                'message' => $message,
                 'status' => 'open'
             ]);
 
@@ -132,10 +136,11 @@ class SupportMessageController
             return redirect('/support');
         }
 
-        $rules = ['admin_reply' => 'required|min:5'];
+        $reply = $request->post('admin_reply');
 
-        if (!validate($request->post(), $rules)) {
-            flash('error', 'Validation failed. ' . implode(', ', array_map(fn($e) => $e[0], getValidationErrors())));
+        // Validate reply
+        if (empty($reply) || strlen($reply) < 5) {
+            flash('error', 'Reply is required and must be at least 5 characters');
             return redirect("/support/$id/reply");
         }
 
@@ -147,7 +152,7 @@ class SupportMessageController
                 return redirect('/support');
             }
 
-            $this->supportMessageModel->addReply($id, $request->post('admin_reply'), auth()['id']);
+            $this->supportMessageModel->addReply($id, $reply, auth()['id']);
 
             flash('success', 'Reply sent successfully!');
             return redirect('/support');
