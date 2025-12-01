@@ -2,6 +2,9 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2><i class="bi bi-graph-up me-2"></i>Attendance Reports</h2>
+    <a href="/reports/attendance/create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-2"></i>Add Attendance
+    </a>
 </div>
 
 <!-- Summary Cards -->
@@ -56,6 +59,7 @@
                         <th>Date</th>
                         <th>Status</th>
                         <th>Remarks</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,11 +77,22 @@
                                     <span class="badge <?= $badge ?>"><?= ucfirst($record['status']) ?></span>
                                 </td>
                                 <td><?= htmlspecialchars($record['remarks'] ?? '-') ?></td>
+                                <td>
+                                    <a href="/reports/attendance/<?= $record['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form method="POST" action="/reports/attendance/<?= $record['id'] ?>/delete" style="display:inline;">
+                                        <?= csrf_field() ?>
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?')" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" class="text-center text-muted">No attendance records found</td>
+                            <td colspan="7" class="text-center text-muted">No attendance records found</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

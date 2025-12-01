@@ -474,6 +474,11 @@ $router->group(['middleware' => 'auth'], function($router) {
         
         // Reports
         $router->get('/reports/attendance', 'ReportController@attendance');
+        $router->get('/reports/attendance/create', 'ReportController@attendanceCreate');
+        $router->post('/reports/attendance/store', 'ReportController@attendanceStore', ['csrf']);
+        $router->get('/reports/attendance/{id}/edit', 'ReportController@attendanceEdit');
+        $router->post('/reports/attendance/{id}/update', 'ReportController@attendanceUpdate', ['csrf']);
+        $router->post('/reports/attendance/{id}/delete', 'ReportController@attendanceDelete', ['csrf']);
         $router->get('/reports/academic', 'ReportController@academic');
         $router->get('/reports/financial', 'ReportController@financial');
         $router->get('/reports/custom', 'ReportController@custom');

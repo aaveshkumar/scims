@@ -80,4 +80,60 @@ class Report
         ";
         return $this->db->fetchOne($sql);
     }
+
+    public function getAttendanceById($id)
+    {
+        $sql = "SELECT * FROM attendance WHERE id = ?";
+        return $this->db->fetchOne($sql, [$id]);
+    }
+
+    public function createAttendance($data)
+    {
+        $sql = "
+            INSERT INTO attendance (student_id, class_id, subject_id, date, status, remarks)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ";
+        return $this->db->execute($sql, [
+            $data['student_id'],
+            $data['class_id'],
+            $data['subject_id'] ?? 1,
+            $data['date'],
+            $data['status'],
+            $data['remarks'] ?? null
+        ]);
+    }
+
+    public function updateAttendance($id, $data)
+    {
+        $sql = "
+            UPDATE attendance SET student_id = ?, class_id = ?, date = ?, status = ?, remarks = ?
+            WHERE id = ?
+        ";
+        return $this->db->execute($sql, [
+            $data['student_id'],
+            $data['class_id'],
+            $data['date'],
+            $data['status'],
+            $data['remarks'] ?? null,
+            $id
+        ]);
+    }
+
+    public function deleteAttendance($id)
+    {
+        $sql = "DELETE FROM attendance WHERE id = ?";
+        return $this->db->execute($sql, [$id]);
+    }
+
+    public function getAllStudents()
+    {
+        $sql = "SELECT id, first_name, last_name FROM users WHERE role = 'student' ORDER BY first_name";
+        return $this->db->fetchAll($sql);
+    }
+
+    public function getAllClasses()
+    {
+        $sql = "SELECT id, name FROM classes ORDER BY name";
+        return $this->db->fetchAll($sql);
+    }
 }
