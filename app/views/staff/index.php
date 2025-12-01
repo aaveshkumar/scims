@@ -94,6 +94,16 @@
     <?php endforeach; ?>
 <?php endif; ?>
 
+<style>
+.category-filter {
+    color: white !important;
+}
+
+.category-filter:hover {
+    color: white !important;
+}
+</style>
+
 <script>
 document.querySelectorAll('.category-filter').forEach(button => {
     button.addEventListener('click', function() {
