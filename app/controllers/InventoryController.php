@@ -337,4 +337,122 @@ class InventoryController
             return back();
         }
     }
+    
+    public function updateStock($request, $id)
+    {
+        $rules = [
+            'item_code' => 'required',
+            'name' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'item_code' => $request->post('item_code'),
+                'name' => $request->post('name'),
+                'category' => $request->post('category'),
+                'description' => $request->post('description'),
+                'unit' => $request->post('unit') ?? 'piece',
+                'quantity' => $request->post('quantity') ?? 0,
+                'reorder_level' => $request->post('reorder_level') ?? 10,
+                'unit_price' => $request->post('unit_price'),
+                'location' => $request->post('location'),
+                'status' => $request->post('status') ?? 'in_stock'
+            ];
+
+            InventoryItem::update($id, $data);
+            flash('success', 'Stock item updated successfully');
+            return redirect('/inventory/stock');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update stock item: ' . $e->getMessage());
+            return back();
+        }
+    }
+    
+    public function deleteStock($request, $id)
+    {
+        try {
+            InventoryItem::delete($id);
+            flash('success', 'Stock item deleted successfully');
+            return redirect('/inventory/stock');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete stock item: ' . $e->getMessage());
+            return back();
+        }
+    }
+    
+    public function approvePurchaseOrder($request, $id)
+    {
+        try {
+            PurchaseOrder::approve($id, auth()['id']);
+            flash('success', 'Purchase order approved successfully');
+            return redirect('/inventory/purchase-orders');
+        } catch (Exception $e) {
+            flash('error', 'Failed to approve purchase order: ' . $e->getMessage());
+            return back();
+        }
+    }
+    
+    public function deletePurchaseOrder($request, $id)
+    {
+        try {
+            PurchaseOrder::delete($id);
+            flash('success', 'Purchase order deleted successfully');
+            return redirect('/inventory/purchase-orders');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete purchase order: ' . $e->getMessage());
+            return back();
+        }
+    }
+    
+    public function updateSupplier($request, $id)
+    {
+        $rules = [
+            'supplier_code' => 'required',
+            'name' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'supplier_code' => $request->post('supplier_code'),
+                'name' => $request->post('name'),
+                'contact_person' => $request->post('contact_person'),
+                'email' => $request->post('email'),
+                'phone' => $request->post('phone'),
+                'address' => $request->post('address'),
+                'city' => $request->post('city'),
+                'country' => $request->post('country'),
+                'payment_terms' => $request->post('payment_terms'),
+                'status' => $request->post('status') ?? 'active'
+            ];
+
+            Supplier::update($id, $data);
+            flash('success', 'Supplier updated successfully');
+            return redirect('/inventory/suppliers');
+        } catch (Exception $e) {
+            flash('error', 'Failed to update supplier: ' . $e->getMessage());
+            return back();
+        }
+    }
+    
+    public function deleteSupplier($request, $id)
+    {
+        try {
+            Supplier::delete($id);
+            flash('success', 'Supplier deleted successfully');
+            return redirect('/inventory/suppliers');
+        } catch (Exception $e) {
+            flash('error', 'Failed to delete supplier: ' . $e->getMessage());
+            return back();
+        }
+    }
 }

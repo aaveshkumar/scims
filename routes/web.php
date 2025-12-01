@@ -417,15 +417,34 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/hostel/{id}', 'HostelController@update', ['csrf']);
         $router->post('/hostel/{id}/delete', 'HostelController@destroy', ['csrf']);
         
-        // Inventory Management
+        // Inventory Management - Assets
         $router->get('/inventory', function() { return redirect('/inventory/assets'); });
         $router->get('/inventory/create', function() { return redirect('/inventory/assets/create'); });
         $router->get('/inventory/assets', 'InventoryController@index');
         $router->get('/inventory/assets/create', 'InventoryController@create');
         $router->post('/inventory/assets', 'InventoryController@store', ['csrf']);
+        $router->get('/inventory/assets/{id}', 'InventoryController@show');
+        $router->get('/inventory/assets/{id}/edit', 'InventoryController@edit');
+        $router->post('/inventory/assets/{id}', 'InventoryController@update', ['csrf']);
+        $router->post('/inventory/assets/{id}/delete', 'InventoryController@destroy', ['csrf']);
+        
+        // Inventory Management - Stock
         $router->get('/inventory/stock', 'InventoryController@stock');
+        $router->post('/inventory/stock', 'InventoryController@storeStock', ['csrf']);
+        $router->post('/inventory/stock/{id}', 'InventoryController@updateStock', ['csrf']);
+        $router->post('/inventory/stock/{id}/delete', 'InventoryController@deleteStock', ['csrf']);
+        
+        // Inventory Management - Purchase Orders
         $router->get('/inventory/purchase-orders', 'InventoryController@purchaseOrders');
+        $router->post('/inventory/purchase-orders', 'InventoryController@storePurchaseOrder', ['csrf']);
+        $router->post('/inventory/purchase-orders/{id}/approve', 'InventoryController@approvePurchaseOrder', ['csrf']);
+        $router->post('/inventory/purchase-orders/{id}/delete', 'InventoryController@deletePurchaseOrder', ['csrf']);
+        
+        // Inventory Management - Suppliers
         $router->get('/inventory/suppliers', 'InventoryController@suppliers');
+        $router->post('/inventory/suppliers', 'InventoryController@storeSupplier', ['csrf']);
+        $router->post('/inventory/suppliers/{id}', 'InventoryController@updateSupplier', ['csrf']);
+        $router->post('/inventory/suppliers/{id}/delete', 'InventoryController@deleteSupplier', ['csrf']);
         
         // Reports
         $router->get('/reports/attendance', 'ReportController@attendance');
