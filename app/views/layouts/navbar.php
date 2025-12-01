@@ -71,7 +71,7 @@
             <li class="nav-item dropdown me-3">
                 <a class="nav-link position-relative" href="/notifications" id="notificationLink">
                     <i class="bi bi-bell fs-5"></i>
-                    <span class="position-absolute badge rounded-pill bg-danger" style="font-size: 0.6rem; top: -5px; right: -8px;" id="notificationCount">
+                    <span class="position-absolute badge rounded-pill bg-danger" style="font-size: 0.6rem; top: -8px; right: -10px; padding: 2px 4px;" id="notificationCount">
                         0
                     </span>
                 </a>
