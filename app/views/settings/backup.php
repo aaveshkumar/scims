@@ -109,7 +109,7 @@ if (!function_exists('formatBytes')) {
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="/settings/backup/download/<?= urlencode($backup['name']) ?>" class="btn btn-sm btn-primary" title="Download">
+                                                <a href="/backups/<?= urlencode($backup['name']) ?>" class="btn btn-sm btn-primary" title="Download" download>
                                                     <i class="bi bi-download me-1"></i>Download
                                                 </a>
                                                 <form method="POST" action="/settings/backup/delete/<?= urlencode($backup['name']) ?>" style="display: inline;">
