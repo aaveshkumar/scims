@@ -176,4 +176,33 @@ class ReportController
         flash('success', 'Attendance record deleted successfully');
         return redirect('/reports/attendance');
     }
+
+    public function attendanceView($request, $id)
+    {
+        $record = $this->reportModel->getAttendanceById($id);
+        if (!$record) {
+            flash('error', 'Record not found');
+            return redirect('/reports/attendance');
+        }
+
+        // Get class name
+        $stmt = \Database::getInstance()->query("SELECT name as class_name FROM classes WHERE id = ?", [$record['class_id']]);
+        $class = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($class) {
+            $record['class_name'] = $class['class_name'];
+        }
+
+        // Get student name
+        $stmt = \Database::getInstance()->query("SELECT first_name, last_name FROM users WHERE id = ?", [$record['student_id']]);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($user) {
+            $record['first_name'] = $user['first_name'];
+            $record['last_name'] = $user['last_name'];
+        }
+
+        return view('reports/attendance-view', [
+            'title' => 'View Attendance',
+            'record' => $record
+        ]);
+    }
 }

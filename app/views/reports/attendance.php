@@ -78,6 +78,9 @@
                                 </td>
                                 <td><?= htmlspecialchars($record['remarks'] ?? '-') ?></td>
                                 <td>
+                                    <a href="/reports/attendance/<?= $record['id'] ?>/view" class="btn btn-sm btn-info" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
                                     <a href="/reports/attendance/<?= $record['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>

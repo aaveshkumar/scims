@@ -475,6 +475,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         // Reports - Attendance (specific routes before generic {id} routes)
         $router->get('/reports/attendance/create', 'ReportController@attendanceCreate');
         $router->post('/reports/attendance/store', 'ReportController@attendanceStore', ['csrf']);
+        $router->get('/reports/attendance/{id}/view', 'ReportController@attendanceView');
         $router->get('/reports/attendance/{id}/edit', 'ReportController@attendanceEdit');
         $router->post('/reports/attendance/{id}/update', 'ReportController@attendanceUpdate', ['csrf']);
         $router->post('/reports/attendance/{id}/delete', 'ReportController@attendanceDelete', ['csrf']);
