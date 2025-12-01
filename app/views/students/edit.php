@@ -33,7 +33,7 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Phone *</label>
-                    <input type="tel" name="phone" class="form-control" value="<?= htmlspecialchars($student['phone']) ?>" required>
+                    <input type="tel" name="phone" class="form-control" value="<?= htmlspecialchars($student['phone'] ?? '') ?>" required>
                 </div>
             </div>
 

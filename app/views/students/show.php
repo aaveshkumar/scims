@@ -41,7 +41,7 @@
                     </div>
                     <div class="col-md-6">
                         <strong>Phone:</strong><br>
-                        <?= htmlspecialchars($student['phone']) ?>
+                        <?= htmlspecialchars($student['phone'] ?? 'N/A') ?>
                     </div>
                 </div>
                 <div class="row mb-3">

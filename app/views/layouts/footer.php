@@ -104,6 +104,12 @@
                 return;
             }
             
+            // Show page loader
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.classList.add('active');
+            }
+            
             // Create a hidden form to submit DELETE request
             const form = document.createElement('form');
             form.method = 'POST';
