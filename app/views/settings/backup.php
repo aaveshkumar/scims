@@ -21,7 +21,7 @@
             <div class="card-body">
                 <p class="text-muted mb-3">Click the button below to create a complete backup of your database. This will create a SQL file that can be downloaded and restored later.</p>
                 <form method="POST" action="/settings/backup/create" style="display: inline;">
-                    <?= csrf() ?>
+                    <?= csrf_field() ?>
                     <button type="submit" class="btn btn-success btn-lg">
                         <i class="bi bi-download me-2"></i>Create Backup Now
                     </button>
@@ -39,7 +39,7 @@
             <div class="card-body">
                 <p class="text-muted mb-3">Upload a SQL backup file to restore your database to a previous state. <strong class="text-danger">Warning: This will overwrite all current data.</strong></p>
                 <form method="POST" action="/settings/backup/restore" enctype="multipart/form-data">
-                    <?= csrf() ?>
+                    <?= csrf_field() ?>
                     <div class="mb-3">
                         <label class="form-label">Select Backup File (.sql)</label>
                         <input type="file" name="backup_file" class="form-control" accept=".sql" required>
@@ -97,7 +97,7 @@
                                                     <i class="bi bi-download me-1"></i>Download
                                                 </a>
                                                 <form method="POST" action="/settings/backup/delete/<?= urlencode($backup['name']) ?>" style="display: inline;">
-                                                    <?= csrf() ?>
+                                                    <?= csrf_field() ?>
                                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this backup?');" title="Delete">
                                                         <i class="bi bi-trash me-1"></i>Delete
                                                     </button>
