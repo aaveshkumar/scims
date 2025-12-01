@@ -150,14 +150,9 @@
                                     <button class="btn btn-sm btn-info" title="View Details" data-bs-toggle="modal" data-bs-target="#viewPOModal" data-po-id="<?= $order['id'] ?>" onclick="showPODetails(this)">
                                         <i class="bi bi-eye"></i>
                                     </button>
-                                    <?php if ($order['status'] == 'pending'): ?>
-                                        <form method="POST" action="/inventory/purchase-orders/<?= $order['id'] ?>/approve" style="display: inline;">
-                                            <?= csrf_field() ?>
-                                            <button type="submit" class="btn btn-sm btn-success" title="Approve">
-                                                <i class="bi bi-check-lg"></i>
-                                            </button>
-                                        </form>
-                                    <?php endif; ?>
+                                    <button class="btn btn-sm btn-warning" title="Edit" data-bs-toggle="modal" data-bs-target="#editPOModal" data-po-id="<?= $order['id'] ?>" onclick="loadPOForEdit(this)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
                                     <form method="POST" action="/inventory/purchase-orders/<?= $order['id'] ?>/delete" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this purchase order?');">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="btn btn-sm btn-danger" title="Delete">
@@ -190,6 +185,65 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit PO Modal (Single reusable modal) -->
+<div class="modal fade" id="editPOModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="POST" id="editPOForm">
+                <?= csrf_field() ?>
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Purchase Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">PO Number</label>
+                            <input type="text" class="form-control" id="editPONumber" disabled>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Supplier *</label>
+                            <select name="supplier_id" id="editPOSupplier" class="form-select" required>
+                                <option value="">-- Select Supplier --</option>
+                                <?php foreach ($suppliers ?? [] as $supplier): ?>
+                                    <option value="<?= $supplier['id'] ?>"><?= htmlspecialchars($supplier['name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Order Date *</label>
+                            <input type="date" name="order_date" id="editPOOrderDate" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Expected Delivery</label>
+                            <input type="date" name="expected_delivery" id="editPODeliveryDate" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status *</label>
+                        <select name="status" id="editPOStatus" class="form-select" required>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="received">Received</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Remarks</label>
+                        <textarea name="remarks" id="editPORemarks" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Purchase Order</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -341,6 +395,21 @@ function showPODetails(button) {
     `;
     
     document.getElementById('poDetailsContent').innerHTML = html;
+}
+
+function loadPOForEdit(button) {
+    const poId = button.getAttribute('data-po-id');
+    const poDataElement = document.getElementById('poData' + poId);
+    const order = JSON.parse(poDataElement.getAttribute('data-po'));
+    
+    document.getElementById('editPONumber').value = order.po_number;
+    document.getElementById('editPOSupplier').value = order.supplier_id;
+    document.getElementById('editPOOrderDate').value = order.order_date;
+    document.getElementById('editPODeliveryDate').value = order.expected_delivery || '';
+    document.getElementById('editPOStatus').value = order.status || 'pending';
+    document.getElementById('editPORemarks').value = order.remarks || '';
+    
+    document.getElementById('editPOForm').action = '/inventory/purchase-orders/' + poId;
 }
 </script>
 

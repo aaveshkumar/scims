@@ -393,6 +393,37 @@ class InventoryController
         }
     }
     
+    public function updatePurchaseOrder($request, $id)
+    {
+        $rules = [
+            'supplier_id' => 'required',
+            'order_date' => 'required'
+        ];
+
+        if (!validate($request->post(), $rules)) {
+            flash('error', 'Please fill all required fields');
+            return back();
+        }
+
+        try {
+            $data = [
+                'supplier_id' => $request->post('supplier_id'),
+                'order_date' => $request->post('order_date'),
+                'expected_delivery' => $request->post('expected_delivery'),
+                'status' => $request->post('status'),
+                'remarks' => $request->post('remarks')
+            ];
+
+            PurchaseOrder::update($id, $data);
+            flash('success', 'Purchase order updated successfully');
+            return redirect('/inventory/purchase-orders');
+        } catch (Exception $e) {
+            $errorMsg = ErrorHandler::getDatabaseErrorMessage($e, 'Updating purchase order');
+            flash('error', $errorMsg);
+            return back();
+        }
+    }
+
     public function approvePurchaseOrder($request, $id)
     {
         try {
