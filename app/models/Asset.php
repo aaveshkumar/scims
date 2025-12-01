@@ -13,7 +13,7 @@ class Asset
         $params = [];
         
         if (!empty($filters['search'])) {
-            $sql .= " AND (a.asset_code LIKE ? OR a.asset_name LIKE ?)";
+            $sql .= " AND (a.asset_code ILIKE ? OR a.name ILIKE ?)";
             $search = "%{$filters['search']}%";
             $params[] = $search;
             $params[] = $search;
@@ -53,7 +53,7 @@ class Asset
     {
         $sql = "INSERT INTO assets (asset_code, name, category, description, 
                 purchase_date, purchase_cost, current_value, depreciation_rate, 
-                location, assigned_to, item_condition, warranty_expiry, status, 
+                location, assigned_to, condition, warranty_expiry, status, 
                 created_at, updated_at) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
         
@@ -68,7 +68,7 @@ class Asset
             $data['depreciation_rate'] ?? null,
             $data['location'] ?? null,
             $data['assigned_to'] ?? null,
-            $data['item_condition'] ?? 'good',
+            $data['condition'] ?? 'good',
             $data['warranty_expiry'] ?? null,
             $data['status'] ?? 'active'
         ]);
@@ -79,7 +79,7 @@ class Asset
         $sql = "UPDATE assets SET asset_code = ?, name = ?, category = ?, 
                 description = ?, purchase_date = ?, purchase_cost = ?, 
                 current_value = ?, depreciation_rate = ?, location = ?, 
-                assigned_to = ?, item_condition = ?, warranty_expiry = ?, 
+                assigned_to = ?, condition = ?, warranty_expiry = ?, 
                 status = ?, updated_at = NOW() WHERE id = ?";
         
         return db()->execute($sql, [
@@ -93,7 +93,7 @@ class Asset
             $data['depreciation_rate'] ?? null,
             $data['location'] ?? null,
             $data['assigned_to'] ?? null,
-            $data['item_condition'],
+            $data['condition'] ?? 'good',
             $data['warranty_expiry'] ?? null,
             $data['status'],
             $id

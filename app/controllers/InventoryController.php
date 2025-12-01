@@ -17,7 +17,7 @@ class InventoryController
         $warrantyExpiring = Asset::getWarrantyExpiring(30);
         
         $users = db()->fetchAll(
-            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+            "SELECT id, CONCAT(first_name, ' ', last_name) as name FROM users"
         );
         
         return view('inventory/index', [
@@ -34,7 +34,7 @@ class InventoryController
     public function create($request)
     {
         $users = db()->fetchAll(
-            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+            "SELECT id, CONCAT(first_name, ' ', last_name) as name FROM users"
         );
         
         return view('inventory/create', [
@@ -106,7 +106,7 @@ class InventoryController
         }
         
         $users = db()->fetchAll(
-            "SELECT id, name FROM users WHERE role_name IN ('staff', 'admin')"
+            "SELECT id, CONCAT(first_name, ' ', last_name) as name FROM users"
         );
         
         return view('inventory/edit', [
@@ -269,7 +269,7 @@ class InventoryController
                 'expected_delivery' => $request->post('expected_delivery'),
                 'total_amount' => 0,
                 'status' => 'pending',
-                'created_by' => auth()->user()['id'],
+                'created_by' => auth()['id'],
                 'remarks' => $request->post('remarks')
             ];
 

@@ -7,7 +7,8 @@ class PurchaseOrder
     public static function getAll($filters = [])
     {
         $sql = "SELECT po.*, s.name as supplier_name, s.supplier_code,
-                u1.name as created_by_name, u2.name as approved_by_name
+                CONCAT(u1.first_name, ' ', u1.last_name) as created_by_name, 
+                CONCAT(u2.first_name, ' ', u2.last_name) as approved_by_name
                 FROM purchase_orders po
                 JOIN suppliers s ON po.supplier_id = s.id
                 LEFT JOIN users u1 ON po.created_by = u1.id
@@ -40,7 +41,8 @@ class PurchaseOrder
     public static function find($id)
     {
         $sql = "SELECT po.*, s.name as supplier_name, s.contact_person, s.phone,
-                u1.name as created_by_name, u2.name as approved_by_name
+                CONCAT(u1.first_name, ' ', u1.last_name) as created_by_name, 
+                CONCAT(u2.first_name, ' ', u2.last_name) as approved_by_name
                 FROM purchase_orders po
                 JOIN suppliers s ON po.supplier_id = s.id
                 LEFT JOIN users u1 ON po.created_by = u1.id
@@ -158,7 +160,7 @@ class PurchaseOrder
         
         if ($allReceived) {
             db()->execute(
-                "UPDATE purchase_orders SET status = 'received', actual_delivery = CURDATE(), 
+                "UPDATE purchase_orders SET status = 'received', actual_delivery = CURRENT_DATE, 
                  updated_at = NOW() WHERE id = ?",
                 [$poId]
             );
@@ -200,7 +202,7 @@ class PurchaseOrder
             'total_orders' => db()->fetchOne("SELECT COUNT(*) as count FROM purchase_orders")['count'],
             'pending' => db()->fetchOne("SELECT COUNT(*) as count FROM purchase_orders WHERE status = 'pending'")['count'],
             'approved' => db()->fetchOne("SELECT COUNT(*) as count FROM purchase_orders WHERE status = 'approved'")['count'],
-            'this_month_value' => db()->fetchOne("SELECT SUM(total_amount) as total FROM purchase_orders WHERE MONTH(order_date) = MONTH(CURDATE()) AND YEAR(order_date) = YEAR(CURDATE())")['total'] ?? 0
+            'this_month_value' => db()->fetchOne("SELECT SUM(total_amount) as total FROM purchase_orders WHERE DATE_TRUNC('month', order_date) = DATE_TRUNC('month', CURRENT_DATE)")['total'] ?? 0
         ];
     }
     
