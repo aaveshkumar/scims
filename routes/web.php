@@ -437,6 +437,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         // Inventory Management - Purchase Orders
         $router->get('/inventory/purchase-orders', 'InventoryController@purchaseOrders');
         $router->post('/inventory/purchase-orders', 'InventoryController@storePurchaseOrder', ['csrf']);
+        $router->post('/inventory/purchase-orders/{id}', 'InventoryController@updatePurchaseOrder', ['csrf']);
         $router->post('/inventory/purchase-orders/{id}/approve', 'InventoryController@approvePurchaseOrder', ['csrf']);
         $router->post('/inventory/purchase-orders/{id}/delete', 'InventoryController@deletePurchaseOrder', ['csrf']);
         
