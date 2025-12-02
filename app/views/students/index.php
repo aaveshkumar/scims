@@ -85,6 +85,9 @@
                                     <a href="/students/<?= $student['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
+                                    <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($student['email']) ?>', '<?= htmlspecialchars($student['first_name'] . ' ' . $student['last_name']) ?>')">
+                                        <i class="bi bi-info-circle"></i>
+                                    </button>
                                     <form method="POST" action="/students/<?= $student['id'] ?>/resend-password" style="display: inline;">
                                         <input type="hidden" name="_token" value="<?= csrf() ?>">
                                         <button type="submit" class="btn btn-sm btn-success" title="Resend Password" onclick="return confirm('Send new password to <?= htmlspecialchars($student['email']) ?>?')">
@@ -103,5 +106,50 @@
         </div>
     </div>
 </div>
+
+<!-- Credentials Modal -->
+<div class="modal fade" id="credentialsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-key-fill me-2"></i>Student Credentials</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Name:</strong> <span id="credName"></span></p>
+                <p><strong>Email:</strong> <span id="credEmail"></span></p>
+                <p><strong>Temporary Password:</strong></p>
+                <div class="alert alert-info">
+                    <p class="mb-0">
+                        Password is temporary and expires in 7 days.
+                    </p>
+                    <p class="mb-0 mt-2">
+                        <small>Student can use "Forgot Password" to set a permanent password, or admin can resend a new temporary password.</small>
+                    </p>
+                </div>
+                <p class="mb-0"><small class="text-muted">Temporary passwords are sent via email during creation or resend.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="copyToClipboard(document.getElementById('credEmail').textContent)">
+                    <i class="bi bi-clipboard me-1"></i>Copy Email
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showCredentials(email, name) {
+    document.getElementById('credName').textContent = name;
+    document.getElementById('credEmail').textContent = email;
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Email copied to clipboard!');
+    });
+}
+</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
