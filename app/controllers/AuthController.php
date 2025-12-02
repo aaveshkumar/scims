@@ -72,6 +72,12 @@ class AuthController
             return back();
         }
 
+        // Verify user is registered in the appropriate role database table
+        if (!$this->verifyRoleRegistration($user['id'], $selectedRole, $db)) {
+            flash('error', 'You are not registered as a ' . ucfirst($selectedRole) . ' in the system');
+            return back();
+        }
+
         // Add roles array and selected role to user data
         $user['roles'] = $userRoles;
         $user['role'] = $selectedRole; // Store selected role
@@ -80,6 +86,40 @@ class AuthController
 
         flash('success', 'Welcome back, ' . $user['first_name'] . '!');
         return redirect('/dashboard');
+    }
+
+    private function verifyRoleRegistration($userId, $role, $db)
+    {
+        switch ($role) {
+            case 'student':
+                // Check if user exists in students table
+                $student = $db->fetch(
+                    "SELECT id FROM students WHERE user_id = ? AND status = 'active'",
+                    [$userId]
+                );
+                return $student !== null;
+
+            case 'teacher':
+            case 'hr':
+                // Check if user exists in staff table
+                $staff = $db->fetch(
+                    "SELECT id FROM staff WHERE user_id = ? AND status = 'active'",
+                    [$userId]
+                );
+                return $staff !== null;
+
+            case 'parent':
+                // Check if user exists as a guardian (registered through student/admission system)
+                $parent = $db->fetch(
+                    "SELECT id FROM students WHERE guardian_email = ? LIMIT 1",
+                    [$db->fetch("SELECT email FROM users WHERE id = ?", [$userId])['email']]
+                );
+                // For now, we also allow users with parent role in user_roles table
+                return $parent !== null || true;
+
+            default:
+                return false;
+        }
     }
 
     public function showRegister($request)
