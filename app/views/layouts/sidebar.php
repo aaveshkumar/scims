@@ -25,17 +25,40 @@
                     </h2>
                     <div id="studentPortalCollapse" class="accordion-collapse collapse" data-bs-parent="#studentPortalMenu">
                         <div class="accordion-body p-0">
-                            <a href="/student-portal/dashboard" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Dashboard</a>
-                            <a href="/student-portal/marks" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Marks</a>
-                            <a href="/student-portal/attendance" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Attendance</a>
-                            <a href="/student-portal/fees" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Fee Information</a>
+                            <!-- Academic Section -->
+                            <a href="/student-portal/dashboard" class="sidebar-link list-group-item list-group-item-action border-0 ps-4"><i class="bi bi-speedometer2 text-info" style="font-size: 0.7rem;"></i> My Dashboard</a>
+                            <a href="/student-portal/marks" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Marks & Grades</a>
+                            <a href="/student-portal/attendance" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Attendance History</a>
+                            <a href="/student-portal/exam-schedule" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Exam Schedule</a>
+                            <a href="/student-portal/report-card" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Report Card</a>
+                            <a href="/student-portal/question-bank" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Question Bank</a>
+                            
+                            <!-- Learning Section -->
                             <a href="/student-portal/timetable" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Timetable</a>
                             <a href="/student-portal/assignments" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Assignments</a>
                             <a href="/student-portal/materials" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Study Materials</a>
-                            <a href="/student-portal/quizzes" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Quizzes</a>
-                            <a href="/student-portal/announcements" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Announcements</a>
-                            <a href="/student-portal/library/books" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Library Books</a>
+                            <a href="/student-portal/quizzes" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Quizzes/Tests</a>
+                            <a href="/student-portal/syllabus" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Syllabus</a>
+                            
+                            <!-- Library Section -->
+                            <a href="/student-portal/library/books" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Library - Browse Books</a>
                             <a href="/student-portal/library/borrowed" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Borrowed Books</a>
+                            
+                            <!-- Hostel Section -->
+                            <a href="/student-portal/hostel/info" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Hostel Information</a>
+                            <a href="/student-portal/hostel/complaints" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Hostel Complaints</a>
+                            
+                            <!-- Communication Section -->
+                            <a href="/student-portal/announcements" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Announcements</a>
+                            <a href="/student-portal/notifications" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Notifications</a>
+                            <a href="/student-portal/messages" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Messages</a>
+                            <a href="/student-portal/forums" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Discussion Forums</a>
+                            
+                            <!-- Administrative Section -->
+                            <a href="/student-portal/fees" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Fee Information</a>
+                            <a href="/student-portal/support" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Support/Help</a>
+                            <a href="/student-portal/profile" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Profile</a>
+                            <a href="/student-portal/change-password" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Change Password</a>
                         </div>
                     </div>
                 </div>
