@@ -455,25 +455,37 @@ class StaffController
             return responseJSON(['error' => 'User not found'], 404);
         }
 
-        // Handle missing or null password fields (old staff or column doesn't exist)
+        // Try to get password from temporary_password_plaintext column
         $password = isset($user['temporary_password_plaintext']) ? $user['temporary_password_plaintext'] : null;
         $expiresAt = isset($user['password_expires_at']) ? $user['password_expires_at'] : null;
 
-        if (!$password || !$expiresAt) {
+        // If we have an expiry but no plaintext password stored, it means the column might not exist
+        // In that case, show a message to check the blue alert or resend
+        if (!$password && !$expiresAt) {
             return responseJSON([
                 'password' => null,
                 'expired' => true,
-                'expires_at' => null
+                'expires_at' => null,
+                'message' => 'No password set'
             ]);
         }
 
-        $expireTime = strtotime($expiresAt);
-        $now = time();
+        // If we have an expiry date, password exists
+        if ($expiresAt) {
+            $expireTime = strtotime($expiresAt);
+            $now = time();
+
+            return responseJSON([
+                'password' => $password ?: '(Check the blue alert above if newly created)',
+                'expired' => $expireTime < $now,
+                'expires_at' => $expiresAt
+            ]);
+        }
 
         return responseJSON([
-            'password' => $password,
-            'expired' => $expireTime < $now,
-            'expires_at' => $expiresAt
+            'password' => null,
+            'expired' => true,
+            'expires_at' => null
         ]);
     }
 }

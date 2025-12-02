@@ -207,21 +207,31 @@ document.querySelectorAll('.category-filter').forEach(button => {
 function showCredentials(email, name, staffId) {
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
+    document.getElementById('credPassword').textContent = '(Loading...)';
     
     // Fetch password from database
     fetch(`/api/staff/${staffId}/temporary-password`)
         .then(r => r.json())
         .then(data => {
             let noteText = document.getElementById('noteText');
-            if (data.password) {
+            if (data.password && !data.password.includes('Check the blue alert')) {
                 document.getElementById('credPassword').textContent = data.password;
-                noteText.textContent = 'Password is temporary and expires: ' + new Date(data.expires_at).toLocaleDateString();
+                if (data.expires_at) {
+                    noteText.textContent = 'Password expires: ' + new Date(data.expires_at).toLocaleDateString();
+                } else {
+                    noteText.textContent = 'Temporary password. Staff can use "Forgot Password" to set permanent password.';
+                }
+            } else if (data.password) {
+                // Password info is in the blue alert
+                document.getElementById('credPassword').textContent = data.password;
+                noteText.textContent = 'Look at the blue alert above for the newly created password!';
             } else {
                 document.getElementById('credPassword').textContent = '(Password not available)';
-                noteText.textContent = 'For existing staff, click the green 🔑 button to generate and resend a new temporary password.';
+                noteText.textContent = 'Click the green 🔑 button to generate and resend a new temporary password.';
             }
         })
         .catch(e => {
+            console.error('Error:', e);
             document.getElementById('credPassword').textContent = '(Error loading password)';
         });
 }
