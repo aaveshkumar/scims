@@ -377,6 +377,13 @@ class StaffController
                 'temporary_password_plaintext' => $temporaryPassword  // Store plaintext for credentials modal
             ]);
 
+            // Also store in session for immediate display (as backup if DB column doesn't exist)
+            $_SESSION['resent_passwords'][$user['id']] = [
+                'password' => $temporaryPassword,
+                'expires_at' => $passwordExpiresAt,
+                'stored_at' => time()
+            ];
+
             // Send email with new credentials
             $emailSent = Email::sendPasswordReset(
                 $user['email'],
@@ -456,28 +463,39 @@ class StaffController
             return responseJSON(['error' => 'User not found'], 404);
         }
 
-        // Try to get password from temporary_password_plaintext column
-        $password = isset($user['temporary_password_plaintext']) ? $user['temporary_password_plaintext'] : null;
-        $expiresAt = isset($user['password_expires_at']) ? $user['password_expires_at'] : null;
+        // First check session for recently resent passwords
+        $sessionPassword = null;
+        $sessionExpiresAt = null;
+        if (isset($_SESSION['resent_passwords'][$user['id']])) {
+            $sessionData = $_SESSION['resent_passwords'][$user['id']];
+            // Only use if stored within last 5 minutes
+            if (time() - $sessionData['stored_at'] < 300) {
+                $sessionPassword = $sessionData['password'];
+                $sessionExpiresAt = $sessionData['expires_at'];
+            } else {
+                // Clean up old session data
+                unset($_SESSION['resent_passwords'][$user['id']]);
+            }
+        }
 
-        // If we have an expiry but no plaintext password stored, it means the column might not exist
-        // In that case, show a message to check the blue alert or resend
+        // Use session password if available, otherwise try database
+        $password = $sessionPassword ?: (isset($user['temporary_password_plaintext']) ? $user['temporary_password_plaintext'] : null);
+        $expiresAt = $sessionExpiresAt ?: (isset($user['password_expires_at']) ? $user['password_expires_at'] : null);
+
         if (!$password && !$expiresAt) {
             return responseJSON([
                 'password' => null,
                 'expired' => true,
-                'expires_at' => null,
-                'message' => 'No password set'
+                'expires_at' => null
             ]);
         }
 
-        // If we have an expiry date, password exists
         if ($expiresAt) {
             $expireTime = strtotime($expiresAt);
             $now = time();
 
             return responseJSON([
-                'password' => $password ?: '(Check the blue alert above if newly created)',
+                'password' => $password ?: '(No password available)',
                 'expired' => $expireTime < $now,
                 'expires_at' => $expiresAt
             ]);
