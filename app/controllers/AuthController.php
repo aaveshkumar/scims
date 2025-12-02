@@ -106,7 +106,7 @@ class AuthController
         switch ($role) {
             case 'student':
                 // Check if user exists in students table
-                $student = $db->fetch(
+                $student = $db->fetchOne(
                     "SELECT id FROM students WHERE user_id = ? AND status = 'active'",
                     [$userId]
                 );
@@ -115,7 +115,7 @@ class AuthController
             case 'teacher':
             case 'hr':
                 // Check if user exists in staff table
-                $staff = $db->fetch(
+                $staff = $db->fetchOne(
                     "SELECT id FROM staff WHERE user_id = ? AND status = 'active'",
                     [$userId]
                 );
@@ -123,9 +123,14 @@ class AuthController
 
             case 'parent':
                 // Check if user exists as a guardian (registered through student/admission system)
-                $parent = $db->fetch(
+                $userEmail = $db->fetchOne("SELECT email FROM users WHERE id = ?", [$userId]);
+                if (!$userEmail) {
+                    return true; // Allow parent if user exists
+                }
+                
+                $parent = $db->fetchOne(
                     "SELECT id FROM students WHERE guardian_email = ? LIMIT 1",
-                    [$db->fetch("SELECT email FROM users WHERE id = ?", [$userId])['email']]
+                    [$userEmail['email']]
                 );
                 // For now, we also allow users with parent role in user_roles table
                 return $parent !== null || true;
