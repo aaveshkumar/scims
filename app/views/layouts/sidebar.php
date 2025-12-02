@@ -337,13 +337,13 @@
     </nav>
 
     <!-- User Info at Bottom -->
-    <div class="p-3 sidebar-footer">
+    <div class="p-3 sidebar-footer" style="margin-bottom: 8px; padding-bottom: 8px;">
         <div class="d-flex align-items-center">
             <div class="flex-grow-1">
                 <div class="fw-bold sidebar-user-name"><?= htmlspecialchars(auth()['first_name'] ?? 'User') ?></div>
                 <small class="sidebar-user-role"><?= ucfirst(auth()['role'] ?? 'User') ?></small>
             </div>
-            <a href="/logout" class="btn btn-sm sidebar-logout-btn" title="Logout">
+            <a href="/logout" class="btn btn-sm sidebar-logout-btn" title="Logout" style="margin-bottom: 8px;">
                 <i class="bi bi-box-arrow-right"></i>
             </a>
         </div>
@@ -383,8 +383,9 @@
 .sidebar-footer {
     box-sizing: border-box;
     max-width: 100%;
-    overflow: visible;
-    padding-bottom: 8px;
+    overflow: visible !important;
+    padding-bottom: 16px !important;
+    margin-bottom: 8px !important;
 }
 
 .sidebar-footer .d-flex {
@@ -457,6 +458,8 @@ body:not(.dark-mode) .sidebar-user-role {
 body:not(.dark-mode) .sidebar-logout-btn {
     border-color: #ffffff !important;
     color: #ffffff !important;
+    margin-bottom: 8px !important;
+    display: block !important;
 }
 
 body:not(.dark-mode) .sidebar-logout-btn:hover {
@@ -522,6 +525,8 @@ body.dark-mode .sidebar-user-role {
 body.dark-mode .sidebar-logout-btn {
     border-color: #e9ecef !important;
     color: #e9ecef !important;
+    margin-bottom: 8px !important;
+    display: block !important;
 }
 
 body.dark-mode .sidebar-logout-btn:hover {
