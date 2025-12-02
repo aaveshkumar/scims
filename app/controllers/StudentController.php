@@ -115,7 +115,11 @@ class StudentController
 
             $this->userModel->commit();
 
-            // Send credentials email
+            // ALWAYS store password in session for display to admin
+            $_SESSION['new_password'] = $temporaryPassword;
+            $_SESSION['new_student_email'] = $request->post('email');
+
+            // Try to send credentials email
             $emailSent = Email::sendCredentials(
                 $request->post('email'),
                 $request->post('first_name'),
@@ -127,9 +131,6 @@ class StudentController
             if ($emailSent) {
                 flash('success', "Student created successfully. Login credentials sent to {$request->post('email')}");
             } else {
-                // Store password in session for display on redirect
-                $_SESSION['new_password'] = $temporaryPassword;
-                $_SESSION['new_student_email'] = $request->post('email');
                 flash('warning', 'Student created! Email could not be sent. Password shown below.');
             }
 

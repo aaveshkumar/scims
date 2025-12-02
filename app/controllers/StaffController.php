@@ -141,7 +141,11 @@ class StaffController
 
             $this->userModel->commit();
 
-            // Send credentials email
+            // ALWAYS store password in session for display to admin
+            $_SESSION['new_password'] = $temporaryPassword;
+            $_SESSION['new_staff_email'] = $request->post('email');
+
+            // Try to send credentials email
             $emailSent = Email::sendCredentials(
                 $request->post('email'),
                 $request->post('first_name'),
@@ -153,9 +157,6 @@ class StaffController
             if ($emailSent) {
                 flash('success', "Staff member created successfully. Login credentials sent to {$request->post('email')}");
             } else {
-                // Store password in session for display on redirect
-                $_SESSION['new_password'] = $temporaryPassword;
-                $_SESSION['new_staff_email'] = $request->post('email');
                 flash('warning', 'Staff member created! Email could not be sent. Password shown below.');
             }
 
