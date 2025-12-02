@@ -62,6 +62,7 @@ class StudentController
             'last_name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
+            'gender' => 'required',
             'admission_number' => 'required',
             'class_id' => 'required|numeric',
             'admission_date' => 'required'
@@ -155,8 +156,35 @@ class StudentController
             return redirect('/students');
         } catch (Exception $e) {
             $this->userModel->rollback();
-            flash('error', 'Failed to create student: ' . $e->getMessage());
+            $errorMsg = $this->formatDatabaseError($e->getMessage());
+            flash('error', 'Failed to create student: ' . $errorMsg);
             return back();
+        }
+    }
+
+    private function formatDatabaseError($errorMessage)
+    {
+        // Extract meaningful error from database exception
+        if (strpos($errorMessage, 'gender_check') !== false) {
+            return 'Gender field is required and must be a valid option (Male, Female, Other)';
+        }
+        if (strpos($errorMessage, 'email') !== false) {
+            return 'Email is invalid or already exists. Please use a valid, unique email address';
+        }
+        if (strpos($errorMessage, 'phone') !== false) {
+            return 'Phone number is invalid or already exists';
+        }
+        if (strpos($errorMessage, 'date') !== false || strpos($errorMessage, 'datetime') !== false) {
+            return 'Please enter valid dates in the correct format';
+        }
+        if (strpos($errorMessage, 'foreign key') !== false) {
+            return 'One of the selected values (class, etc.) does not exist. Please check and try again';
+        }
+        if (strpos($errorMessage, 'unique') !== false) {
+            return 'This record already exists. Please check the information and try again';
+        }
+        // Fallback: return a generic message
+        return 'Database error occurred. Please check your input and try again';
         }
     }
 
