@@ -89,7 +89,7 @@ class StaffController
         ];
 
         if (!validate($request->post(), $rules)) {
-            flash('error', 'Please fix the validation errors');
+            // Validation errors are stored in session and will be displayed in the view
             return back();
         }
 
@@ -286,7 +286,7 @@ class StaffController
         ];
 
         if (!validate($request->post(), $rules)) {
-            flash('error', 'Please fix the validation errors');
+            // Validation errors are stored in session and will be displayed in the view
             return back();
         }
 

@@ -12,13 +12,30 @@
         <h5 class="mb-0">Staff Information</h5>
     </div>
     <div class="card-body">
+        <?php if (hasErrors()): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Please fix the following errors:</strong>
+                <ul class="mb-0 mt-2">
+                    <?php foreach (errors() as $field => $fieldErrors): ?>
+                        <?php foreach ($fieldErrors as $error): ?>
+                            <li><?= $error ?></li>
+                        <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
+
         <form method="POST" action="/staff">
             <input type="hidden" name="_token" value="<?= csrf() ?>">
             
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">First Name *</label>
-                    <input type="text" name="first_name" class="form-control" required>
+                    <input type="text" name="first_name" class="form-control <?= hasErrors('first_name') ? 'is-invalid' : '' ?>" value="<?= htmlspecialchars(old('first_name', '')) ?>" required>
+                    <?php if (hasErrors('first_name')): ?>
+                        <div class="invalid-feedback d-block"><?= implode(' ', errors('first_name')) ?></div>
+                    <?php endif; ?>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Last Name *</label>
