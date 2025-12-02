@@ -55,6 +55,12 @@ class StaffController
 
     public function create($request)
     {
+        // Only admin can create staff/teachers/parents
+        if (!hasRole('admin')) {
+            flash('error', 'Only administrators can add staff members');
+            return redirect('/dashboard');
+        }
+        
         // Get all departments
         $departments = db()->fetchAll("SELECT * FROM departments WHERE status = 'active' ORDER BY name");
         
@@ -66,6 +72,11 @@ class StaffController
 
     public function store($request)
     {
+        // Only admin can store staff/teachers/parents
+        if (!hasRole('admin')) {
+            flash('error', 'Only administrators can add staff members');
+            return redirect('/dashboard');
+        }
         $rules = [
             'first_name' => 'required',
             'last_name' => 'required',

@@ -40,12 +40,23 @@ class StudentController
 
     public function create($request)
     {
+        // Only admin can create students
+        if (!hasRole('admin')) {
+            flash('error', 'Only administrators can add students');
+            return redirect('/dashboard');
+        }
+        
         $classes = $this->classModel->where('status', 'active')->get();
         return view('students.create', ['classes' => $classes]);
     }
 
     public function store($request)
     {
+        // Only admin can store students
+        if (!hasRole('admin')) {
+            flash('error', 'Only administrators can add students');
+            return redirect('/dashboard');
+        }
         $rules = [
             'first_name' => 'required',
             'last_name' => 'required',

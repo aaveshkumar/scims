@@ -1,40 +1,113 @@
-# School/College/Institution Management System (SCIMS)
+# SCIMS - School/College Institution Management System
 
-## Overview
-SCIMS is a comprehensive ERP system for educational institutions. Built with Core PHP 8+ using a custom MVC architecture, it aims to streamline operations across administration, academics, finance, and communication. The system supports managing students, staff, and parents, with features for admissions, attendance, exams, fees, and an integrated Learning Management System (LMS). This project delivers a robust, production-level platform designed for efficient institutional management.
+## Project Overview
+Comprehensive school management system built with Core PHP 8+ custom MVC architecture featuring role-based access control, student portal, and multi-role authentication.
+
+## Current Status: Development Phase
+
+### Completed Features (14/25)
+✅ **Core System:**
+- Role-based authentication (Student, Teacher, Parent, HR, Admin)
+- Multi-role login with role selection dropdown
+- Admin-only dashboard with statistics
+
+✅ **Student Portal (10/25 Features):**
+1. Combined Student Dashboard with quick links
+2. My Marks & Grades
+3. Attendance History
+4. My Timetable
+5. Assignments
+6. Study Materials
+7. Quizzes/Tests
+8. Library - Browse Books
+9. My Borrowed Books
+10. Announcements
+
+### Remaining Features (14/25)
+❌ Exam Schedule, Report Card, Question Bank, Syllabus
+❌ Hostel Information, Hostel Complaints
+❌ Notifications, Messages, Discussion Forums
+❌ Fee Information, Support/Help, My Profile, Change Password
+
+## Authentication & Security
+
+### Login System
+- **Multi-role login:** Student, Teacher, Parent, HR
+- **Admin login blocked** from regular login form
+- **Database validation:** Users must be registered in their role-specific tables
+  - Students: Must exist in `students` table with status='active'
+  - Teachers/HR: Must exist in `staff` table with status='active'
+  - Parents: Must be registered as guardians or have parent role
+
+### Access Control
+- **Only Admins Can Add:**
+  - ✅ Students (protected in StudentController)
+  - ✅ Teachers/Staff (protected in StaffController)
+  - ✅ Parents (added via staff/guardian system)
+- Route-level protection: `middleware: 'role:admin'`
+- Controller-level checks: `hasRole('admin')` in create/store methods
+
+## Database Structure
+
+### Key Tables
+- `users` - All system users
+- `user_roles` - Role assignments
+- `students` - Student records (user_id FK)
+- `staff` - Teacher/HR/Staff records (user_id FK)
+- `roles` - System roles (admin, teacher, student, parent, hr)
+
+### Role-Based Registration
+- **Student:** Created in `students` table when admin adds student
+- **Teacher:** Created in `staff` table when admin adds staff
+- **HR:** Created in `staff` table when admin adds staff with HR role
+- **Parent:** Registered via guardian fields in `students` table
+- **Admin:** System role, cannot login through regular form
+
+## Sidebar Structure (Student Portal)
+
+### Menu Categories (Organized)
+1. **Dashboard** (Direct link to main dashboard)
+2. **Academic** (Marks, Attendance, Exam Schedule, Report Card, Question Bank)
+3. **Learning** (Timetable, Assignments, Materials, Quizzes, Syllabus)
+4. **Library** (Browse Books, Borrowed Books)
+5. **Hostel** (Information, Complaints)
+6. **Communication** (Announcements, Notifications, Messages, Forums)
+7. **Settings** (Fees, Support, Profile, Change Password) - *Last Menu*
 
 ## User Preferences
-- Strict MVC architecture
-- No frameworks or external libraries
-- Use only Core PHP features
-- PDO for all database operations
-- Bootstrap for UI
-- Step-by-step development with confirmation at each stage
+- MVC architecture with clean separation of concerns
+- Bootstrap 5 responsive UI with Bootstrap Icons
+- Role-based middleware for route protection
+- Form validation & error handling
+- Transaction support for critical operations
 
-## System Architecture
-The system employs a custom MVC architecture for clear separation of concerns, ensuring maintainability and scalability.
+## Recent Changes (Dec 2, 2025)
+- ✅ Added "Login As" role dropdown to login form
+- ✅ Implemented role-specific database registration validation
+- ✅ Added admin-only authorization for student/staff creation
+- ✅ Organized student portal with 6 category menus
+- ✅ Moved Settings menu to the bottom (last option)
+- ✅ Removed duplicate student dashboard link
+- ✅ Added 10 working student portal features
 
-**UI/UX Decisions:**
-- **Frontend**: Bootstrap 5 for consistent, responsive design with a dark/light mode toggle.
-- **File Structure**: Standardized organization (`/app`, `/config`, `/database`, `/public`, `/routes`).
+## TODO for Next Sessions
+1. Build remaining 14 student portal features
+2. Implement teacher/parent dashboards & features
+3. Create HR management dashboard
+4. Add parent communication portal
+5. Implement notifications system
+6. Add parent-teacher communication module
 
-**Technical Implementations:**
-- **Backend**: Core PHP 8.4 (Object-Oriented Programming).
-- **Database**: PostgreSQL (Neon) with PDO for secure interactions using prepared statements.
-- **Authentication**: Session-based with Role-Based Access Control (RBAC).
-- **Security**: PDO prepared statements, CSRF protection, and robust password hashing.
-- **Custom Router**: Handles dynamic routing and middleware integration.
-- **Session Management**: Native PHP sessions.
+## Routes Protected By Role
+- `/students/*` - admin only
+- `/staff/*` - admin only
+- `/student-portal/*` - student only
+- `/teacher/*` - teacher only (when implemented)
+- `/admin/*` - admin only
+- `/dashboard` - authenticated users (role-specific display)
 
-**Feature Specifications:**
-- **Core Modules**: Authentication & Security, User Management (Students, Staff, Parents), Admissions, Academics (Courses, Classes, Subjects, Timetable), Attendance, Exams & Marks, Assignments, Quizzes, Fees & Finance, LMS (Study materials, Question bank, Lesson plans, Syllabus), Notifications, Announcements, Messaging, and Support/Contact Admin.
-- **Operational Modules**: Transport (Vehicles, Drivers, Routes), HR (Events, Recruitment, Payroll), Hostel (Rooms, Residents, Visitors, Complaints), Inventory (Assets, Stock, Purchase Orders, Suppliers).
-- **Reporting**: Comprehensive reporting for Attendance, Academics, and Finance, including CRUD operations for attendance records.
-
-**System Design Choices:**
-- **Database Schema**: Designed with proper relationships, foreign keys, indexing, and cascading operations for data integrity.
-
-## External Dependencies
-- **Database**: PostgreSQL (Neon) accessed via PHP's PDO extension.
-- **Frontend Framework**: Bootstrap 5 for UI components and responsiveness.
-- **Icons**: Bootstrap Icons 1.11.0.
+## Testing Notes
+- Test multi-role login: Use different roles when logging in
+- Verify non-admins cannot access `/students/create` or `/staff/create`
+- Check that unregistered users cannot login
+- Confirm role-based dashboard display works correctly
