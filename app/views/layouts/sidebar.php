@@ -110,25 +110,6 @@
                 </div>
             </div>
 
-            <!-- Settings Menu -->
-            <div class="accordion accordion-flush" id="studentSettingsMenu">
-                <div class="accordion-item sidebar-accordion-item border-0">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentSettingsCollapse">
-                            <i class="bi bi-gear me-2"></i>Settings
-                        </button>
-                    </h2>
-                    <div id="studentSettingsCollapse" class="accordion-collapse collapse" data-bs-parent="#studentSettingsMenu">
-                        <div class="accordion-body p-0">
-                            <a href="/student-portal/fees" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Fee Information</a>
-                            <a href="/student-portal/support" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Support/Help</a>
-                            <a href="/student-portal/profile" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Profile</a>
-                            <a href="/student-portal/change-password" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Change Password</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <?php endif; ?>
 
             <?php if (hasRole('admin')): ?>
@@ -440,6 +421,27 @@
                             <a href="/settings" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">System Settings</a>
                             <a href="/settings/backup" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Backup & Restore</a>
                             <a href="/settings/audit-logs" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Audit Logs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Student Settings Menu (placed at the very end for students) -->
+            <?php if (hasRole('student')): ?>
+            <div class="accordion accordion-flush" id="studentSettingsMenu">
+                <div class="accordion-item sidebar-accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentSettingsCollapse">
+                            <i class="bi bi-gear me-2"></i>Settings
+                        </button>
+                    </h2>
+                    <div id="studentSettingsCollapse" class="accordion-collapse collapse" data-bs-parent="#studentSettingsMenu">
+                        <div class="accordion-body p-0">
+                            <a href="/student-portal/fees" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Fee Information</a>
+                            <a href="/student-portal/support" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Support/Help</a>
+                            <a href="/student-portal/profile" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Profile</a>
+                            <a href="/student-portal/change-password" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Change Password</a>
                         </div>
                     </div>
                 </div>
