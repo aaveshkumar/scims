@@ -378,8 +378,11 @@ class StudentController
             return responseJSON(['error' => 'User not found'], 404);
         }
 
-        // Handle null password fields (old students)
-        if (!$user['temporary_password_plaintext'] || !$user['password_expires_at']) {
+        // Handle missing or null password fields (old students or column doesn't exist)
+        $password = isset($user['temporary_password_plaintext']) ? $user['temporary_password_plaintext'] : null;
+        $expiresAt = isset($user['password_expires_at']) ? $user['password_expires_at'] : null;
+
+        if (!$password || !$expiresAt) {
             return responseJSON([
                 'password' => null,
                 'expired' => true,
@@ -388,13 +391,13 @@ class StudentController
         }
 
         // Check if password is still valid
-        $expiresAt = strtotime($user['password_expires_at']);
+        $expireTime = strtotime($expiresAt);
         $now = time();
 
         return responseJSON([
-            'password' => $user['temporary_password_plaintext'],
-            'expired' => $expiresAt < $now,
-            'expires_at' => $user['password_expires_at']
+            'password' => $password,
+            'expired' => $expireTime < $now,
+            'expires_at' => $expiresAt
         ]);
     }
 }
