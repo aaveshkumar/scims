@@ -383,7 +383,8 @@
 .sidebar-footer {
     box-sizing: border-box;
     max-width: 100%;
-    overflow: hidden;
+    overflow: visible;
+    padding-bottom: 8px;
 }
 
 .sidebar-footer .d-flex {
@@ -456,7 +457,6 @@ body:not(.dark-mode) .sidebar-user-role {
 body:not(.dark-mode) .sidebar-logout-btn {
     border-color: #ffffff !important;
     color: #ffffff !important;
-    margin-bottom: 8px;
 }
 
 body:not(.dark-mode) .sidebar-logout-btn:hover {
@@ -522,7 +522,6 @@ body.dark-mode .sidebar-user-role {
 body.dark-mode .sidebar-logout-btn {
     border-color: #e9ecef !important;
     color: #e9ecef !important;
-    margin-bottom: 8px;
 }
 
 body.dark-mode .sidebar-logout-btn:hover {
