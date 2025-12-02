@@ -113,9 +113,14 @@ class StudentController
                 'status' => 'active'
             ]);
 
+            // Store temporary password in database
+            $this->userModel->update($userId, [
+                'temporary_password_plaintext' => $temporaryPassword
+            ]);
+
             $this->userModel->commit();
 
-            // ALWAYS store password in session for display to admin
+            // ALWAYS store password in session for display to admin on current page
             $_SESSION['new_password'] = $temporaryPassword;
             $_SESSION['new_student_email'] = $request->post('email');
             $_SESSION['show_password_modal'] = true;
@@ -354,5 +359,33 @@ class StudentController
         } catch (Exception $e) {
             return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function getTemporaryPassword($request, $id)
+    {
+        // Only admin can view credentials
+        if (!hasRole('admin')) {
+            return responseJSON(['error' => 'Unauthorized'], 403);
+        }
+
+        $student = $this->studentModel->find($id);
+        if (!$student) {
+            return responseJSON(['error' => 'Student not found'], 404);
+        }
+
+        $user = $this->userModel->find($student['user_id']);
+        if (!$user) {
+            return responseJSON(['error' => 'User not found'], 404);
+        }
+
+        // Check if password is still valid
+        $expiresAt = strtotime($user['password_expires_at']);
+        $now = time();
+
+        return responseJSON([
+            'password' => $user['temporary_password_plaintext'],
+            'expired' => $expiresAt < $now,
+            'expires_at' => $user['password_expires_at']
+        ]);
     }
 }

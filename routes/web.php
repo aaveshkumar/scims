@@ -135,6 +135,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->post('/students/{id}', 'StudentController@update', ['csrf']);
         $router->post('/students/{id}/toggle-status', 'StudentController@toggleStatus', ['csrf']);
         $router->post('/students/{id}/resend-password', 'StudentController@resendPassword', ['csrf']);
+        $router->get('/api/students/{id}/temporary-password', 'StudentController@getTemporaryPassword');
         $router->delete('/students/{id}', 'StudentController@destroy', ['csrf']);
 
         $router->get('/staff', 'StaffController@index');
@@ -145,6 +146,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->put('/staff/{id}', 'StaffController@update', ['csrf']);
         $router->post('/staff/{id}/toggle-status', 'StaffController@toggleStatus', ['csrf']);
         $router->post('/staff/{id}/resend-password', 'StaffController@resendPassword', ['csrf']);
+        $router->get('/api/staff/{id}/temporary-password', 'StaffController@getTemporaryPassword');
         $router->delete('/staff/{id}', 'StaffController@destroy', ['csrf']);
 
         $router->get('/courses', 'CourseController@index');

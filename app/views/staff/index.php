@@ -1,16 +1,8 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
-<!-- Store new password globally for modal access -->
+<!-- Fetch password from database via API -->
 <script>
-    window.credentialsMap = {};
-    <?php if (isset($_SESSION['new_password']) && isset($_SESSION['new_staff_email'])): ?>
-        const email = '<?= htmlspecialchars($_SESSION['new_staff_email']) ?>';
-        const password = '<?= htmlspecialchars($_SESSION['new_password']) ?>';
-        window.credentialsMap[email] = password;
-        console.log('credentialsMap populated:', { email, password: password.substring(0, 3) + '***' });
-    <?php else: ?>
-        console.log('Session variables not set for credentialsMap');
-    <?php endif; ?>
+// This will be populated when modal is shown
 </script>
 
 <!-- Show temporary password if just created (display only once) -->
@@ -122,7 +114,7 @@
                                     <a href="/staff/<?= $member['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($member['email']) ?>', '<?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?>')">
+                                    <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($member['email']) ?>', '<?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?>', <?= $member['id'] ?>)">
                                         <i class="bi bi-info-circle"></i>
                                     </button>
                                     <form method="POST" action="/staff/<?= $member['id'] ?>/resend-password" style="display: inline;">
@@ -212,24 +204,26 @@ document.querySelectorAll('.category-filter').forEach(button => {
 </div>
 
 <script>
-function showCredentials(email, name) {
-    console.log('showCredentials called:', { email, credentialsMap: window.credentialsMap });
+function showCredentials(email, name, staffId) {
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
-    let password = window.credentialsMap[email];
-    let noteText = document.getElementById('noteText');
     
-    console.log('Password lookup result:', { email, found: !!password, password: password ? password.substring(0,3) + '***' : 'none' });
-    
-    if (password) {
-        // Newly created staff - show password
-        document.getElementById('credPassword').textContent = password;
-        noteText.textContent = 'Password is temporary and expires in 7 days. Staff can use "Forgot Password" to set a permanent password.';
-    } else {
-        // Old staff - suggest resend
-        document.getElementById('credPassword').textContent = '(Password not available)';
-        noteText.textContent = 'For existing staff, click the green 🔑 button to generate and resend a new temporary password.';
-    }
+    // Fetch password from database
+    fetch(`/api/staff/${staffId}/temporary-password`)
+        .then(r => r.json())
+        .then(data => {
+            let noteText = document.getElementById('noteText');
+            if (data.password) {
+                document.getElementById('credPassword').textContent = data.password;
+                noteText.textContent = 'Password is temporary and expires: ' + new Date(data.expires_at).toLocaleDateString();
+            } else {
+                document.getElementById('credPassword').textContent = '(Password not available)';
+                noteText.textContent = 'For existing staff, click the green 🔑 button to generate and resend a new temporary password.';
+            }
+        })
+        .catch(e => {
+            document.getElementById('credPassword').textContent = '(Error loading password)';
+        });
 }
 
 function copyBoth() {

@@ -139,9 +139,14 @@ class StaffController
                 'status' => 'active'
             ]);
 
+            // Store temporary password in database
+            $this->userModel->update($userId, [
+                'temporary_password_plaintext' => $temporaryPassword
+            ]);
+
             $this->userModel->commit();
 
-            // ALWAYS store password in session for display to admin
+            // ALWAYS store password in session for display to admin on current page
             $_SESSION['new_password'] = $temporaryPassword;
             $_SESSION['new_staff_email'] = $request->post('email');
             $_SESSION['show_password_modal'] = true;
@@ -393,5 +398,31 @@ class StaffController
         } catch (Exception $e) {
             return responseJSON(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function getTemporaryPassword($request, $id)
+    {
+        if (!hasRole('admin')) {
+            return responseJSON(['error' => 'Unauthorized'], 403);
+        }
+
+        $staff = $this->staffModel->find($id);
+        if (!$staff) {
+            return responseJSON(['error' => 'Staff not found'], 404);
+        }
+
+        $user = $this->userModel->find($staff['user_id']);
+        if (!$user) {
+            return responseJSON(['error' => 'User not found'], 404);
+        }
+
+        $expiresAt = strtotime($user['password_expires_at']);
+        $now = time();
+
+        return responseJSON([
+            'password' => $user['temporary_password_plaintext'],
+            'expired' => $expiresAt < $now,
+            'expires_at' => $user['password_expires_at']
+        ]);
     }
 }
