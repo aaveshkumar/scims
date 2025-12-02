@@ -144,6 +144,7 @@ class StaffController
             // ALWAYS store password in session for display to admin
             $_SESSION['new_password'] = $temporaryPassword;
             $_SESSION['new_staff_email'] = $request->post('email');
+            $_SESSION['show_password_modal'] = true;
 
             // Try to send credentials email
             $emailSent = Email::sendCredentials(

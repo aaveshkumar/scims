@@ -1,9 +1,20 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
-<!-- Store new password in JavaScript -->
+<!-- Store new password in JavaScript and localStorage -->
 <script>
     window.newPassword = '<?= htmlspecialchars($_SESSION['new_password'] ?? '') ?>';
     window.newStudentEmail = '<?= htmlspecialchars($_SESSION['new_student_email'] ?? '') ?>';
+    window.showPasswordModal = <?= isset($_SESSION['show_password_modal']) ? 'true' : 'false' ?>;
+    
+    // Store in localStorage for persistence
+    if (window.newPassword && window.newStudentEmail) {
+        localStorage.setItem('lastNewStudentPassword', window.newPassword);
+        localStorage.setItem('lastNewStudentEmail', window.newStudentEmail);
+        console.log('Password stored:', {
+            email: window.newStudentEmail,
+            password: window.newPassword.substring(0, 3) + '***'
+        });
+    }
 </script>
 
 <!-- Show temporary password if just created -->
@@ -149,11 +160,26 @@ function showCredentials(email, name) {
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
     
-    // Show password only if this is the newly created student
+    // Try to get password from window variables first, then localStorage
     let password = '';
+    
+    // Check window variables (just created)
     if (email === window.newStudentEmail && window.newPassword) {
         password = window.newPassword;
+        console.log('Using window password');
+    } 
+    // Check localStorage (from previous page load)
+    else if (email === localStorage.getItem('lastNewStudentEmail')) {
+        password = localStorage.getItem('lastNewStudentPassword') || '';
+        console.log('Using localStorage password');
     }
+    
+    console.log('showCredentials called with:', {
+        email: email,
+        foundPassword: !!password,
+        password: password ? password.substring(0, 3) + '***' : 'none'
+    });
+    
     document.getElementById('credPassword').textContent = password || '(No password available)';
 }
 
