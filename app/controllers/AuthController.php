@@ -24,7 +24,8 @@ class AuthController
     {
         $rules = [
             'email' => 'required|email',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'role' => 'required'
         ];
 
         if (!validate($request->post(), $rules)) {
@@ -34,6 +35,13 @@ class AuthController
 
         $email = $request->post('email');
         $password = $request->post('password');
+        $selectedRole = $request->post('role');
+
+        // Prevent admin role login through this form
+        if ($selectedRole === 'admin') {
+            flash('error', 'Invalid role selection');
+            return back();
+        }
 
         $user = $this->userModel->findByEmail($email);
 
@@ -47,17 +55,26 @@ class AuthController
             return back();
         }
 
-        // Fetch user's roles and add to session
+        // Fetch user's roles and validate selected role
         $db = Database::getInstance();
         $roles = $db->fetchAll(
             "SELECT r.name FROM roles r 
              INNER JOIN user_roles ur ON r.id = ur.role_id 
-             WHERE ur.user_id = ?",
+             WHERE ur.user_id = ? AND r.name != 'admin'",
             [$user['id']]
         );
         
-        // Add roles array to user data
-        $user['roles'] = array_column($roles, 'name');
+        $userRoles = array_column($roles, 'name');
+        
+        // Validate that selected role belongs to the user
+        if (!in_array($selectedRole, $userRoles)) {
+            flash('error', 'You do not have permission to login as ' . ucfirst($selectedRole));
+            return back();
+        }
+
+        // Add roles array and selected role to user data
+        $user['roles'] = $userRoles;
+        $user['role'] = $selectedRole; // Store selected role
 
         $_SESSION['user'] = $user;
 

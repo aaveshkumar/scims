@@ -77,6 +77,21 @@
                                 </div>
                             </div>
 
+                            <div class="mb-3">
+                                <label class="form-label">Login As</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                                    <select name="role" class="form-select" required>
+                                        <option value="">-- Select Your Role --</option>
+                                        <option value="student">Student</option>
+                                        <option value="teacher">Teacher</option>
+                                        <option value="parent">Parent</option>
+                                        <option value="hr">HR</option>
+                                    </select>
+                                </div>
+                                <small class="text-muted">Select your role to continue</small>
+                            </div>
+
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="remember">
                                 <label class="form-check-label" for="remember">Remember me</label>
