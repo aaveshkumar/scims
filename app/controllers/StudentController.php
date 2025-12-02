@@ -127,7 +127,10 @@ class StudentController
             if ($emailSent) {
                 flash('success', "Student created successfully. Login credentials sent to {$request->post('email')}");
             } else {
-                flash('warning', 'Student created but email could not be sent. Please share credentials manually.');
+                // Store password in session for display on redirect
+                $_SESSION['new_password'] = $temporaryPassword;
+                $_SESSION['new_student_email'] = $request->post('email');
+                flash('warning', 'Student created! Email could not be sent. Password shown below.');
             }
 
             return redirect('/students');

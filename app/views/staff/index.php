@@ -1,5 +1,28 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
+<!-- Show temporary password if just created -->
+<?php if (isset($_SESSION['new_password']) && isset($_SESSION['new_staff_email'])): ?>
+    <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <strong><i class="bi bi-key-fill me-2"></i>New Staff Member Created Successfully!</strong>
+                <p class="mb-2 mt-2">
+                    <strong>Email:</strong> <?= htmlspecialchars($_SESSION['new_staff_email']) ?><br>
+                    <strong>Temporary Password:</strong> 
+                    <code style="background: #f0f0f0; padding: 5px 10px; border-radius: 3px; font-weight: bold; font-size: 1.1em;">
+                        <?= htmlspecialchars($_SESSION['new_password']) ?>
+                    </code>
+                </p>
+                <p class="mb-0 text-muted small">
+                    ⏱️ Password expires in 7 days. Share this with the staff member or they can use "Forgot Password" to reset it.
+                </p>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    <?php unset($_SESSION['new_password'], $_SESSION['new_staff_email']); ?>
+<?php endif; ?>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Staff Members</h1>
     <a href="/staff/create" class="btn btn-primary">

@@ -153,7 +153,10 @@ class StaffController
             if ($emailSent) {
                 flash('success', "Staff member created successfully. Login credentials sent to {$request->post('email')}");
             } else {
-                flash('warning', 'Staff member created but email could not be sent. Please share credentials manually.');
+                // Store password in session for display on redirect
+                $_SESSION['new_password'] = $temporaryPassword;
+                $_SESSION['new_staff_email'] = $request->post('email');
+                flash('warning', 'Staff member created! Email could not be sent. Password shown below.');
             }
 
             return redirect('/staff');
