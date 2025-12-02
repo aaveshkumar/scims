@@ -10,8 +10,9 @@ $router->get('/', function($request) {
 $router->group(['middleware' => 'guest'], function($router) {
     $router->get('/login', 'AuthController@showLogin');
     $router->post('/login', 'AuthController@login');
-    $router->get('/register', 'AuthController@showRegister');
-    $router->post('/register', 'AuthController@register');
+    // Registration disabled - users created by admin only
+    // $router->get('/register', 'AuthController@showRegister');
+    // $router->post('/register', 'AuthController@register');
     $router->get('/forgot-password', 'AuthController@showForgotPassword');
     $router->post('/send-otp', 'AuthController@sendOTP');
     $router->get('/reset-password', 'AuthController@showResetPassword');

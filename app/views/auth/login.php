@@ -110,7 +110,7 @@
                         <div class="text-center">
                             <a href="/forgot-password" class="text-decoration-none">Forgot Password?</a>
                             <hr>
-                            <p class="mb-0">Don't have an account? <a href="/register" class="fw-bold">Register</a></p>
+                            <p class="mb-0 text-muted small">Contact administrator for new account registration</p>
                         </div>
                     </div>
                 </div>
