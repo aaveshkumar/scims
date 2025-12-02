@@ -14,6 +14,29 @@
                 <i class="bi bi-speedometer2 me-2"></i>Dashboard
             </a>
 
+            <!-- Student Portal Menu (for students only) -->
+            <?php if (hasRole('student')): ?>
+            <div class="accordion accordion-flush" id="studentPortalMenu">
+                <div class="accordion-item sidebar-accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentPortalCollapse">
+                            <i class="bi bi-person-workspace me-2"></i>My Portal
+                        </button>
+                    </h2>
+                    <div id="studentPortalCollapse" class="accordion-collapse collapse" data-bs-parent="#studentPortalMenu">
+                        <div class="accordion-body p-0">
+                            <a href="/student-portal/dashboard" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Dashboard</a>
+                            <a href="/student-portal/marks" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Marks</a>
+                            <a href="/student-portal/attendance" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Attendance</a>
+                            <a href="/student-portal/fees" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Fee Information</a>
+                            <a href="/student-portal/library/books" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Library Books</a>
+                            <a href="/student-portal/library/borrowed" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Borrowed Books</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <?php if (hasRole('admin')): ?>
             
             <!-- Admissions Menu -->

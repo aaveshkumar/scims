@@ -569,3 +569,14 @@ $router->group(['middleware' => 'auth'], function($router) {
         });
     });
 });
+
+    // Student Portal Routes (authenticated students only)
+    $router->group(['middleware' => 'role:student'], function($router) {
+        $router->get('/student-portal/dashboard', 'StudentPortalController@dashboard');
+        $router->get('/student-portal/library/books', 'StudentPortalController@libraryBooks');
+        $router->get('/student-portal/library/borrowed', 'StudentPortalController@myBorrowedBooks');
+        $router->post('/student-portal/library/request-book', 'StudentPortalController@requestBook');
+        $router->get('/student-portal/marks', 'StudentPortalController@myMarks');
+        $router->get('/student-portal/attendance', 'StudentPortalController@attendanceHistory');
+        $router->get('/student-portal/fees', 'StudentPortalController@feeInformation');
+    });
