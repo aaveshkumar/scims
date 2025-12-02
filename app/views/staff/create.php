@@ -38,14 +38,11 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Password *</label>
-                    <input type="password" name="password" class="form-control" placeholder="Minimum 6 characters" required minlength="6">
-                    <small class="text-muted">Staff will use this password to login</small>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Confirm Password *</label>
-                    <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm password" required minlength="6">
+                <div class="col-12 mb-3">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Automatic Password Generation:</strong> A temporary password will be automatically generated and sent to the staff member's email. The password expires in 7 days.
+                    </div>
                 </div>
             </div>
 

@@ -82,8 +82,6 @@ class StaffController
             'last_name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
-            'password' => 'required|min:6',
-            'password_confirmation' => 'required|min:6',
             'employee_id' => 'required',
             'designation' => 'required',
             'joining_date' => 'required'
@@ -94,25 +92,25 @@ class StaffController
             return back();
         }
 
-        // Validate passwords match
-        if ($request->post('password') !== $request->post('password_confirmation')) {
-            flash('error', 'Passwords do not match');
-            return back();
-        }
-
         try {
             $this->userModel->beginTransaction();
+
+            // Generate temporary password
+            $temporaryPassword = PasswordGenerator::generate();
+            $passwordExpiresAt = date('Y-m-d H:i:s', strtotime('+7 days'));
 
             $userId = $this->userModel->create([
                 'first_name' => $request->post('first_name'),
                 'last_name' => $request->post('last_name'),
                 'email' => $request->post('email'),
                 'phone' => $request->post('phone'),
-                'password' => User::hashPassword($request->post('password')),
+                'password' => User::hashPassword($temporaryPassword),
                 'gender' => $request->post('gender'),
                 'date_of_birth' => $request->post('date_of_birth'),
                 'address' => $request->post('address'),
-                'status' => 'active'
+                'status' => 'active',
+                'password_temporary' => true,
+                'password_expires_at' => $passwordExpiresAt
             ]);
 
             $role = $request->post('role', 'teacher');
@@ -143,7 +141,21 @@ class StaffController
 
             $this->userModel->commit();
 
-            flash('success', 'Staff member created successfully');
+            // Send credentials email
+            $emailSent = Email::sendCredentials(
+                $request->post('email'),
+                $request->post('first_name'),
+                $request->post('last_name'),
+                $temporaryPassword,
+                ucfirst($role)
+            );
+
+            if ($emailSent) {
+                flash('success', "Staff member created successfully. Login credentials sent to {$request->post('email')}");
+            } else {
+                flash('warning', 'Staff member created but email could not be sent. Please share credentials manually.');
+            }
+
             return redirect('/staff');
         } catch (Exception $e) {
             $this->userModel->rollback();

@@ -62,8 +62,6 @@ class StudentController
             'last_name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
-            'password' => 'required|min:6',
-            'password_confirmation' => 'required|min:6',
             'admission_number' => 'required',
             'class_id' => 'required|numeric',
             'admission_date' => 'required'
@@ -74,25 +72,25 @@ class StudentController
             return back();
         }
 
-        // Validate passwords match
-        if ($request->post('password') !== $request->post('password_confirmation')) {
-            flash('error', 'Passwords do not match');
-            return back();
-        }
-
         try {
             $this->userModel->beginTransaction();
+
+            // Generate temporary password
+            $temporaryPassword = PasswordGenerator::generate();
+            $passwordExpiresAt = date('Y-m-d H:i:s', strtotime('+7 days'));
 
             $userId = $this->userModel->create([
                 'first_name' => $request->post('first_name'),
                 'last_name' => $request->post('last_name'),
                 'email' => $request->post('email'),
                 'phone' => $request->post('phone'),
-                'password' => User::hashPassword($request->post('password')),
+                'password' => User::hashPassword($temporaryPassword),
                 'gender' => $request->post('gender'),
                 'date_of_birth' => $request->post('date_of_birth'),
                 'address' => $request->post('address'),
-                'status' => 'active'
+                'status' => 'active',
+                'password_temporary' => true,
+                'password_expires_at' => $passwordExpiresAt
             ]);
 
             $roleModel = new Role();
@@ -117,7 +115,21 @@ class StudentController
 
             $this->userModel->commit();
 
-            flash('success', 'Student created successfully');
+            // Send credentials email
+            $emailSent = Email::sendCredentials(
+                $request->post('email'),
+                $request->post('first_name'),
+                $request->post('last_name'),
+                $temporaryPassword,
+                'student'
+            );
+
+            if ($emailSent) {
+                flash('success', "Student created successfully. Login credentials sent to {$request->post('email')}");
+            } else {
+                flash('warning', 'Student created but email could not be sent. Please share credentials manually.');
+            }
+
             return redirect('/students');
         } catch (Exception $e) {
             $this->userModel->rollback();
