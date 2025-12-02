@@ -133,13 +133,13 @@
                 <p><strong>Name:</strong> <span id="credName"></span></p>
                 <p><strong>Email:</strong> <span id="credEmail"></span></p>
                 <p class="mb-1"><strong>Temporary Password:</strong></p>
-                <div class="alert alert-warning mb-3">
+                <div class="alert alert-warning mb-3" id="passwordDisplay">
                     <code id="credPassword" style="background: #fff3cd; padding: 8px 12px; border-radius: 3px; font-weight: bold; font-size: 1.1em; word-break: break-all;">
                     </code>
                 </div>
-                <div class="alert alert-info mb-0">
+                <div class="alert alert-info mb-0" id="passwordNote">
                     <p class="mb-0">
-                        <small>Password is temporary and expires in 7 days. Student can use "Forgot Password" to set a permanent password.</small>
+                        <small id="noteText">Password is temporary and expires in 7 days. Student can use "Forgot Password" to set a permanent password.</small>
                     </p>
                 </div>
             </div>
@@ -157,8 +157,18 @@
 function showCredentials(email, name) {
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
-    let password = window.credentialsMap[email] || '(No password available)';
-    document.getElementById('credPassword').textContent = password;
+    let password = window.credentialsMap[email];
+    let noteText = document.getElementById('noteText');
+    
+    if (password) {
+        // Newly created student - show password
+        document.getElementById('credPassword').textContent = password;
+        noteText.textContent = 'Password is temporary and expires in 7 days. Student can use "Forgot Password" to set a permanent password.';
+    } else {
+        // Old student - suggest resend
+        document.getElementById('credPassword').textContent = '(Password not available)';
+        noteText.textContent = 'For existing students, click the green 🔑 button to generate and resend a new temporary password.';
+    }
 }
 
 function copyBoth() {
