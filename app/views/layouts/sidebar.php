@@ -16,45 +16,115 @@
 
             <!-- Student Portal Menu (for students only) -->
             <?php if (hasRole('student')): ?>
-            <div class="accordion accordion-flush" id="studentPortalMenu">
+            
+            <!-- Dashboard Link -->
+            <a href="/student-portal/dashboard" class="sidebar-link list-group-item list-group-item-action border-0">
+                <i class="bi bi-speedometer2 me-2"></i>My Dashboard
+            </a>
+
+            <!-- Academic Menu -->
+            <div class="accordion accordion-flush" id="studentAcademicMenu">
                 <div class="accordion-item sidebar-accordion-item border-0">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentPortalCollapse">
-                            <i class="bi bi-person-workspace me-2"></i>My Portal
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentAcademicCollapse">
+                            <i class="bi bi-book me-2"></i>Academic
                         </button>
                     </h2>
-                    <div id="studentPortalCollapse" class="accordion-collapse collapse" data-bs-parent="#studentPortalMenu">
+                    <div id="studentAcademicCollapse" class="accordion-collapse collapse" data-bs-parent="#studentAcademicMenu">
                         <div class="accordion-body p-0">
-                            <!-- Academic Section -->
-                            <a href="/student-portal/dashboard" class="sidebar-link list-group-item list-group-item-action border-0 ps-4"><i class="bi bi-speedometer2 text-info" style="font-size: 0.7rem;"></i> My Dashboard</a>
                             <a href="/student-portal/marks" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Marks & Grades</a>
                             <a href="/student-portal/attendance" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Attendance History</a>
                             <a href="/student-portal/exam-schedule" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Exam Schedule</a>
                             <a href="/student-portal/report-card" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Report Card</a>
                             <a href="/student-portal/question-bank" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Question Bank</a>
-                            
-                            <!-- Learning Section -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Menu -->
+            <div class="accordion accordion-flush" id="studentLearningMenu">
+                <div class="accordion-item sidebar-accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentLearningCollapse">
+                            <i class="bi bi-file-earmark-pdf me-2"></i>Learning
+                        </button>
+                    </h2>
+                    <div id="studentLearningCollapse" class="accordion-collapse collapse" data-bs-parent="#studentLearningMenu">
+                        <div class="accordion-body p-0">
                             <a href="/student-portal/timetable" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Timetable</a>
                             <a href="/student-portal/assignments" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Assignments</a>
                             <a href="/student-portal/materials" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Study Materials</a>
                             <a href="/student-portal/quizzes" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Quizzes/Tests</a>
                             <a href="/student-portal/syllabus" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Syllabus</a>
-                            
-                            <!-- Library Section -->
-                            <a href="/student-portal/library/books" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Library - Browse Books</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Library Menu -->
+            <div class="accordion accordion-flush" id="studentLibraryMenu">
+                <div class="accordion-item sidebar-accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentLibraryCollapse">
+                            <i class="bi bi-book-half me-2"></i>Library
+                        </button>
+                    </h2>
+                    <div id="studentLibraryCollapse" class="accordion-collapse collapse" data-bs-parent="#studentLibraryMenu">
+                        <div class="accordion-body p-0">
+                            <a href="/student-portal/library/books" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Browse Books</a>
                             <a href="/student-portal/library/borrowed" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Borrowed Books</a>
-                            
-                            <!-- Hostel Section -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hostel Menu -->
+            <div class="accordion accordion-flush" id="studentHostelMenu">
+                <div class="accordion-item sidebar-accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentHostelCollapse">
+                            <i class="bi bi-house me-2"></i>Hostel
+                        </button>
+                    </h2>
+                    <div id="studentHostelCollapse" class="accordion-collapse collapse" data-bs-parent="#studentHostelMenu">
+                        <div class="accordion-body p-0">
                             <a href="/student-portal/hostel/info" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Hostel Information</a>
                             <a href="/student-portal/hostel/complaints" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Hostel Complaints</a>
-                            
-                            <!-- Communication Section -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Communication Menu -->
+            <div class="accordion accordion-flush" id="studentCommunicationMenu">
+                <div class="accordion-item sidebar-accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentCommunicationCollapse">
+                            <i class="bi bi-chat-dots me-2"></i>Communication
+                        </button>
+                    </h2>
+                    <div id="studentCommunicationCollapse" class="accordion-collapse collapse" data-bs-parent="#studentCommunicationMenu">
+                        <div class="accordion-body p-0">
                             <a href="/student-portal/announcements" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Announcements</a>
                             <a href="/student-portal/notifications" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Notifications</a>
                             <a href="/student-portal/messages" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Messages</a>
                             <a href="/student-portal/forums" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Discussion Forums</a>
-                            
-                            <!-- Administrative Section -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Administration Menu -->
+            <div class="accordion accordion-flush" id="studentAdminMenu">
+                <div class="accordion-item sidebar-accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentAdminCollapse">
+                            <i class="bi bi-gear me-2"></i>Administration
+                        </button>
+                    </h2>
+                    <div id="studentAdminCollapse" class="accordion-collapse collapse" data-bs-parent="#studentAdminMenu">
+                        <div class="accordion-body p-0">
                             <a href="/student-portal/fees" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Fee Information</a>
                             <a href="/student-portal/support" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Support/Help</a>
                             <a href="/student-portal/profile" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Profile</a>
@@ -63,6 +133,7 @@
                     </div>
                 </div>
             </div>
+
             <?php endif; ?>
 
             <?php if (hasRole('admin')): ?>
