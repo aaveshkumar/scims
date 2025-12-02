@@ -79,6 +79,12 @@ class StudentController
             $temporaryPassword = PasswordGenerator::generate();
             $passwordExpiresAt = date('Y-m-d H:i:s', strtotime('+7 days'));
 
+            // Convert empty date fields to NULL (PostgreSQL doesn't accept empty strings for dates)
+            $dateOfBirth = $request->post('date_of_birth');
+            if (empty($dateOfBirth) || $dateOfBirth === '') {
+                $dateOfBirth = null;
+            }
+
             $userId = $this->userModel->create([
                 'first_name' => $request->post('first_name'),
                 'last_name' => $request->post('last_name'),
@@ -86,7 +92,7 @@ class StudentController
                 'phone' => $request->post('phone'),
                 'password' => User::hashPassword($temporaryPassword),
                 'gender' => $request->post('gender'),
-                'date_of_birth' => $request->post('date_of_birth'),
+                'date_of_birth' => $dateOfBirth,
                 'address' => $request->post('address'),
                 'status' => 'active',
                 'password_temporary' => true,
@@ -100,12 +106,18 @@ class StudentController
                 [$userId, $studentRole['id']]
             );
 
+            // Convert empty admission_date to NULL
+            $admissionDate = $request->post('admission_date');
+            if (empty($admissionDate) || $admissionDate === '') {
+                $admissionDate = null;
+            }
+
             $this->studentModel->create([
                 'user_id' => $userId,
                 'admission_number' => $request->post('admission_number'),
                 'class_id' => $request->post('class_id'),
                 'roll_number' => $request->post('roll_number'),
-                'admission_date' => $request->post('admission_date'),
+                'admission_date' => $admissionDate,
                 'guardian_name' => $request->post('guardian_name'),
                 'guardian_phone' => $request->post('guardian_phone'),
                 'guardian_email' => $request->post('guardian_email'),

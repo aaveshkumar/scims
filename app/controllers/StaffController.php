@@ -99,6 +99,12 @@ class StaffController
             $temporaryPassword = PasswordGenerator::generate();
             $passwordExpiresAt = date('Y-m-d H:i:s', strtotime('+7 days'));
 
+            // Convert empty date fields to NULL (PostgreSQL doesn't accept empty strings for dates)
+            $dateOfBirth = $request->post('date_of_birth');
+            if (empty($dateOfBirth) || $dateOfBirth === '') {
+                $dateOfBirth = null;
+            }
+
             $userId = $this->userModel->create([
                 'first_name' => $request->post('first_name'),
                 'last_name' => $request->post('last_name'),
@@ -106,7 +112,7 @@ class StaffController
                 'phone' => $request->post('phone'),
                 'password' => User::hashPassword($temporaryPassword),
                 'gender' => $request->post('gender'),
-                'date_of_birth' => $request->post('date_of_birth'),
+                'date_of_birth' => $dateOfBirth,
                 'address' => $request->post('address'),
                 'status' => 'active',
                 'password_temporary' => true,
@@ -124,6 +130,12 @@ class StaffController
                 );
             }
 
+            // Convert empty joining_date to NULL
+            $joiningDate = $request->post('joining_date');
+            if (empty($joiningDate) || $joiningDate === '') {
+                $joiningDate = null;
+            }
+
             $this->staffModel->create([
                 'user_id' => $userId,
                 'employee_id' => $request->post('employee_id'),
@@ -131,7 +143,7 @@ class StaffController
                 'department' => $request->post('department'),
                 'qualification' => $request->post('qualification'),
                 'experience_years' => $request->post('experience_years'),
-                'joining_date' => $request->post('joining_date'),
+                'joining_date' => $joiningDate,
                 'salary' => $request->post('salary'),
                 'bank_name' => $request->post('bank_name'),
                 'account_number' => $request->post('account_number'),
