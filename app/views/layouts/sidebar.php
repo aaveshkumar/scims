@@ -110,6 +110,8 @@
                 </div>
             </div>
 
+            <hr class="my-2 sidebar-divider">
+
             <!-- Settings Menu -->
             <div class="accordion accordion-flush" id="studentSettingsMenu">
                 <div class="accordion-item sidebar-accordion-item border-0">
