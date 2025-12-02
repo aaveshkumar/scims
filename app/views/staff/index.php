@@ -1,20 +1,10 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
-<!-- Store new password in JavaScript and localStorage -->
+<!-- Store new password globally -->
 <script>
-    window.newPassword = '<?= htmlspecialchars($_SESSION['new_password'] ?? '') ?>';
-    window.newStaffEmail = '<?= htmlspecialchars($_SESSION['new_staff_email'] ?? '') ?>';
-    window.showPasswordModal = <?= isset($_SESSION['show_password_modal']) ? 'true' : 'false' ?>;
-    
-    // Store in localStorage for persistence
-    if (window.newPassword && window.newStaffEmail) {
-        localStorage.setItem('lastNewStaffPassword', window.newPassword);
-        localStorage.setItem('lastNewStaffEmail', window.newStaffEmail);
-        console.log('Password stored:', {
-            email: window.newStaffEmail,
-            password: window.newPassword.substring(0, 3) + '***'
-        });
-    }
+    window.credentialsMap = {
+        '<?= htmlspecialchars($_SESSION['new_staff_email'] ?? '') ?>': '<?= htmlspecialchars($_SESSION['new_password'] ?? '') ?>'
+    };
 </script>
 
 <!-- Show temporary password if just created -->
@@ -213,26 +203,8 @@ function showCredentials(email, name) {
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
     
-    // Try to get password from window variables first, then localStorage
-    let password = '';
-    
-    // Check window variables (just created)
-    if (email === window.newStaffEmail && window.newPassword) {
-        password = window.newPassword;
-        console.log('Using window password');
-    } 
-    // Check localStorage (from previous page load)
-    else if (email === localStorage.getItem('lastNewStaffEmail')) {
-        password = localStorage.getItem('lastNewStaffPassword') || '';
-        console.log('Using localStorage password');
-    }
-    
-    console.log('showCredentials called with:', {
-        email: email,
-        foundPassword: !!password,
-        password: password ? password.substring(0, 3) + '***' : 'none'
-    });
-    
+    // Get password from the global map
+    let password = window.credentialsMap[email] || '';
     document.getElementById('credPassword').textContent = password || '(No password available)';
 }
 
