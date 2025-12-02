@@ -39,14 +39,19 @@ class AuthController
 
         // Prevent admin role login through this form
         if ($selectedRole === 'admin') {
-            flash('error', 'Invalid role selection');
+            flash('error', 'Invalid credentials for Admin. Please contact administrator.');
             return back();
         }
 
         $user = $this->userModel->findByEmail($email);
 
-        if (!$user || !$this->userModel->verifyPassword($password, $user['password'])) {
-            flash('error', 'Invalid email or password');
+        if (!$user) {
+            flash('error', 'Invalid credentials for ' . ucfirst($selectedRole) . '. Email not found.');
+            return back();
+        }
+
+        if (!$this->userModel->verifyPassword($password, $user['password'])) {
+            flash('error', 'Invalid credentials for ' . ucfirst($selectedRole) . '. Incorrect password.');
             return back();
         }
 
@@ -68,13 +73,13 @@ class AuthController
         
         // Validate that selected role belongs to the user
         if (!in_array($selectedRole, $userRoles)) {
-            flash('error', 'You do not have permission to login as ' . ucfirst($selectedRole));
+            flash('error', 'Invalid credentials for ' . ucfirst($selectedRole) . '. You do not have this role assigned.');
             return back();
         }
 
         // Verify user is registered in the appropriate role database table
         if (!$this->verifyRoleRegistration($user['id'], $selectedRole, $db)) {
-            flash('error', 'You are not registered as a ' . ucfirst($selectedRole) . ' in the system');
+            flash('error', 'Invalid credentials for ' . ucfirst($selectedRole) . '. Registration incomplete in system.');
             return back();
         }
 
