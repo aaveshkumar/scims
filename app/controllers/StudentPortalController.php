@@ -270,3 +270,158 @@ class StudentPortalController
         ]);
     }
 }
+
+    /**
+     * Feature 6: My Timetable
+     */
+    public function myTimetable($request)
+    {
+        $userId = auth()['id'];
+        $student = db()->fetchOne("SELECT class_id FROM students WHERE user_id = ?", [$userId]);
+
+        if (!$student) {
+            flash('error', 'Student record not found');
+            return redirect('/dashboard');
+        }
+
+        $timetable = db()->fetchAll(
+            "SELECT t.*, s.name as subject_name, CONCAT(st.first_name, ' ', st.last_name) as teacher_name 
+             FROM timetables t 
+             JOIN subjects s ON t.subject_id = s.id 
+             LEFT JOIN staff st ON t.teacher_id = st.id 
+             WHERE t.class_id = ? 
+             ORDER BY FIELD(t.day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), t.start_time",
+            [$student['class_id']]
+        );
+
+        return view('student-portal/my-timetable', [
+            'title' => 'My Timetable',
+            'timetable' => $timetable
+        ]);
+    }
+
+    /**
+     * Feature 7: My Assignments
+     */
+    public function myAssignments($request)
+    {
+        $userId = auth()['id'];
+        $student = db()->fetchOne("SELECT class_id FROM students WHERE user_id = ?", [$userId]);
+
+        if (!$student) {
+            flash('error', 'Student record not found');
+            return redirect('/dashboard');
+        }
+
+        $pending = db()->fetchAll(
+            "SELECT a.* FROM assignments a 
+             WHERE a.class_id = ? AND a.due_date >= CURRENT_DATE 
+             ORDER BY a.due_date ASC",
+            [$student['class_id']]
+        );
+
+        $completed = db()->fetchAll(
+            "SELECT a.* FROM assignments a 
+             WHERE a.class_id = ? AND a.due_date < CURRENT_DATE 
+             ORDER BY a.due_date DESC LIMIT 10",
+            [$student['class_id']]
+        );
+
+        return view('student-portal/my-assignments', [
+            'title' => 'My Assignments',
+            'pending' => $pending,
+            'completed' => $completed
+        ]);
+    }
+
+    /**
+     * Feature 8: Study Materials
+     */
+    public function studyMaterials($request)
+    {
+        $userId = auth()['id'];
+        $student = db()->fetchOne("SELECT class_id FROM students WHERE user_id = ?", [$userId]);
+
+        if (!$student) {
+            flash('error', 'Student record not found');
+            return redirect('/dashboard');
+        }
+
+        $search = $request->get('search');
+        $subject = $request->get('subject');
+
+        $sql = "SELECT m.*, s.name as subject_name FROM materials m 
+                JOIN subjects s ON m.subject_id = s.id 
+                WHERE m.class_id = ? AND m.status = 'active'";
+        $params = [$student['class_id']];
+
+        if ($search) {
+            $sql .= " AND m.title LIKE ?";
+            $params[] = "%{$search}%";
+        }
+
+        if ($subject) {
+            $sql .= " AND m.subject_id = ?";
+            $params[] = $subject;
+        }
+
+        $sql .= " ORDER BY m.created_at DESC";
+
+        $materials = db()->fetchAll($sql, $params);
+        $subjects = db()->fetchAll("SELECT s.id, s.name FROM subjects s JOIN materials m ON s.id = m.subject_id WHERE m.class_id = ? GROUP BY s.id", [$student['class_id']]);
+
+        return view('student-portal/study-materials', [
+            'title' => 'Study Materials',
+            'materials' => $materials,
+            'subjects' => $subjects,
+            'search' => $search,
+            'subject' => $subject
+        ]);
+    }
+
+    /**
+     * Feature 9: Quizzes
+     */
+    public function myQuizzes($request)
+    {
+        $userId = auth()['id'];
+        $student = db()->fetchOne("SELECT class_id FROM students WHERE user_id = ?", [$userId]);
+
+        if (!$student) {
+            flash('error', 'Student record not found');
+            return redirect('/dashboard');
+        }
+
+        $available = db()->fetchAll(
+            "SELECT q.*, s.name as subject_name FROM quizzes q 
+             JOIN subjects s ON q.subject_id = s.id 
+             WHERE q.class_id = ? AND q.status = 'active' 
+             ORDER BY q.created_at DESC",
+            [$student['class_id']]
+        );
+
+        return view('student-portal/my-quizzes', [
+            'title' => 'Available Quizzes',
+            'quizzes' => $available
+        ]);
+    }
+
+    /**
+     * Feature 10: Announcements & News
+     */
+    public function announcements($request)
+    {
+        $announcements = db()->fetchAll(
+            "SELECT a.*, CONCAT(u.first_name, ' ', u.last_name) as author_name 
+             FROM announcements a 
+             JOIN users u ON a.created_by = u.id 
+             WHERE a.status = 'published' 
+             ORDER BY a.created_at DESC LIMIT 20"
+        );
+
+        return view('student-portal/announcements', [
+            'title' => 'Announcements',
+            'announcements' => $announcements
+        ]);
+    }
+}

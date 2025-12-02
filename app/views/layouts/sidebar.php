@@ -29,6 +29,11 @@
                             <a href="/student-portal/marks" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Marks</a>
                             <a href="/student-portal/attendance" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Attendance</a>
                             <a href="/student-portal/fees" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Fee Information</a>
+                            <a href="/student-portal/timetable" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Timetable</a>
+                            <a href="/student-portal/assignments" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Assignments</a>
+                            <a href="/student-portal/materials" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Study Materials</a>
+                            <a href="/student-portal/quizzes" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Quizzes</a>
+                            <a href="/student-portal/announcements" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Announcements</a>
                             <a href="/student-portal/library/books" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Library Books</a>
                             <a href="/student-portal/library/borrowed" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">My Borrowed Books</a>
                         </div>

@@ -580,3 +580,10 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/student-portal/attendance', 'StudentPortalController@attendanceHistory');
         $router->get('/student-portal/fees', 'StudentPortalController@feeInformation');
     });
+
+    // Student Portal Additional Routes (authenticated students only)
+    $router->get('/student-portal/timetable', 'StudentPortalController@myTimetable');
+    $router->get('/student-portal/assignments', 'StudentPortalController@myAssignments');
+    $router->get('/student-portal/materials', 'StudentPortalController@studyMaterials');
+    $router->get('/student-portal/quizzes', 'StudentPortalController@myQuizzes');
+    $router->get('/student-portal/announcements', 'StudentPortalController@announcements');
