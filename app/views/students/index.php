@@ -34,24 +34,37 @@
 </div>
 
 <?php if (!$classId): ?>
-    <!-- Classes Grid View -->
-    <div class="row mb-4">
-        <?php foreach ($classes as $class): ?>
-            <div class="col-md-4 mb-3">
-                <div class="card h-100 cursor-pointer" onclick="selectClass(<?= $class['id'] ?>)" style="cursor: pointer; transition: all 0.3s;">
-                    <div class="card-body text-center">
-                        <h5 class="card-title"><?= htmlspecialchars($class['name']) ?></h5>
-                        <p class="card-text display-6 mb-2"><?= $class['student_count'] ?></p>
-                        <small class="text-muted">Students</small>
-                    </div>
-                    <div class="card-footer bg-light text-center">
-                        <button class="btn btn-sm btn-warning me-2" onclick="promoteClass(event, <?= $class['id'] ?>, '<?= htmlspecialchars($class['name']) ?>')">
-                            <i class="bi bi-arrow-up me-1"></i>Promote to Next Year
-                        </button>
-                    </div>
-                </div>
+    <!-- Classes Table View -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">All Classes</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Class Name</th>
+                            <th>Student Count</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($classes as $class): ?>
+                            <tr style="cursor: pointer;" onclick="selectClass(<?= $class['id'] ?>)">
+                                <td><?= htmlspecialchars($class['name']) ?></td>
+                                <td><span class="badge bg-primary"><?= $class['student_count'] ?></span></td>
+                                <td onclick="event.stopPropagation();">
+                                    <button class="btn btn-sm btn-warning" onclick="promoteClass(event, <?= $class['id'] ?>, '<?= htmlspecialchars($class['name']) ?>')">
+                                        <i class="bi bi-arrow-up me-1"></i>Promote to Next Year
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
-        <?php endforeach; ?>
+        </div>
     </div>
 <?php else: ?>
     <!-- Students List View -->
