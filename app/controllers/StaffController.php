@@ -416,6 +416,15 @@ class StaffController
             return responseJSON(['error' => 'User not found'], 404);
         }
 
+        // Handle null password fields (old staff)
+        if (!$user['temporary_password_plaintext'] || !$user['password_expires_at']) {
+            return responseJSON([
+                'password' => null,
+                'expired' => true,
+                'expires_at' => null
+            ]);
+        }
+
         $expiresAt = strtotime($user['password_expires_at']);
         $now = time();
 
