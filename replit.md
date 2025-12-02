@@ -44,6 +44,9 @@ Comprehensive school management system built with Core PHP 8+ custom MVC archite
   - ✅ Students (protected in StudentController)
   - ✅ Teachers/Staff (protected in StaffController)
   - ✅ Parents (added via staff/guardian system)
+- **Only Admins Can Manage:**
+  - ✅ Promote entire classes (bulk update)
+  - ✅ View class-based student lists
 - Route-level protection: `middleware: 'role:admin'`
 - Controller-level checks: `hasRole('admin')` in create/store methods
 
@@ -89,6 +92,27 @@ Comprehensive school management system built with Core PHP 8+ custom MVC archite
 - ✅ Moved Settings menu to the bottom (last option)
 - ✅ Removed duplicate student dashboard link
 - ✅ Added 10 working student portal features
+- ✅ **NEW: Class-Based Student Management**
+  - Display all active classes with student counts in grid view
+  - Click any class to view its students in a table
+  - View student details, credentials, and manage per-class enrollment
+- ✅ **NEW: Bulk Class Promotion Feature**
+  - Promote entire classes to next year (e.g., Class 4 → Class 5)
+  - One-click bulk update for all students in a class
+  - Admin-only with confirmation dialog
+  - Perfect for end-of-year class advancement
+
+## Admin Management Features ✅
+- ✅ **Students Page:**
+  - Grid view: All classes with student counts
+  - Click class → View all students in that class
+  - Add/Edit/Delete students per class
+  - View credentials, resend passwords
+  - Promote entire class to next year (bulk)
+- ✅ **Promotion System:**
+  - Select class → Choose target class → Confirm
+  - All students moved in one action
+  - Ideal for year-end advancement
 
 ## TODO for Next Sessions
 1. Build remaining 14 student portal features
