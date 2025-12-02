@@ -17,22 +17,29 @@ class StudentController
     {
         $classId = $request->get('class_id');
         
-        $query = "SELECT s.*, u.first_name, u.last_name, u.email, u.phone, c.name as class_name
-                  FROM students s
-                  INNER JOIN users u ON s.user_id = u.id
-                  LEFT JOIN classes c ON s.class_id = c.id";
+        // Fetch all classes with student counts
+        $classesQuery = "SELECT c.*, COUNT(s.id) as student_count
+                         FROM classes c
+                         LEFT JOIN students s ON c.id = s.class_id
+                         WHERE c.status = 'active'
+                         GROUP BY c.id
+                         ORDER BY c.name ASC";
+        $classes = db()->fetchAll($classesQuery);
         
-        $params = [];
+        // Fetch students if class is selected
+        $students = [];
         if ($classId) {
-            $query .= " WHERE s.class_id = ?";
-            $params[] = $classId;
+            $query = "SELECT s.*, u.first_name, u.last_name, u.email, u.phone, c.name as class_name
+                      FROM students s
+                      INNER JOIN users u ON s.user_id = u.id
+                      LEFT JOIN classes c ON s.class_id = c.id
+                      WHERE s.class_id = ?
+                      ORDER BY s.created_at DESC";
+            $students = db()->fetchAll($query, [$classId]);
         }
         
-        $query .= " ORDER BY s.created_at DESC";
-        
-        $students = db()->fetchAll($query, $params);
-        
         return view('students.index', [
+            'classes' => $classes,
             'students' => $students,
             'classId' => $classId
         ]);
@@ -391,6 +398,33 @@ class StudentController
                 flash('error', 'Failed to delete student: ' . $e->getMessage());
             }
             return back();
+        }
+    }
+
+    public function promoteClass($request, $fromClassId)
+    {
+        // Only admin can promote classes
+        if (!hasRole('admin')) {
+            return responseJSON(['error' => 'Unauthorized'], 403);
+        }
+
+        try {
+            $toClassId = $request->post('to_class_id');
+            if (!$toClassId) {
+                return responseJSON(['error' => 'Target class required'], 400);
+            }
+
+            // Update all students in the from class to the to class
+            $db = db();
+            $db->execute(
+                "UPDATE students SET class_id = ? WHERE class_id = ?",
+                [$toClassId, $fromClassId]
+            );
+
+            flash('success', 'All students promoted to new class successfully');
+            return redirect('/students');
+        } catch (Exception $e) {
+            return responseJSON(['error' => 'Failed to promote class: ' . $e->getMessage()], 500);
         }
     }
 

@@ -130,6 +130,7 @@ $router->group(['middleware' => 'auth'], function($router) {
         $router->get('/students', 'StudentController@index');
         $router->get('/students/create', 'StudentController@create');
         $router->post('/students', 'StudentController@store', ['csrf']);
+        $router->post('/students/promote/{fromClassId}', 'StudentController@promoteClass', ['csrf']);
         $router->get('/students/{id}', 'StudentController@show');
         $router->get('/students/{id}/edit', 'StudentController@edit');
         $router->post('/students/{id}', 'StudentController@update', ['csrf']);

@@ -1,11 +1,6 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
-<!-- Fetch password from database via API -->
-<script>
-// This will be populated when modal is shown
-</script>
-
-<!-- Show temporary password if just created (display only once) -->
+<!-- Show temporary password if just created -->
 <?php if (isset($_SESSION['new_password']) && isset($_SESSION['new_student_email'])): ?>
     <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
         <div class="d-flex justify-content-between align-items-start">
@@ -28,95 +23,109 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
-    <?php 
-        // Clear after showing (display only once)
-        unset($_SESSION['new_password'], $_SESSION['new_student_email'], $_SESSION['show_password_modal']);
-    ?>
+    <?php unset($_SESSION['new_password'], $_SESSION['new_student_email'], $_SESSION['show_password_modal']); ?>
 <?php endif; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">
-        <?php if ($classId): ?>
-            Class Students
-        <?php else: ?>
-            All Students
-        <?php endif; ?>
-    </h1>
+    <h1 class="h3 mb-0">Students</h1>
     <a href="/students/create" class="btn btn-primary">
         <i class="bi bi-plus-circle me-2"></i>Add Student
     </a>
 </div>
 
-<div class="card">
-    <div class="card-header">
-        <h5 class="mb-0">
-            <?php if ($classId): ?>
-                Students in Class
-            <?php else: ?>
-                All Students
-            <?php endif; ?>
-        </h5>
+<?php if (!$classId): ?>
+    <!-- Classes Grid View -->
+    <div class="row mb-4">
+        <?php foreach ($classes as $class): ?>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 cursor-pointer" onclick="selectClass(<?= $class['id'] ?>)" style="cursor: pointer; transition: all 0.3s;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><?= htmlspecialchars($class['name']) ?></h5>
+                        <p class="card-text display-6 mb-2"><?= $class['student_count'] ?></p>
+                        <small class="text-muted">Students</small>
+                    </div>
+                    <div class="card-footer bg-light text-center">
+                        <button class="btn btn-sm btn-warning me-2" onclick="promoteClass(event, <?= $class['id'] ?>, '<?= htmlspecialchars($class['name']) ?>')">
+                            <i class="bi bi-arrow-up me-1"></i>Promote to Next Year
+                        </button>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Admission #</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Class</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($students)): ?>
-                        <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">No students found</td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($students as $student): ?>
+<?php else: ?>
+    <!-- Students List View -->
+    <div class="mb-3">
+        <a href="/students" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Back to Classes
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Students in <?= htmlspecialchars($classes[array_search($classId, array_column($classes, 'id'))]['name'] ?? 'Class') ?></h5>
+        </div>
+        <div class="card-body">
+            <?php if (empty($students)): ?>
+                <div class="text-center py-4 text-muted">
+                    <p>No students found in this class</p>
+                </div>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
                             <tr>
-                                <td><?= htmlspecialchars($student['admission_number'] ?? 'N/A') ?></td>
-                                <td><?= htmlspecialchars(($student['first_name'] ?? '') . ' ' . ($student['last_name'] ?? '')) ?></td>
-                                <td><?= htmlspecialchars($student['email'] ?? 'N/A') ?></td>
-                                <td><?= htmlspecialchars($student['phone'] ?? 'N/A') ?></td>
-                                <td><?= htmlspecialchars($student['class_name'] ?? 'N/A') ?></td>
-                                <td>
-                                    <span class="badge bg-<?= $student['status'] === 'active' ? 'success' : 'secondary' ?>" id="status-badge-<?= $student['id'] ?>">
-                                        <?= ucfirst($student['status']) ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="/students/<?= $student['id'] ?>" class="btn btn-sm btn-info" title="View">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="/students/<?= $student['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($student['email']) ?>', '<?= htmlspecialchars($student['first_name'] . ' ' . $student['last_name']) ?>', <?= $student['id'] ?>)">
-                                        <i class="bi bi-info-circle"></i>
-                                    </button>
-                                    <form method="POST" action="/students/<?= $student['id'] ?>/resend-password" style="display: inline;">
-                                        <input type="hidden" name="_token" value="<?= csrf() ?>">
-                                        <button type="submit" class="btn btn-sm btn-success" title="Resend Password" onclick="return confirm('Send new password to <?= htmlspecialchars($student['email']) ?>?')">
-                                            <i class="bi bi-key-fill"></i>
-                                        </button>
-                                    </form>
-                                    <button onclick="confirmDelete('/students/<?= $student['id'] ?>' + window.location.search, 'Are you sure you want to delete this student?', this)" class="btn btn-sm btn-danger" title="<?= $classId ? 'Remove from Class' : 'Delete' ?>">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
+                                <th>Admission #</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Roll #</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($students as $student): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($student['admission_number'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars(($student['first_name'] ?? '') . ' ' . ($student['last_name'] ?? '')) ?></td>
+                                    <td><?= htmlspecialchars($student['email'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($student['phone'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($student['roll_number'] ?? 'N/A') ?></td>
+                                    <td>
+                                        <span class="badge bg-<?= $student['status'] === 'active' ? 'success' : 'secondary' ?>" id="status-badge-<?= $student['id'] ?>">
+                                            <?= ucfirst($student['status']) ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/students/<?= $student['id'] ?>" class="btn btn-sm btn-info" title="View">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="/students/<?= $student['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($student['email']) ?>', '<?= htmlspecialchars($student['first_name'] . ' ' . $student['last_name']) ?>', <?= $student['id'] ?>)">
+                                            <i class="bi bi-info-circle"></i>
+                                        </button>
+                                        <form method="POST" action="/students/<?= $student['id'] ?>/resend-password" style="display: inline;">
+                                            <input type="hidden" name="_token" value="<?= csrf() ?>">
+                                            <button type="submit" class="btn btn-sm btn-success" title="Resend Password" onclick="return confirm('Send new password to <?= htmlspecialchars($student['email']) ?>?')">
+                                                <i class="bi bi-key-fill"></i>
+                                            </button>
+                                        </form>
+                                        <button onclick="confirmDelete('/students/<?= $student['id'] ?>?class_id=<?= $classId ?>', 'Are you sure you want to remove this student from class?', this)" class="btn btn-sm btn-danger" title="Remove from Class">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
-</div>
+<?php endif; ?>
 
 <!-- Credentials Modal -->
 <div class="modal fade" id="credentialsModal" tabindex="-1">
@@ -150,13 +159,59 @@
     </div>
 </div>
 
+<!-- Promotion Modal -->
+<div class="modal fade" id="promotionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title"><i class="bi bi-arrow-up me-2"></i>Promote Class to Next Year</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" id="promotionForm">
+                <input type="hidden" name="_token" value="<?= csrf() ?>">
+                <input type="hidden" name="from_class_id" id="fromClassId">
+                <div class="modal-body">
+                    <p><strong>From Class:</strong> <span id="fromClassName"></span></p>
+                    <p class="text-danger">⚠️ All students in this class will be moved to the selected class.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Move to Class *</label>
+                        <select name="to_class_id" id="toClassId" class="form-select" required>
+                            <option value="">Select Target Class</option>
+                            <?php foreach ($classes as $class): ?>
+                                <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-arrow-up me-1"></i>Promote All Students
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+function selectClass(classId) {
+    window.location.href = '/students?class_id=' + classId;
+}
+
+function promoteClass(event, classId, className) {
+    event.stopPropagation();
+    document.getElementById('fromClassId').value = classId;
+    document.getElementById('fromClassName').textContent = className;
+    const modal = new bootstrap.Modal(document.getElementById('promotionModal'));
+    modal.show();
+}
+
 function showCredentials(email, name, studentId) {
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
     document.getElementById('credPassword').textContent = '(Loading...)';
     
-    // Fetch password from database
     fetch(`/api/students/${studentId}/temporary-password`)
         .then(r => r.json())
         .then(data => {
@@ -165,13 +220,7 @@ function showCredentials(email, name, studentId) {
                 document.getElementById('credPassword').textContent = data.password;
                 if (data.expires_at) {
                     noteText.textContent = 'Password expires: ' + new Date(data.expires_at).toLocaleDateString();
-                } else {
-                    noteText.textContent = 'Temporary password. Student can use "Forgot Password" to set permanent password.';
                 }
-            } else if (data.password) {
-                // Password info is in the blue alert
-                document.getElementById('credPassword').textContent = data.password;
-                noteText.textContent = 'Look at the blue alert above for the newly created password!';
             } else {
                 document.getElementById('credPassword').textContent = '(Password not available)';
                 noteText.textContent = 'Click the green 🔑 button to generate and resend a new temporary password.';
@@ -198,6 +247,22 @@ function copyNewPassword() {
         alert('Password copied!');
     });
 }
+
+document.getElementById('promotionForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fromClassId = document.getElementById('fromClassId').value;
+    const toClassId = document.getElementById('toClassId').value;
+    
+    if (!toClassId) {
+        alert('Please select a target class');
+        return;
+    }
+    
+    if (confirm('Are you sure? This will move ALL students from this class to the selected class.')) {
+        this.action = '/students/promote/' + fromClassId;
+        this.submit();
+    }
+});
 </script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
