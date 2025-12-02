@@ -1,10 +1,11 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
-<!-- Store new password globally -->
+<!-- Store new password globally for modal access -->
 <script>
-    window.credentialsMap = {
-        '<?= htmlspecialchars($_SESSION['new_staff_email'] ?? '') ?>': '<?= htmlspecialchars($_SESSION['new_password'] ?? '') ?>'
-    };
+    window.credentialsMap = {};
+    <?php if (isset($_SESSION['new_password']) && isset($_SESSION['new_staff_email'])): ?>
+        window.credentialsMap['<?= htmlspecialchars($_SESSION['new_staff_email']) ?>'] = '<?= htmlspecialchars($_SESSION['new_password']) ?>';
+    <?php endif; ?>
 </script>
 
 <!-- Show temporary password if just created -->
@@ -16,11 +17,14 @@
                 <p class="mb-2 mt-2">
                     <strong>Email:</strong> <?= htmlspecialchars($_SESSION['new_staff_email']) ?><br>
                     <strong>Temporary Password:</strong> 
-                    <code style="background: #f0f0f0; padding: 5px 10px; border-radius: 3px; font-weight: bold; font-size: 1.1em;">
+                    <code style="background: #f0f0f0; padding: 5px 10px; border-radius: 3px; font-weight: bold; font-size: 1.1em;" id="newStaffPassword">
                         <?= htmlspecialchars($_SESSION['new_password']) ?>
                     </code>
                 </p>
-                <p class="mb-0 text-muted small">
+                <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="copyNewPassword()">
+                    <i class="bi bi-clipboard me-1"></i>Copy Password
+                </button>
+                <p class="mb-0 text-muted small mt-2">
                     ⏱️ Password expires in 7 days. Share this with the staff member or they can use "Forgot Password" to reset it.
                 </p>
             </div>
@@ -202,21 +206,23 @@ document.querySelectorAll('.category-filter').forEach(button => {
 function showCredentials(email, name) {
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
-    
-    // Get password from the global map
-    let password = window.credentialsMap[email] || '';
-    document.getElementById('credPassword').textContent = password || '(No password available)';
+    let password = window.credentialsMap[email] || '(No password available)';
+    document.getElementById('credPassword').textContent = password;
 }
 
 function copyBoth() {
     const email = document.getElementById('credEmail').textContent;
     const password = document.getElementById('credPassword').textContent;
     const text = `Email: ${email}\nPassword: ${password}`;
-    
     navigator.clipboard.writeText(text).then(() => {
-        alert('Email and password copied to clipboard!');
-    }).catch(() => {
-        alert('Failed to copy to clipboard');
+        alert('Copied to clipboard!');
+    });
+}
+
+function copyNewPassword() {
+    const pwd = document.getElementById('newStaffPassword').textContent;
+    navigator.clipboard.writeText(pwd).then(() => {
+        alert('Password copied!');
     });
 }
 </script>
