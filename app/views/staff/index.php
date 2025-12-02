@@ -4,7 +4,12 @@
 <script>
     window.credentialsMap = {};
     <?php if (isset($_SESSION['new_password']) && isset($_SESSION['new_staff_email'])): ?>
-        window.credentialsMap['<?= htmlspecialchars($_SESSION['new_staff_email']) ?>'] = '<?= htmlspecialchars($_SESSION['new_password']) ?>';
+        const email = '<?= htmlspecialchars($_SESSION['new_staff_email']) ?>';
+        const password = '<?= htmlspecialchars($_SESSION['new_password']) ?>';
+        window.credentialsMap[email] = password;
+        console.log('credentialsMap populated:', { email, password: password.substring(0, 3) + '***' });
+    <?php else: ?>
+        console.log('Session variables not set for credentialsMap');
     <?php endif; ?>
 </script>
 
@@ -208,10 +213,13 @@ document.querySelectorAll('.category-filter').forEach(button => {
 
 <script>
 function showCredentials(email, name) {
+    console.log('showCredentials called:', { email, credentialsMap: window.credentialsMap });
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
     let password = window.credentialsMap[email];
     let noteText = document.getElementById('noteText');
+    
+    console.log('Password lookup result:', { email, found: !!password, password: password ? password.substring(0,3) + '***' : 'none' });
     
     if (password) {
         // Newly created staff - show password
