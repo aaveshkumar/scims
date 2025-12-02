@@ -373,7 +373,8 @@ class StaffController
             $this->userModel->update($user['id'], [
                 'password' => User::hashPassword($temporaryPassword),
                 'password_temporary' => true,
-                'password_expires_at' => $passwordExpiresAt
+                'password_expires_at' => $passwordExpiresAt,
+                'temporary_password_plaintext' => $temporaryPassword  // Store plaintext for credentials modal
             ]);
 
             // Send email with new credentials
