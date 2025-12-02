@@ -20,7 +20,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
-    <?php unset($_SESSION['new_password'], $_SESSION['new_student_email']); ?>
 <?php endif; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
