@@ -1,5 +1,11 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
+<!-- Store new password in JavaScript -->
+<script>
+    window.newPassword = '<?= htmlspecialchars($_SESSION['new_password'] ?? '') ?>';
+    window.newStaffEmail = '<?= htmlspecialchars($_SESSION['new_staff_email'] ?? '') ?>';
+</script>
+
 <!-- Show temporary password if just created -->
 <?php if (isset($_SESSION['new_password']) && isset($_SESSION['new_staff_email'])): ?>
     <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
@@ -102,7 +108,7 @@
                                     <a href="/staff/<?= $member['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($member['email']) ?>', '<?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?>', '<?= htmlspecialchars($_SESSION['new_password'] ?? '') ?>')">
+                                    <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($member['email']) ?>', '<?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?>')">
                                         <i class="bi bi-info-circle"></i>
                                     </button>
                                     <form method="POST" action="/staff/<?= $member['id'] ?>/resend-password" style="display: inline;">
@@ -192,9 +198,15 @@ document.querySelectorAll('.category-filter').forEach(button => {
 </div>
 
 <script>
-function showCredentials(email, name, password) {
+function showCredentials(email, name) {
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
+    
+    // Show password only if this is the newly created staff member
+    let password = '';
+    if (email === window.newStaffEmail && window.newPassword) {
+        password = window.newPassword;
+    }
     document.getElementById('credPassword').textContent = password || '(No password available)';
 }
 

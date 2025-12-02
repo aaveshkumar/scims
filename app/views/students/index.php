@@ -1,5 +1,11 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
+<!-- Store new password in JavaScript -->
+<script>
+    window.newPassword = '<?= htmlspecialchars($_SESSION['new_password'] ?? '') ?>';
+    window.newStudentEmail = '<?= htmlspecialchars($_SESSION['new_student_email'] ?? '') ?>';
+</script>
+
 <!-- Show temporary password if just created -->
 <?php if (isset($_SESSION['new_password']) && isset($_SESSION['new_student_email'])): ?>
     <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
@@ -84,7 +90,7 @@
                                     <a href="/students/<?= $student['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($student['email']) ?>', '<?= htmlspecialchars($student['first_name'] . ' ' . $student['last_name']) ?>', '<?= htmlspecialchars($_SESSION['new_password'] ?? '') ?>')">
+                                    <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($student['email']) ?>', '<?= htmlspecialchars($student['first_name'] . ' ' . $student['last_name']) ?>')">
                                         <i class="bi bi-info-circle"></i>
                                     </button>
                                     <form method="POST" action="/students/<?= $student['id'] ?>/resend-password" style="display: inline;">
@@ -139,9 +145,15 @@
 </div>
 
 <script>
-function showCredentials(email, name, password) {
+function showCredentials(email, name) {
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
+    
+    // Show password only if this is the newly created student
+    let password = '';
+    if (email === window.newStudentEmail && window.newPassword) {
+        password = window.newPassword;
+    }
     document.getElementById('credPassword').textContent = password || '(No password available)';
 }
 
