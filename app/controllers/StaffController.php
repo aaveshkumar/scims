@@ -211,7 +211,6 @@ class StaffController
         }
         // Fallback: return a generic message
         return 'Database error occurred. Please check your input and try again';
-        }
     }
 
     public function show($request, $id)
