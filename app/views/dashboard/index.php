@@ -113,7 +113,7 @@
 
 <?php if (hasRole('student')): ?>
 <div class="row">
-    <div class="col-xl-6 col-md-6 mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2" style="border-left: 4px solid #4e73df;">
             <div class="card-body">
                 <div class="row align-items-center">
@@ -129,16 +129,48 @@
         </div>
     </div>
 
-    <div class="col-xl-6 col-md-6 mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-info shadow h-100 py-2" style="border-left: 4px solid #36b9cc;">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Admission Number</div>
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Admission #</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $stats['admission_number'] ?? 'N/A' ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="bi bi-card-text text-gray-300" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2" style="border-left: 4px solid #1cc88a;">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">My Marks</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><a href="/student-portal/marks" class="text-decoration-none">View</a></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-graph-up text-gray-300" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2" style="border-left: 4px solid #f6c23e;">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Fees</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><a href="/student-portal/fees" class="text-decoration-none">View</a></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-receipt text-gray-300" style="font-size: 2rem;"></i>
                     </div>
                 </div>
             </div>
@@ -323,3 +355,45 @@
 </div>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>
+
+<?php if (hasRole('student')): ?>
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-lightning-fill text-info me-2"></i>Quick Links</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                <a href="/student-portal/marks" class="btn btn-sm btn-outline-info w-100">
+                    <i class="bi bi-graph-up"></i><br><small>My Marks</small>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                <a href="/student-portal/attendance" class="btn btn-sm btn-outline-info w-100">
+                    <i class="bi bi-calendar-check"></i><br><small>Attendance</small>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                <a href="/student-portal/assignments" class="btn btn-sm btn-outline-info w-100">
+                    <i class="bi bi-file-text"></i><br><small>Assignments</small>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                <a href="/student-portal/materials" class="btn btn-sm btn-outline-info w-100">
+                    <i class="bi bi-book"></i><br><small>Materials</small>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                <a href="/student-portal/library/books" class="btn btn-sm btn-outline-info w-100">
+                    <i class="bi bi-book-half"></i><br><small>Library</small>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                <a href="/student-portal/fees" class="btn btn-sm btn-outline-info w-100">
+                    <i class="bi bi-receipt"></i><br><small>Fee Info</small>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>

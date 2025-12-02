@@ -16,11 +16,6 @@
 
             <!-- Student Portal Menu (for students only) -->
             <?php if (hasRole('student')): ?>
-            
-            <!-- Dashboard Link -->
-            <a href="/student-portal/dashboard" class="sidebar-link list-group-item list-group-item-action border-0">
-                <i class="bi bi-speedometer2 me-2"></i>My Dashboard
-            </a>
 
             <!-- Academic Menu -->
             <div class="accordion accordion-flush" id="studentAcademicMenu">
@@ -115,15 +110,15 @@
                 </div>
             </div>
 
-            <!-- Administration Menu -->
-            <div class="accordion accordion-flush" id="studentAdminMenu">
+            <!-- Settings Menu -->
+            <div class="accordion accordion-flush" id="studentSettingsMenu">
                 <div class="accordion-item sidebar-accordion-item border-0">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentAdminCollapse">
-                            <i class="bi bi-gear me-2"></i>Administration
+                        <button class="accordion-button collapsed sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#studentSettingsCollapse">
+                            <i class="bi bi-gear me-2"></i>Settings
                         </button>
                     </h2>
-                    <div id="studentAdminCollapse" class="accordion-collapse collapse" data-bs-parent="#studentAdminMenu">
+                    <div id="studentSettingsCollapse" class="accordion-collapse collapse" data-bs-parent="#studentSettingsMenu">
                         <div class="accordion-body p-0">
                             <a href="/student-portal/fees" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Fee Information</a>
                             <a href="/student-portal/support" class="sidebar-link list-group-item list-group-item-action border-0 ps-4">Support/Help</a>
