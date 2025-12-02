@@ -80,6 +80,12 @@
                                     <a href="/staff/<?= $member['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
+                                    <form method="POST" action="/staff/<?= $member['id'] ?>/resend-password" style="display: inline;">
+                                        <input type="hidden" name="_token" value="<?= csrf() ?>">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Resend Password" onclick="return confirm('Send new password to <?= htmlspecialchars($member['email']) ?>?')">
+                                            <i class="bi bi-key-fill"></i>
+                                        </button>
+                                    </form>
                                     <button onclick="confirmDelete('/staff/<?= $member['id'] ?>', 'Are you sure you want to delete this staff member?', this)" class="btn btn-sm btn-danger" title="Delete">
                                         <i class="bi bi-trash"></i>
                                     </button>

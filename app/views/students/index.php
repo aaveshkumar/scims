@@ -62,6 +62,12 @@
                                     <a href="/students/<?= $student['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
+                                    <form method="POST" action="/students/<?= $student['id'] ?>/resend-password" style="display: inline;">
+                                        <input type="hidden" name="_token" value="<?= csrf() ?>">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Resend Password" onclick="return confirm('Send new password to <?= htmlspecialchars($student['email']) ?>?')">
+                                            <i class="bi bi-key-fill"></i>
+                                        </button>
+                                    </form>
                                     <button onclick="confirmDelete('/students/<?= $student['id'] ?>' + window.location.search, 'Are you sure you want to delete this student?', this)" class="btn btn-sm btn-danger" title="<?= $classId ? 'Remove from Class' : 'Delete' ?>">
                                         <i class="bi bi-trash"></i>
                                     </button>

@@ -294,6 +294,59 @@ class StaffController
         }
     }
 
+    public function resendPassword($request, $id)
+    {
+        // Only admin can resend passwords
+        if (!hasRole('admin')) {
+            flash('error', 'Only administrators can resend passwords');
+            return redirect('/staff');
+        }
+
+        try {
+            $staff = $this->staffModel->find($id);
+            if (!$staff) {
+                flash('error', 'Staff member not found');
+                return redirect('/staff');
+            }
+
+            // Get user information
+            $user = $this->userModel->find($staff['user_id']);
+            if (!$user) {
+                flash('error', 'User not found');
+                return redirect('/staff');
+            }
+
+            // Generate new temporary password
+            $temporaryPassword = PasswordGenerator::generate();
+            $passwordExpiresAt = date('Y-m-d H:i:s', strtotime('+7 days'));
+
+            // Update user with new password and reset expiration
+            $this->userModel->update($user['id'], [
+                'password' => User::hashPassword($temporaryPassword),
+                'password_temporary' => true,
+                'password_expires_at' => $passwordExpiresAt
+            ]);
+
+            // Send email with new credentials
+            $emailSent = Email::sendPasswordReset(
+                $user['email'],
+                $user['first_name'],
+                $temporaryPassword
+            );
+
+            if ($emailSent) {
+                flash('success', "New password sent to {$user['email']}. Password expires in 7 days.");
+            } else {
+                flash('warning', 'Password reset but email could not be sent. New password: ' . substr($temporaryPassword, 0, 4) . '****');
+            }
+
+            return redirect('/staff');
+        } catch (Exception $e) {
+            flash('error', 'Failed to resend password: ' . $e->getMessage());
+            return redirect('/staff');
+        }
+    }
+
     public function destroy($request, $id)
     {
         try {
