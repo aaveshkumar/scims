@@ -54,6 +54,17 @@ class AuthController
             return back();
         }
 
+        // Check if temporary password has expired
+        if ($user['password_temporary'] && $user['password_expires_at']) {
+            $now = new DateTime();
+            $expiresAt = new DateTime($user['password_expires_at']);
+            
+            if ($now > $expiresAt) {
+                flash('error', 'Your temporary password has expired (7 days). Please contact the administrator to get a new password.');
+                return back();
+            }
+        }
+
         // Fetch user's roles
         $db = Database::getInstance();
         $roles = $db->fetchAll(
@@ -73,6 +84,11 @@ class AuthController
             $user['roles'] = $userRoles;
             $user['role'] = 'admin'; // Force admin role for dashboard
             $_SESSION['user'] = $user;
+            
+            // Store temporary password status for banner display
+            $_SESSION['password_temporary'] = $user['password_temporary'];
+            $_SESSION['password_expires_at'] = $user['password_expires_at'];
+            
             flash('success', 'Welcome back, ' . $user['first_name'] . '!');
             return redirect('/dashboard');
         }
@@ -96,6 +112,10 @@ class AuthController
         $user['role'] = $selectedRole; // Store selected role
 
         $_SESSION['user'] = $user;
+        
+        // Store temporary password status for banner display
+        $_SESSION['password_temporary'] = $user['password_temporary'];
+        $_SESSION['password_expires_at'] = $user['password_expires_at'];
 
         flash('success', 'Welcome back, ' . $user['first_name'] . '!');
         return redirect('/dashboard');

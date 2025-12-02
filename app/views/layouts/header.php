@@ -365,6 +365,31 @@
             <?php endif; ?>
             
             <div class="container-fluid p-4">
+                <!-- Temporary Password Warning Banner -->
+                <?php if (isset($_SESSION['password_temporary']) && $_SESSION['password_temporary'] && isset($_SESSION['password_expires_at'])): ?>
+                    <?php 
+                        $expiresAt = new DateTime($_SESSION['password_expires_at']);
+                        $now = new DateTime();
+                        $daysRemaining = $expiresAt->diff($now)->days;
+                    ?>
+                    <div class="alert alert-warning alert-dismissible fade show mb-4" role="alert" style="box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15); border-radius: 0.5rem; border: 2px solid #f6c23e;">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-exclamation-triangle-fill me-3" style="font-size: 1.5rem; margin-top: 0.25rem;"></i>
+                            <div>
+                                <strong>🔒 Security Notice: Temporary Password</strong>
+                                <p class="mb-2 mt-2">
+                                    Your password is temporary and expires in <strong><?= $daysRemaining > 0 ? "$daysRemaining day(s)" : "less than 1 day" ?></strong>.
+                                    Please change it immediately for security.
+                                </p>
+                                <a href="/settings/change-password" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-key-fill me-1"></i>Change Password Now
+                                </a>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-top: 0.25rem;"></button>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
                 <?php if (isset($_SESSION['flash'])): ?>
                     <?php foreach ($_SESSION['flash'] as $type => $message): ?>
                         <div class="alert alert-<?= $type === 'error' ? 'danger' : $type ?> alert-dismissible fade show" role="alert">
