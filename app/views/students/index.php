@@ -85,7 +85,7 @@
                                     <a href="/students/<?= $student['id'] ?>/edit" class="btn btn-sm btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($student['email']) ?>', '<?= htmlspecialchars($student['first_name'] . ' ' . $student['last_name']) ?>')">
+                                    <button type="button" class="btn btn-sm btn-primary" title="View Credentials" data-bs-toggle="modal" data-bs-target="#credentialsModal" onclick="showCredentials('<?= htmlspecialchars($student['email']) ?>', '<?= htmlspecialchars($student['first_name'] . ' ' . $student['last_name']) ?>', '<?= htmlspecialchars($_SESSION['new_password'] ?? '') ?>')">
                                         <i class="bi bi-info-circle"></i>
                                     </button>
                                     <form method="POST" action="/students/<?= $student['id'] ?>/resend-password" style="display: inline;">
@@ -118,21 +118,21 @@
             <div class="modal-body">
                 <p><strong>Name:</strong> <span id="credName"></span></p>
                 <p><strong>Email:</strong> <span id="credEmail"></span></p>
-                <p><strong>Temporary Password:</strong></p>
-                <div class="alert alert-info">
+                <p class="mb-1"><strong>Temporary Password:</strong></p>
+                <div class="alert alert-warning mb-3">
+                    <code id="credPassword" style="background: #fff3cd; padding: 8px 12px; border-radius: 3px; font-weight: bold; font-size: 1.1em; word-break: break-all;">
+                    </code>
+                </div>
+                <div class="alert alert-info mb-0">
                     <p class="mb-0">
-                        Password is temporary and expires in 7 days.
-                    </p>
-                    <p class="mb-0 mt-2">
-                        <small>Student can use "Forgot Password" to set a permanent password, or admin can resend a new temporary password.</small>
+                        <small>Password is temporary and expires in 7 days. Student can use "Forgot Password" to set a permanent password.</small>
                     </p>
                 </div>
-                <p class="mb-0"><small class="text-muted">Temporary passwords are sent via email during creation or resend.</small></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="copyToClipboard(document.getElementById('credEmail').textContent)">
-                    <i class="bi bi-clipboard me-1"></i>Copy Email
+                <button type="button" class="btn btn-primary" onclick="copyBoth()">
+                    <i class="bi bi-clipboard me-1"></i>Copy Email & Password
                 </button>
             </div>
         </div>
@@ -140,14 +140,21 @@
 </div>
 
 <script>
-function showCredentials(email, name) {
+function showCredentials(email, name, password) {
     document.getElementById('credName').textContent = name;
     document.getElementById('credEmail').textContent = email;
+    document.getElementById('credPassword').textContent = password || '(No password available)';
 }
 
-function copyToClipboard(text) {
+function copyBoth() {
+    const email = document.getElementById('credEmail').textContent;
+    const password = document.getElementById('credPassword').textContent;
+    const text = `Email: ${email}\nPassword: ${password}`;
+    
     navigator.clipboard.writeText(text).then(() => {
-        alert('Email copied to clipboard!');
+        alert('Email and password copied to clipboard!');
+    }).catch(() => {
+        alert('Failed to copy to clipboard');
     });
 }
 </script>
