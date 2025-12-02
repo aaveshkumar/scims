@@ -337,13 +337,13 @@
     </nav>
 
     <!-- User Info at Bottom -->
-    <div class="p-3 sidebar-footer" style="margin-bottom: 8px; padding-bottom: 8px;">
+    <div class="p-3 sidebar-footer" style="margin-bottom: 15px; padding-bottom: 15px;">
         <div class="d-flex align-items-center">
             <div class="flex-grow-1">
                 <div class="fw-bold sidebar-user-name"><?= htmlspecialchars(auth()['first_name'] ?? 'User') ?></div>
                 <small class="sidebar-user-role"><?= ucfirst(auth()['role'] ?? 'User') ?></small>
             </div>
-            <a href="/logout" class="btn btn-sm sidebar-logout-btn" title="Logout" style="margin-bottom: 8px;">
+            <a href="/logout" class="btn btn-sm sidebar-logout-btn" title="Logout" style="margin-bottom: 15px;">
                 <i class="bi bi-box-arrow-right"></i>
             </a>
         </div>
