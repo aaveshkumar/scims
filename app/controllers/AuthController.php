@@ -37,12 +37,6 @@ class AuthController
         $password = $request->post('password');
         $selectedRole = $request->post('role');
 
-        // Prevent admin role login through this form
-        if ($selectedRole === 'admin') {
-            flash('error', 'Invalid credentials for Admin. Please contact administrator.');
-            return back();
-        }
-
         $user = $this->userModel->findByEmail($email);
 
         if (!$user) {
@@ -60,19 +54,33 @@ class AuthController
             return back();
         }
 
-        // Fetch user's roles and validate selected role
+        // Fetch user's roles
         $db = Database::getInstance();
         $roles = $db->fetchAll(
             "SELECT r.name FROM roles r 
              INNER JOIN user_roles ur ON r.id = ur.role_id 
-             WHERE ur.user_id = ? AND r.name != 'admin'",
+             WHERE ur.user_id = ?",
             [$user['id']]
         );
         
         $userRoles = array_column($roles, 'name');
         
-        // Validate that selected role belongs to the user
-        if (!in_array($selectedRole, $userRoles)) {
+        // Check if user is admin
+        $isAdmin = in_array('admin', $userRoles);
+        
+        // If admin, allow login with any selected role and show admin dashboard
+        if ($isAdmin) {
+            $user['roles'] = $userRoles;
+            $user['role'] = 'admin'; // Force admin role for dashboard
+            $_SESSION['user'] = $user;
+            flash('success', 'Welcome back, ' . $user['first_name'] . '!');
+            return redirect('/dashboard');
+        }
+
+        // For non-admin users: Validate selected role
+        $nonAdminRoles = array_filter($userRoles, fn($r) => $r !== 'admin');
+        
+        if (!in_array($selectedRole, $nonAdminRoles)) {
             flash('error', 'Invalid credentials for ' . ucfirst($selectedRole) . '. You do not have this role assigned.');
             return back();
         }
@@ -84,7 +92,7 @@ class AuthController
         }
 
         // Add roles array and selected role to user data
-        $user['roles'] = $userRoles;
+        $user['roles'] = $nonAdminRoles;
         $user['role'] = $selectedRole; // Store selected role
 
         $_SESSION['user'] = $user;
