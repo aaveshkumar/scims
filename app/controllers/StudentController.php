@@ -65,7 +65,14 @@ class StudentController
             'gender' => 'required',
             'admission_number' => 'required',
             'class_id' => 'required|numeric',
-            'admission_date' => 'required'
+            'admission_date' => 'required',
+            'roll_number' => 'required',
+            'date_of_birth' => 'required',
+            'address' => 'required',
+            'guardian_name' => 'required',
+            'guardian_phone' => 'required',
+            'guardian_email' => 'required|email',
+            'blood_group' => 'required'
         ];
 
         if (!validate($request->post(), $rules)) {
