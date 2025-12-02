@@ -38,6 +38,18 @@
             </div>
 
             <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Password *</label>
+                    <input type="password" name="password" class="form-control" placeholder="Minimum 6 characters" required minlength="6">
+                    <small class="text-muted">Student will use this password to login</small>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Confirm Password *</label>
+                    <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm password" required minlength="6">
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Admission Number *</label>
                     <input type="text" name="admission_number" class="form-control" value="ADM<?= date('Y') . rand(10000, 99999) ?>" required>

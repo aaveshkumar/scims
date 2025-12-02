@@ -82,6 +82,8 @@ class StaffController
             'last_name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
+            'password' => 'required|min:6',
+            'password_confirmation' => 'required|min:6',
             'employee_id' => 'required',
             'designation' => 'required',
             'joining_date' => 'required'
@@ -89,6 +91,12 @@ class StaffController
 
         if (!validate($request->post(), $rules)) {
             flash('error', 'Please fix the validation errors');
+            return back();
+        }
+
+        // Validate passwords match
+        if ($request->post('password') !== $request->post('password_confirmation')) {
+            flash('error', 'Passwords do not match');
             return back();
         }
 
@@ -100,7 +108,7 @@ class StaffController
                 'last_name' => $request->post('last_name'),
                 'email' => $request->post('email'),
                 'phone' => $request->post('phone'),
-                'password' => User::hashPassword('password123'),
+                'password' => User::hashPassword($request->post('password')),
                 'gender' => $request->post('gender'),
                 'date_of_birth' => $request->post('date_of_birth'),
                 'address' => $request->post('address'),
