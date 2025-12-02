@@ -456,7 +456,7 @@ body:not(.dark-mode) .sidebar-user-role {
 body:not(.dark-mode) .sidebar-logout-btn {
     border-color: #ffffff !important;
     color: #ffffff !important;
-    margin-top: -5px;
+    margin-bottom: 8px;
 }
 
 body:not(.dark-mode) .sidebar-logout-btn:hover {
@@ -522,7 +522,7 @@ body.dark-mode .sidebar-user-role {
 body.dark-mode .sidebar-logout-btn {
     border-color: #e9ecef !important;
     color: #e9ecef !important;
-    margin-top: -5px;
+    margin-bottom: 8px;
 }
 
 body.dark-mode .sidebar-logout-btn:hover {
