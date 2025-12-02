@@ -8,7 +8,7 @@
     <?php endif; ?>
 </script>
 
-<!-- Show temporary password if just created -->
+<!-- Show temporary password if just created (display only once) -->
 <?php if (isset($_SESSION['new_password']) && isset($_SESSION['new_student_email'])): ?>
     <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
         <div class="d-flex justify-content-between align-items-start">
@@ -31,6 +31,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
+    <?php 
+        // Clear after showing (display only once)
+        unset($_SESSION['new_password'], $_SESSION['new_student_email'], $_SESSION['show_password_modal']);
+    ?>
 <?php endif; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
